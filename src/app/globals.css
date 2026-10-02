@@ -1,0 +1,116 @@
+@import 'tailwindcss';
+
+/*
+ * Tailwind is mapped onto design tokens that are generated from config/theme.ts
+ * (see src/lib/theme.ts). Default palettes are removed so only token colours exist:
+ * use bg-primary, text-muted-foreground, border-border, etc. Never hex values.
+ */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--ff-body), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--ff-heading), var(--ff-body), ui-sans-serif, system-ui, sans-serif;
+
+  --spacing: var(--space-unit);
+  --container-site: var(--container-width);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
+
+  --shadow-sm: var(--elevation-sm);
+  --shadow-md: var(--elevation-md);
+  --shadow-lg: var(--elevation-lg);
+}
+
+@layer base {
+  html {
+    @apply bg-background font-sans text-foreground antialiased;
+    -webkit-text-size-adjust: 100%;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/*
+ * Component class hooks. Every component renders a stable `c-*` class so a designer
+ * can restyle here (or in a component stylesheet) without touching component logic.
+ * Styles below are deliberately minimal: layout and legibility only.
+ */
+@layer components {
+  .c-container {
+    @apply mx-auto w-full max-w-site px-4;
+  }
+  .c-section {
+    @apply py-12;
+  }
+  .c-section-heading {
+    @apply mb-6 text-2xl font-semibold;
+  }
+  .c-button {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border px-4 py-2 font-medium;
+  }
+  .c-button[data-variant='primary'] {
+    @apply border-primary bg-primary text-primary-foreground;
+  }
+  .c-card {
+    @apply rounded-lg border border-border bg-surface p-4;
+  }
+  .c-grid {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  .c-field {
+    @apply flex flex-col gap-1;
+  }
+  .c-input {
+    @apply min-h-11 rounded-md border border-border bg-background px-3 py-2;
+  }
+  .c-field-error {
+    @apply text-sm text-danger;
+  }
+  .c-prose {
+    @apply max-w-prose space-y-4;
+  }
+  .c-prose h2 {
+    @apply mt-8 text-xl font-semibold;
+  }
+  .c-prose ul {
+    @apply list-disc ps-6;
+  }
+  .c-prose a {
+    @apply underline;
+  }
+}

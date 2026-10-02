@@ -1,0 +1,188 @@
+{
+  "a11y": {
+    "skipToContent": "انتقل إلى المحتوى",
+    "openMenu": "افتح القائمة",
+    "closeMenu": "أغلق القائمة",
+    "mainNav": "الرئيسية",
+    "footerNav": "التذييل",
+    "breadcrumb": "مسار التنقل",
+    "opensInNewTab": "(يفتح في علامة تبويب جديدة)",
+    "quickActions": "تواصل سريع",
+    "cookiePreferences": "تفضيلات ملفات تعريف الارتباط"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "services": "الخدمات",
+    "allServices": "جميع الخدمات",
+    "prices": "الأسعار",
+    "gallery": "معرض الأعمال",
+    "about": "من نحن",
+    "blog": "المدونة",
+    "contact": "تواصل معنا",
+    "ppf": "أفلام حماية الطلاء",
+    "ceramic": "الطلاء السيراميكي",
+    "tint": "تظليل النوافذ",
+    "wrap": "تغليف السيارات",
+    "detailing": "التنظيف التفصيلي",
+    "company": "الشركة",
+    "privacy": "سياسة الخصوصية",
+    "terms": "الشروط والأحكام",
+    "account": "حسابي"
+  },
+  "locale": {
+    "switchLabel": "اللغة",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "contact": {
+    "call": "اتصل",
+    "whatsapp": "واتساب",
+    "directions": "الاتجاهات",
+    "email": "البريد الإلكتروني",
+    "hours": "ساعات العمل",
+    "address": "العنوان",
+    "areaServed": "نخدم {areas}",
+    "getQuote": "اطلب عرض سعر",
+    "mapTitle": "خريطة توضح موقعنا",
+    "closed": "مغلق"
+  },
+  "pricing": {
+    "from": "يبدأ من {price}",
+    "onRequest": "السعر عند الطلب",
+    "warranty": "{years, plural, zero {بدون ضمان} one {ضمان سنة واحدة} two {ضمان سنتين} few {ضمان # سنوات} many {ضمان # سنة} other {ضمان # سنة}}",
+    "includes": "يشمل",
+    "popular": "الأكثر طلباً"
+  },
+  "service": {
+    "facts": "معلومات أساسية",
+    "priceFrom": "السعر يبدأ من",
+    "warranty": "الضمان",
+    "turnaround": "مدة التنفيذ",
+    "highlights": "المزايا",
+    "faq": "أسئلة حول {service}",
+    "learnMore": "اعرف المزيد عن {service}",
+    "related": "خدمات أخرى"
+  },
+  "portfolio": {
+    "all": "الكل",
+    "filterLabel": "تصفية المشاريع حسب الخدمة",
+    "reels": "مقاطع الفيديو"
+  },
+  "reviews": {
+    "summary": "{rating} من 5 بناءً على {count} مراجعة على {source}",
+    "ratingLabel": "{rating} من 5 نجوم",
+    "previous": "المراجعة السابقة",
+    "next": "المراجعة التالية"
+  },
+  "process": {
+    "step": "الخطوة {number}"
+  },
+  "footer": {
+    "payments": "طرق الدفع",
+    "rights": "© {year} {name}. جميع الحقوق محفوظة.",
+    "follow": "تابعنا"
+  },
+  "payments": {
+    "cash": "نقداً",
+    "card": "بطاقة",
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "applePay": "Apple Pay",
+    "googlePay": "Google Pay",
+    "tabby": "تابي",
+    "tamara": "تمارا"
+  },
+  "social": {
+    "instagram": "إنستغرام",
+    "facebook": "فيسبوك",
+    "tiktok": "تيك توك",
+    "youtube": "يوتيوب",
+    "x": "إكس",
+    "google": "جوجل"
+  },
+  "days": {
+    "range": "من {from} إلى {to}"
+  },
+  "form": {
+    "title": {
+      "quote": "اطلب عرض سعر",
+      "contact": "نموذج التواصل",
+      "callback": "اطلب معاودة الاتصال"
+    },
+    "fields": {
+      "name": "الاسم الكامل",
+      "phone": "رقم الجوال",
+      "email": "البريد الإلكتروني",
+      "vehicleMake": "الشركة المصنعة",
+      "vehicleModel": "الطراز",
+      "vehicleYear": "سنة الصنع",
+      "service": "الخدمة",
+      "preferredTime": "أفضل وقت للاتصال",
+      "message": "الرسالة"
+    },
+    "placeholders": {
+      "phone": "05X XXX XXXX",
+      "servicePrompt": "اختر خدمة"
+    },
+    "optional": "(اختياري)",
+    "consent": "أوافق على التواصل معي بخصوص طلبي وأقبل سياسة الخصوصية.",
+    "consentLink": "اقرأ سياسة الخصوصية",
+    "submit": {
+      "quote": "احصل على عرض السعر",
+      "contact": "أرسل الرسالة",
+      "callback": "اتصلوا بي"
+    },
+    "submitting": "جارٍ الإرسال…",
+    "success": "شكراً لك. استلمنا طلبك وسنتواصل معك قريباً.",
+    "orWhatsapp": "تفضّل واتساب؟",
+    "honeypotLabel": "اترك هذا الحقل فارغاً",
+    "errors": {
+      "required": "هذا الحقل مطلوب.",
+      "invalid_phone": "أدخل رقم جوال أو هاتف إماراتي صحيحاً.",
+      "invalid_email": "أدخل بريداً إلكترونياً صحيحاً.",
+      "too_long": "النص طويل جداً.",
+      "too_short": "النص قصير جداً.",
+      "invalid_year": "أدخل سنة صحيحة.",
+      "invalid_option": "اختر خياراً من القائمة.",
+      "consent_required": "يرجى الموافقة للمتابعة.",
+      "invalid": "تحقق من هذا الحقل."
+    },
+    "result": {
+      "RATE_LIMITED": "محاولات كثيرة. يرجى الانتظار بضع دقائق ثم المحاولة مجدداً.",
+      "BOT_CHECK_FAILED": "تعذر التحقق من أنك إنسان. يرجى المحاولة مجدداً.",
+      "VALIDATION_FAILED": "يرجى مراجعة الحقول المحددة.",
+      "FORBIDDEN": "تم حظر هذا الطلب. يرجى إعادة تحميل الصفحة والمحاولة مجدداً.",
+      "INTERNAL": "حدث خطأ من جهتنا. يرجى الاتصال بنا أو مراسلتنا عبر واتساب."
+    }
+  },
+  "consent": {
+    "message": "نستخدم ملفات تعريف الارتباط التحليلية لفهم كيفية استخدام الموقع، ولا تُفعّل إلا بموافقتك.",
+    "accept": "قبول التحليلات",
+    "reject": "رفض",
+    "learnMore": "سياسة الخصوصية"
+  },
+  "blog": {
+    "readMore": "اقرأ المقال: {title}",
+    "publishedOn": "نُشر في {date}",
+    "updatedOn": "حُدّث في {date}",
+    "by": "بقلم {author}",
+    "empty": "لا توجد مقالات بعد."
+  },
+  "notFound": {
+    "home": "العودة إلى الصفحة الرئيسية"
+  },
+  "error": {
+    "title": "حدث خطأ ما",
+    "body": "يرجى المحاولة مجدداً. إذا استمرت المشكلة، اتصل بنا أو راسلنا عبر واتساب.",
+    "retry": "حاول مجدداً"
+  },
+  "account": {
+    "title": "حسابي",
+    "comingSoon": "حسابات العملاء قادمة قريباً."
+  },
+  "units": {
+    "years": "{value, plural, zero {أقل من سنة} one {سنة واحدة} two {سنتين} few {# سنوات} many {# سنة} other {# سنة}}",
+    "hours": "{value, plural, zero {أقل من ساعة} one {ساعة واحدة} two {ساعتين} few {# ساعات} many {# ساعة} other {# ساعة}}",
+    "days": "{value, plural, zero {أقل من يوم} one {يوم واحد} two {يومين} few {# أيام} many {# يوماً} other {# يوم}}"
+  }
+}

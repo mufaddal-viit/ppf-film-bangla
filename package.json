@@ -1,0 +1,79 @@
+{
+  "name": "ppf-film-bangla",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx --conditions=react-server scripts/dev.mts",
+    "build": "next build",
+    "vercel-build": "tsx --conditions=react-server scripts/db-setup.mts && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "knip": "knip",
+    "db:setup": "tsx --conditions=react-server scripts/db-setup.mts",
+    "db:seed": "tsx --conditions=react-server scripts/seed.mts",
+    "assets:placeholders": "tsx scripts/generate-placeholders.mts",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
+    "@mdx-js/loader": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
+    "@next/mdx": "^16.3.8",
+    "@tanstack/react-query": "^5.104.0",
+    "@types/mdx": "^2.0.14",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.39.0",
+    "@vercel/functions": "^3.9.9",
+    "client-only": "^0.0.1",
+    "libphonenumber-js": "^1.13.14",
+    "lucide-react": "^1.49.0",
+    "mongodb": "^7.7.0",
+    "next": "16.3.8",
+    "next-intl": "^4.14.8",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-hook-form": "^7.89.0",
+    "resend": "^6.31.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.63.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^24.19.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.8",
+    "husky": "^9.1.7",
+    "knip": "^5.88.1",
+    "lint-staged": "^17.6.0",
+    "mongodb-memory-server": "^11.3.0",
+    "postcss": "^8.5.28",
+    "prettier": "^3.9.9",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^5.0.3"
+  },
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,yml,yaml}": "prettier --write"
+  }
+}

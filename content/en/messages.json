@@ -1,0 +1,188 @@
+{
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "mainNav": "Main",
+    "footerNav": "Footer",
+    "breadcrumb": "Breadcrumb",
+    "opensInNewTab": "(opens in a new tab)",
+    "quickActions": "Quick contact",
+    "cookiePreferences": "Cookie preferences"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "allServices": "All services",
+    "prices": "Prices",
+    "gallery": "Gallery",
+    "about": "About",
+    "blog": "Blog",
+    "contact": "Contact",
+    "ppf": "Paint protection film",
+    "ceramic": "Ceramic coating",
+    "tint": "Window tinting",
+    "wrap": "Car wrapping",
+    "detailing": "Detailing",
+    "company": "Company",
+    "privacy": "Privacy policy",
+    "terms": "Terms and conditions",
+    "account": "My account"
+  },
+  "locale": {
+    "switchLabel": "Language",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "contact": {
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "directions": "Directions",
+    "email": "Email",
+    "hours": "Opening hours",
+    "address": "Address",
+    "areaServed": "Serving {areas}",
+    "getQuote": "Get a quote",
+    "mapTitle": "Map showing our location",
+    "closed": "Closed"
+  },
+  "pricing": {
+    "from": "From {price}",
+    "onRequest": "Price on request",
+    "warranty": "{years, plural, one {# year warranty} other {# years warranty}}",
+    "includes": "Includes",
+    "popular": "Most popular"
+  },
+  "service": {
+    "facts": "Key facts",
+    "priceFrom": "Starting price",
+    "warranty": "Warranty",
+    "turnaround": "Turnaround",
+    "highlights": "Highlights",
+    "faq": "Questions about {service}",
+    "learnMore": "Learn more about {service}",
+    "related": "Other services"
+  },
+  "portfolio": {
+    "all": "All",
+    "filterLabel": "Filter projects by service",
+    "reels": "Video reels"
+  },
+  "reviews": {
+    "summary": "{rating} out of 5 from {count} reviews on {source}",
+    "ratingLabel": "{rating} out of 5 stars",
+    "previous": "Previous review",
+    "next": "Next review"
+  },
+  "process": {
+    "step": "Step {number}"
+  },
+  "footer": {
+    "payments": "We accept",
+    "rights": "© {year} {name}. All rights reserved.",
+    "follow": "Follow us"
+  },
+  "payments": {
+    "cash": "Cash",
+    "card": "Card",
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "applePay": "Apple Pay",
+    "googlePay": "Google Pay",
+    "tabby": "Tabby",
+    "tamara": "Tamara"
+  },
+  "social": {
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "x": "X",
+    "google": "Google"
+  },
+  "days": {
+    "range": "{from} to {to}"
+  },
+  "form": {
+    "title": {
+      "quote": "Request a quote",
+      "contact": "Contact form",
+      "callback": "Request a callback"
+    },
+    "fields": {
+      "name": "Full name",
+      "phone": "Mobile number",
+      "email": "Email",
+      "vehicleMake": "Car make",
+      "vehicleModel": "Car model",
+      "vehicleYear": "Year",
+      "service": "Service",
+      "preferredTime": "Best time to call",
+      "message": "Message"
+    },
+    "placeholders": {
+      "phone": "05X XXX XXXX",
+      "servicePrompt": "Choose a service"
+    },
+    "optional": "(optional)",
+    "consent": "I agree to be contacted about my enquiry and accept the privacy policy.",
+    "consentLink": "Read the privacy policy",
+    "submit": {
+      "quote": "Get my quote",
+      "contact": "Send message",
+      "callback": "Call me back"
+    },
+    "submitting": "Sending…",
+    "success": "Thank you. We have your request and will contact you shortly.",
+    "orWhatsapp": "Prefer WhatsApp?",
+    "honeypotLabel": "Leave this field empty",
+    "errors": {
+      "required": "This field is required.",
+      "invalid_phone": "Enter a valid UAE mobile or landline number.",
+      "invalid_email": "Enter a valid email address.",
+      "too_long": "This is too long.",
+      "too_short": "This is too short.",
+      "invalid_year": "Enter a valid year.",
+      "invalid_option": "Choose an option from the list.",
+      "consent_required": "Please accept to continue.",
+      "invalid": "Check this field."
+    },
+    "result": {
+      "RATE_LIMITED": "Too many attempts. Please wait a few minutes and try again.",
+      "BOT_CHECK_FAILED": "We could not verify you are human. Please try again.",
+      "VALIDATION_FAILED": "Please check the highlighted fields.",
+      "FORBIDDEN": "This request was blocked. Please reload the page and try again.",
+      "INTERNAL": "Something went wrong on our side. Please call or WhatsApp us instead."
+    }
+  },
+  "consent": {
+    "message": "We use analytics cookies to understand how the site is used. They are only set if you accept.",
+    "accept": "Accept analytics",
+    "reject": "Reject",
+    "learnMore": "Privacy policy"
+  },
+  "blog": {
+    "readMore": "Read article: {title}",
+    "publishedOn": "Published {date}",
+    "updatedOn": "Updated {date}",
+    "by": "By {author}",
+    "empty": "No articles yet."
+  },
+  "notFound": {
+    "home": "Go to the homepage"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "Please try again. If the problem continues, call or WhatsApp us.",
+    "retry": "Try again"
+  },
+  "account": {
+    "title": "My account",
+    "comingSoon": "Customer accounts are coming soon."
+  },
+  "units": {
+    "years": "{value, plural, one {# year} other {# years}}",
+    "hours": "{value, plural, one {# hour} other {# hours}}",
+    "days": "{value, plural, one {# day} other {# days}}"
+  }
+}
