@@ -6,6 +6,7 @@ import type { IntegrationsConfig } from '../src/lib/config/schema';
  */
 export const integrations = {
   gtm: { enabled: false, containerId: 'GTM-XXXXXXX' },
-  whatsapp: { number: '+971500000000' },
+  // Fossil lists no WhatsApp number, so WhatsApp links are off; the number only satisfies the schema.
+  whatsapp: { enabled: false, number: '+15752551211' },
   turnstile: { enabled: true },
 } satisfies IntegrationsConfig;

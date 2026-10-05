@@ -3,11 +3,7 @@
     "collect": {
       "startServerCommand": "pnpm start -p 3000",
       "startServerReadyPattern": "Ready",
-      "url": [
-        "http://localhost:3000/en",
-        "http://localhost:3000/ar",
-        "http://localhost:3000/en/services/paint-protection-film"
-      ],
+      "url": ["http://localhost:3000/en", "http://localhost:3000/ar", "http://localhost:3000/en/services/apex"],
       "numberOfRuns": 3,
       "settings": { "chromeFlags": "--no-sandbox" }
     },

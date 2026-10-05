@@ -5,9 +5,9 @@ import { parseEnv } from '@/lib/env.schema';
 
 describe('site config', () => {
   it('loads and validates every config file', () => {
-    expect(siteConfig.locale.currency).toBe('AED');
-    expect(siteConfig.locale.timezone).toBe('Asia/Dubai');
-    expect(siteConfig.contact.phone).toMatch(/^\+971/);
+    expect(siteConfig.locale.currency).toBe('USD');
+    expect(siteConfig.locale.timezone).toBe('America/Chicago');
+    expect(siteConfig.contact.phone).toMatch(/^\+1/);
     expect(pagesConfig.home.sections[0]?.key).toBe('hero');
   });
 

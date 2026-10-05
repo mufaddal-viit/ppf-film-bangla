@@ -7,11 +7,11 @@ export function Facility({ section, data }: SectionProps<'facility'>) {
   return (
     <Section id={section.id} name="facility" heading={section.heading} intro={section.intro} className="c-facility">
       {section.stats.length > 0 && (
-        <dl className="c-stats mb-8 grid gap-4 sm:grid-cols-3">
+        <dl className="c-stats">
           {section.stats.map((stat) => (
-            <div key={stat.label} className="c-card">
-              <dt className="text-sm text-muted-foreground">{stat.label}</dt>
-              <dd className="text-2xl font-semibold">
+            <div key={stat.label} className="c-stat">
+              <dt className="c-stat-label">{stat.label}</dt>
+              <dd className="c-stat-value">
                 {'fact' in stat.value
                   ? data.content.stats[stat.value.fact]
                   : formatNumber(stat.value.number, data.locale, data.site.region)}
@@ -21,16 +21,16 @@ export function Facility({ section, data }: SectionProps<'facility'>) {
           ))}
         </dl>
       )}
-      <ul className="c-grid">
+      <ul className="c-mosaic">
         {section.photos.map((photo) => (
-          <li key={photo.src}>
+          <li key={photo.src} className="c-mosaic-item">
             <Image
               src={photo.src}
               alt={photo.alt}
               width={photo.width}
               height={photo.height}
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="h-auto w-full rounded-md"
+              sizes="(min-width: 1024px) 60vw, 100vw"
+              className="c-mosaic-image"
             />
           </li>
         ))}

@@ -14,6 +14,7 @@ import {
   navigationConfig,
   pagesConfig,
   siteConfig,
+  themeConfig,
 } from '@/lib/config';
 import type { LeadType, NavHref, PageKey } from '@/lib/config/schema';
 import { parseOrThrow } from '@/lib/config';
@@ -103,6 +104,7 @@ export const getSite = cache(async (locale: string) => {
     timezone: siteConfig.locale.timezone,
     phone: { e164: contact.phone, display: parsePhoneNumberWithError(contact.phone).formatInternational() },
     whatsapp: {
+      enabled: integrationsConfig.whatsapp.enabled,
       e164: integrationsConfig.whatsapp.number,
       url: buildWhatsAppUrl(integrationsConfig.whatsapp.number, content.common.whatsappMessage),
     },
@@ -162,6 +164,9 @@ function checkReferences(content: LocaleContent, locale: string) {
     const slugs = copy.key === 'hero' ? copy.serviceChips : copy.key === 'servicesGrid' ? copy.serviceSlugs : [];
     for (const slug of slugs) {
       if (!serviceSlugs.has(slug)) throw new Error(`${where}/sections.ts "${id}" references unknown service "${slug}"`);
+    }
+    if (copy.key === 'hero' && copy.headingHighlight && !copy.heading.includes(copy.headingHighlight)) {
+      throw new Error(`${where}/sections.ts "${id}" headingHighlight must be part of its heading`);
     }
     if (copy.key === 'faq') {
       for (const faqId of copy.faqIds) {
@@ -244,6 +249,34 @@ export const getContent = cache(async (locale: string) => {
 
   const serviceName = new Map(services.map((s) => [s.slug, s.name]));
 
+  // Tokens for hero stat values, so the spec row never restates a number that lives in config.
+  const heroTokens: Record<string, string | null> = {
+    ...baseTokens,
+    yearsInBusiness:
+      business.foundingYear === undefined
+        ? null
+        : formatNumber(new Date().getFullYear() - business.foundingYear, locale, region),
+    warrantyYearsMaxNumber: formatNumber(facts.warrantyYearsMax, locale, region),
+    jobsCompleted: formatNumber(facts.jobsCompleted, locale, region),
+    ratingValue: facts.rating ? formatNumber(facts.rating.value, locale, region) : null,
+    /** Starting price of the first (flagship) service in config/catalog.ts. */
+    flagshipPriceFrom: services[0]?.priceFromLabel ?? null,
+  };
+  const sections = Object.fromEntries(
+    Object.entries(content.sections).map(([id, copy]) => [
+      id,
+      copy.key === 'hero'
+        ? {
+            ...copy,
+            stats: copy.stats.map((stat) => ({
+              ...stat,
+              value: fillTokens(stat.value, heroTokens, `content/${locale}/sections.ts ${id} stats`),
+            })),
+          }
+        : copy,
+    ]),
+  );
+
   return {
     common: content.common,
     pages: content.pages,
@@ -252,7 +285,7 @@ export const getContent = cache(async (locale: string) => {
     faqs,
     testimonials: content.testimonials.map((r) => ({ ...r, dateLabel: formatDate(r.date, locale, region) })),
     portfolio: content.portfolio.map((p) => ({ ...p, serviceName: serviceName.get(p.serviceSlug) ?? p.serviceSlug })),
-    sections: content.sections,
+    sections,
     stats: {
       jobsCompleted: formatNumber(facts.jobsCompleted, locale, region),
       warrantyYearsMax: formatNumber(facts.warrantyYearsMax, locale, region),
@@ -361,6 +394,7 @@ export async function getSectionData(locale: string, page?: PageCopyKey) {
     site,
     content,
     whatsappUrl,
+    theme: { name: themeConfig.active, heroMode: themeConfig.heroMode ?? themeConfig.mode },
     leadForms: { quote, contact, callback },
     /** Review and AggregateRating JSON-LD only when enabled and the rating is real. */
     reviewStructuredData: featuresConfig.reviewStructuredData,

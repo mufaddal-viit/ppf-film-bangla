@@ -18,7 +18,7 @@ export function TopBar({
   locales: Array<{ code: string; label: string }>;
 }) {
   return (
-    <div className="c-top-bar border-b border-border bg-surface text-sm">
+    <div className="c-top-bar">
       <div className="c-container flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-2">
         <ul className="flex flex-wrap items-center gap-x-6 gap-y-1">
           <li>
@@ -31,18 +31,20 @@ export function TopBar({
               <span dir="ltr">{site.phone.display}</span>
             </TrackedLink>
           </li>
-          <li>
-            <TrackedLink
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1"
-              event={{ name: 'whatsapp_click', location: 'top-bar' }}
-            >
-              <WhatsAppIcon className="size-4" />
-              {labels.whatsapp}
-            </TrackedLink>
-          </li>
+          {site.whatsapp.enabled && (
+            <li>
+              <TrackedLink
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1"
+                event={{ name: 'whatsapp_click', location: 'top-bar' }}
+              >
+                <WhatsAppIcon className="size-4" />
+                {labels.whatsapp}
+              </TrackedLink>
+            </li>
+          )}
           {site.hours[0] && (
             <li className="inline-flex items-center gap-1">
               <Clock aria-hidden="true" className="size-4" />

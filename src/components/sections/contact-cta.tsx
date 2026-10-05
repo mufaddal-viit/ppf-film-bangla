@@ -24,19 +24,21 @@ export async function ContactCta({ section, data }: SectionProps<'contactCta'>) 
         </div>
 
         <div className="c-contact-details space-y-6">
-          <div>
-            <p className="mb-2 font-medium">{tForm('orWhatsapp')}</p>
-            <TrackedLink
-              href={data.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="c-button"
-              event={{ name: 'whatsapp_click', location: 'contact-section' }}
-            >
-              <WhatsAppIcon className="size-5" />
-              {t('whatsapp')}
-            </TrackedLink>
-          </div>
+          {site.whatsapp.enabled && (
+            <div>
+              <p className="mb-2 font-medium">{tForm('orWhatsapp')}</p>
+              <TrackedLink
+                href={data.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="c-button"
+                event={{ name: 'whatsapp_click', location: 'contact-section' }}
+              >
+                <WhatsAppIcon className="size-5" />
+                {t('whatsapp')}
+              </TrackedLink>
+            </div>
+          )}
 
           <dl className="space-y-3">
             <div>
@@ -73,18 +75,20 @@ export async function ContactCta({ section, data }: SectionProps<'contactCta'>) 
                 </TrackedLink>
               </dd>
             </div>
-            <div>
-              <dt className="text-sm text-muted-foreground">{t('hours')}</dt>
-              <dd>
-                <ul>
-                  {site.hours.map((h) => (
-                    <li key={h.days}>
-                      {h.days}: <span dir="ltr">{h.time}</span>
-                    </li>
-                  ))}
-                </ul>
-              </dd>
-            </div>
+            {site.hours.length > 0 && (
+              <div>
+                <dt className="text-sm text-muted-foreground">{t('hours')}</dt>
+                <dd>
+                  <ul>
+                    {site.hours.map((h) => (
+                      <li key={h.days}>
+                        {h.days}: <span dir="ltr">{h.time}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            )}
           </dl>
 
           {section.showMap && site.mapEmbedUrl && (

@@ -1,56 +1,47 @@
 import type { SiteConfig } from '../src/lib/config/schema';
 
-/** Business identity and NAP (name, address, phone). DUMMY VALUES: replace before launch. */
+/** Business identity and NAP (name, address, phone), taken from getfossil.com. */
 export const site = {
   business: {
-    name: 'PPF Phantom',
-    legalName: 'PPF Phantom Car Care L.L.C.',
-    schemaType: 'AutoBodyShop',
-    logo: { src: '/brand/logo.svg', width: 160, height: 40 },
-    priceRange: 'AED 500 - AED 15,000',
-    foundingYear: 2020,
+    name: 'Fossil',
+    legalName: 'FOSSIL Paint Protection Film',
+    schemaType: 'AutomotiveBusiness',
+    logo: { src: '/brand/logo-fossil.png', width: 110, height: 40 },
+    priceRange: '$$',
   },
   locale: {
     locales: ['en', 'ar'],
     defaultLocale: 'en',
     rtlLocales: ['ar'],
-    currency: 'AED',
-    timezone: 'Asia/Dubai',
-    phoneRegion: 'AE',
+    currency: 'USD',
+    timezone: 'America/Chicago',
+    phoneRegion: 'US',
   },
   contact: {
-    phone: '+97142000000',
-    whatsapp: '+971500000000',
-    email: 'hello@example.com',
+    phone: '+15752551211',
+    // Fossil lists no WhatsApp number; WhatsApp links are switched off in config/integrations.ts.
+    whatsapp: '+15752551211',
+    email: 'info@getfossil.com',
     address: {
-      street: 'Warehouse 00, Street 00',
-      area: 'Al Quoz Industrial Area 3',
-      city: 'Dubai',
-      emirate: 'Dubai',
-      country: 'AE',
+      street: '2438 Industrial Blvd',
+      area: '#604',
+      city: 'Abilene',
+      emirate: 'TX',
+      country: 'US',
     },
-    geo: { lat: 25.135, lng: 55.225 },
-    mapUrl: 'https://maps.google.com/?q=25.135,55.225',
-    mapEmbedUrl: 'https://www.google.com/maps?q=25.135,55.225&output=embed',
-    areaServed: ['Dubai', 'Sharjah', 'Abu Dhabi'],
+    // Abilene city centre: the site gives a street address but no coordinates.
+    geo: { lat: 32.4487, lng: -99.7331 },
+    mapUrl: 'https://www.google.com/maps/search/?api=1&query=2438+Industrial+Blvd+%23604%2C+Abilene%2C+TX',
+    mapEmbedUrl: 'https://www.google.com/maps?q=2438+Industrial+Blvd+%23604%2C+Abilene%2C+TX&output=embed',
+    areaServed: ['United States'],
   },
-  hours: [
-    {
-      days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Saturday', 'Sunday'],
-      opens: '09:00',
-      closes: '20:00',
-    },
-    { days: ['Friday'], opens: '14:00', closes: '20:00' },
-  ],
-  social: [
-    { platform: 'instagram', url: 'https://www.instagram.com/example' },
-    { platform: 'tiktok', url: 'https://www.tiktok.com/@example' },
-    { platform: 'youtube', url: 'https://www.youtube.com/@example' },
-  ],
-  paymentMethods: ['cash', 'visa', 'mastercard', 'applePay', 'tabby'],
+  // Opening hours are not published on getfossil.com.
+  hours: [],
+  social: [],
+  paymentMethods: [],
   facts: {
     warrantyYearsMax: 10,
-    jobsCompleted: 2500,
+    jobsCompleted: 0,
     rating: null,
   },
 } satisfies SiteConfig;

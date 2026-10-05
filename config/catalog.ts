@@ -1,56 +1,28 @@
 import type { Catalog } from '../src/lib/config/schema';
 
 /**
- * Numbers that must be identical in every language: prices, warranties, turnaround.
- * Text for each service lives in content/{locale}/services.ts under the same slug.
- * PLACEHOLDER PRICES: replace before launch.
+ * Numbers that must be identical in every language: warranties (prices and turnaround are not
+ * published by Fossil, so they stay null). Each entry is a Fossil film line; the route segment is
+ * still /services/{slug}. Text lives in content/{locale}/services.ts under the same slug.
  */
+const image = (slug: string) => ({ src: `/images/services/${slug}.jpg`, width: 960, height: 640 });
+
 export const catalog = {
   services: [
+    { slug: 'apex', icon: 'shield-check', priceFrom: null, warrantyYears: 10, turnaround: null, image: image('apex') },
     {
-      slug: 'paint-protection-film',
-      icon: 'shield',
-      priceFrom: 4500,
-      warrantyYears: 10,
-      turnaround: { value: 3, unit: 'days' },
-      image: { src: '/images/services/paint-protection-film.jpg', width: 1200, height: 800 },
-    },
-    {
-      slug: 'ceramic-coating',
+      slug: 'sapphire',
       icon: 'sparkles',
-      priceFrom: 1500,
-      warrantyYears: 5,
-      turnaround: { value: 2, unit: 'days' },
-      image: { src: '/images/services/ceramic-coating.jpg', width: 1200, height: 800 },
+      priceFrom: null,
+      warrantyYears: 8,
+      turnaround: null,
+      image: image('sapphire'),
     },
-    {
-      slug: 'window-tinting',
-      icon: 'sun',
-      priceFrom: 800,
-      warrantyYears: 5,
-      turnaround: { value: 4, unit: 'hours' },
-      image: { src: '/images/services/window-tinting.jpg', width: 1200, height: 800 },
-    },
-    {
-      slug: 'car-wrapping',
-      icon: 'palette',
-      priceFrom: 6000,
-      warrantyYears: 3,
-      turnaround: { value: 4, unit: 'days' },
-      image: { src: '/images/services/car-wrapping.jpg', width: 1200, height: 800 },
-    },
-    {
-      slug: 'detailing',
-      icon: 'spray-can',
-      priceFrom: 500,
-      warrantyYears: null,
-      turnaround: { value: 6, unit: 'hours' },
-      image: { src: '/images/services/detailing.jpg', width: 1200, height: 800 },
-    },
+    { slug: 'opal', icon: 'shield', priceFrom: null, warrantyYears: 5, turnaround: null, image: image('opal') },
+    { slug: 'stealth', icon: 'palette', priceFrom: null, warrantyYears: 10, turnaround: null, image: image('stealth') },
+    { slug: 'frozen', icon: 'wind', priceFrom: null, warrantyYears: 10, turnaround: null, image: image('frozen') },
+    { slug: 'solaris', icon: 'sun', priceFrom: null, warrantyYears: 10, turnaround: null, image: image('solaris') },
+    { slug: 'luminox', icon: 'star', priceFrom: null, warrantyYears: 10, turnaround: null, image: image('luminox') },
   ],
-  packages: [
-    { id: 'front-protection', serviceSlug: 'paint-protection-film', priceFrom: 4500, highlighted: false },
-    { id: 'full-body-ppf', serviceSlug: 'paint-protection-film', priceFrom: 12000, highlighted: true },
-    { id: 'ceramic-pro', serviceSlug: 'ceramic-coating', priceFrom: 2500, highlighted: false },
-  ],
+  packages: [],
 } satisfies Catalog;

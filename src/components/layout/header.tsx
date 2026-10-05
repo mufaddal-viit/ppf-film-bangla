@@ -15,14 +15,14 @@ export function Header({
   labels: { nav: string; open: string; close: string; quote: string; home: string };
 }) {
   return (
-    <header className="c-header border-b border-border">
+    <header className="c-header">
       <div className="c-container flex flex-wrap items-center justify-between gap-4 py-4">
         <Link href="/" className="c-logo" aria-label={`${site.name}, ${labels.home}`}>
           <Image src={site.logo.src} alt="" width={site.logo.width} height={site.logo.height} loading="eager" />
         </Link>
         <HeaderNav items={items} labels={labels} />
         {showQuoteButton && (
-          <Link href="/contact" className="c-button" data-variant="primary">
+          <Link href="/contact" className="c-button max-sm:hidden" data-variant="primary">
             {labels.quote}
           </Link>
         )}

@@ -26,7 +26,7 @@ export function Footer({
   labels: FooterLabels;
 }) {
   return (
-    <footer className="c-footer mt-16 border-t border-border bg-surface pb-24 lg:pb-0">
+    <footer data-tone="inverse" className="c-footer bg-background pb-24 text-foreground lg:pb-0">
       <div className="c-container grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <nav aria-label={labels.nav} className="contents">
           {navigation.footer.map((group) => (
@@ -66,16 +66,18 @@ export function Footer({
           </address>
         </div>
 
-        <div>
-          <h2 className="mb-3 font-semibold">{labels.hours}</h2>
-          <ul className="space-y-1">
-            {site.hours.map((h) => (
-              <li key={h.days}>
-                {h.days}: <span dir="ltr">{h.time}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {site.hours.length > 0 && (
+          <div>
+            <h2 className="mb-3 font-semibold">{labels.hours}</h2>
+            <ul className="space-y-1">
+              {site.hours.map((h) => (
+                <li key={h.days}>
+                  {h.days}: <span dir="ltr">{h.time}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <div className="c-container flex flex-wrap items-center justify-between gap-4 border-t border-border py-6 text-sm">

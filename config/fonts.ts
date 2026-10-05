@@ -1,4 +1,4 @@
-import { IBM_Plex_Sans_Arabic, Inter } from 'next/font/google';
+import { Archivo, IBM_Plex_Sans_Arabic, Inter } from 'next/font/google';
 import type { FontKey } from '../src/lib/config/schema';
 
 /**
@@ -7,6 +7,8 @@ import type { FontKey } from '../src/lib/config/schema';
  * in src/lib/config/schema.ts, then reference it from config/theme.ts.
  */
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+// Variable width axis: headings use the normal width, the hero wordmark stretches it to 125%.
+const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], variable: '--font-archivo', display: 'swap' });
 const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic'],
   weight: ['400', '700'],
@@ -19,5 +21,6 @@ const ibmPlexArabic = IBM_Plex_Sans_Arabic({
 
 export const fonts: Record<FontKey, { className: string; cssVar: string }> = {
   inter: { className: inter.variable, cssVar: '--font-inter' },
+  archivo: { className: archivo.variable, cssVar: '--font-archivo' },
   ibmPlexArabic: { className: ibmPlexArabic.variable, cssVar: '--font-ibm-plex-arabic' },
 };

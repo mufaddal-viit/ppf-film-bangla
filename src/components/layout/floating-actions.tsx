@@ -40,7 +40,7 @@ export function FloatingActions({
   return (
     <nav
       aria-label={labels.region}
-      className="c-floating-actions fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
+      className="c-floating-actions fixed inset-x-0 bottom-0 z-30 border-t border-border pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       <ul className="grid" style={{ gridTemplateColumns: `repeat(${actions.length}, minmax(0, 1fr))` }}>
         {actions.map((action) => {

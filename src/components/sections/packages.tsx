@@ -19,17 +19,13 @@ export async function Packages({ section, data }: SectionProps<'packages'>) {
               className="c-card c-package flex h-full flex-col gap-3"
               data-highlighted={pkg.highlighted || undefined}
             >
-              {pkg.highlighted && (
-                <p className="c-badge self-start rounded-sm bg-primary px-2 py-0.5 text-sm font-medium text-primary-foreground">
-                  {t('popular')}
-                </p>
-              )}
+              {pkg.highlighted && <p className="c-badge">{t('popular')}</p>}
               <h3 className="text-lg font-semibold">{pkg.name}</h3>
               <p className="text-muted-foreground">{pkg.description}</p>
-              <p className="c-price text-xl font-semibold">{t('from', { price: pkg.priceFromLabel })}</p>
+              <p className="c-price c-package-price">{t('from', { price: pkg.priceFromLabel })}</p>
               <div>
                 <p className="text-sm font-medium">{t('includes')}</p>
-                <ul className="list-disc ps-5">
+                <ul className="c-checklist">
                   {pkg.includes.map((item) => (
                     <li key={item}>{item}</li>
                   ))}
@@ -39,7 +35,7 @@ export async function Packages({ section, data }: SectionProps<'packages'>) {
           </li>
         ))}
       </ul>
-      <div className="mt-6">
+      <div className="c-section-cta">
         <CtaLink
           cta={section.cta}
           variant="primary"

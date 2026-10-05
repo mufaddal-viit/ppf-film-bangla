@@ -55,7 +55,7 @@ export function HeaderNav({
 
       <ul
         id={menuId}
-        className={`${menuOpen ? 'flex' : 'hidden'} flex-col gap-2 lg:flex lg:flex-row lg:items-center lg:gap-6`}
+        className={`c-nav-list ${menuOpen ? 'flex' : 'hidden'} flex-col gap-2 lg:flex lg:flex-row lg:items-center lg:gap-7`}
       >
         {items.map((item) => {
           const current = pathname === item.href;

@@ -15,7 +15,7 @@ type MdxModule = { default: MDXContent; frontmatter?: unknown };
 type BlogPost = BlogFrontmatter & { slug: string };
 
 async function importPost(locale: string, slug: string): Promise<MdxModule> {
-  return import(`@content/${locale}/blog/${slug}.mdx`);
+  return import(`../../../content/${locale}/blog/${slug}.mdx`);
 }
 
 export const getBlogPosts = cache(async (locale: string): Promise<BlogPost[]> => {
@@ -45,6 +45,6 @@ export async function getBlogPost(locale: string, slug: string) {
 export type LegalDocument = 'privacy-policy' | 'terms';
 
 export async function getLegalDocument(locale: string, doc: LegalDocument): Promise<MDXContent> {
-  const mod: MdxModule = await import(`@content/${locale}/legal/${doc}.mdx`);
+  const mod: MdxModule = await import(`../../../content/${locale}/legal/${doc}.mdx`);
   return mod.default;
 }

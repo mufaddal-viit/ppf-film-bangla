@@ -3,67 +3,75 @@ import { faqs } from './faqs';
 import { sections } from './sections';
 import { services } from './services';
 
-/** SAMPLE CONTENT: replace testimonials and portfolio with real data before launch. */
+/** Copy follows getfossil.com, which publishes no packages, testimonials, project gallery or FAQs. */
 export const content: LocaleContentInput = {
   common: {
-    tagline: 'Paint protection, ceramic coating and window tint in Dubai',
+    tagline: 'Unmistakably strong. Exceptionally clear.',
     businessDescription:
-      'PPF Phantom is a car care studio in Dubai specialising in paint protection film, ceramic coating, window tinting, car wrapping and detailing.',
-    whatsappMessage: 'Hi PPF Phantom, I would like a quote for my car.',
+      'Fossil is a USA-based paint protection and window film brand headquartered in Abilene, Texas. Fossil PPF is developed to deliver reliable paint protection with exceptional clarity, strength, and long-term performance.',
+    whatsappMessage: 'Hello Fossil, I would like to know more about your films.',
   },
   pages: {
     home: {
-      title: 'Paint Protection Film and Ceramic Coating in Dubai',
+      title: 'Fossil Paint Protection Film',
       seo: {
-        title: 'PPF, Ceramic Coating and Window Tint in Dubai',
+        title: 'Fossil Paint Protection Film and Window Film',
         description:
-          'Certified paint protection film, ceramic coating, window tint and wraps in Dubai. Get a free quote today.',
+          'Fossil PPF delivers reliable paint protection with exceptional clarity, strength and long-term performance.',
       },
     },
     services: {
-      title: 'Car protection services',
-      intro: 'Choose the right protection for how and where you drive.',
+      title: 'Our products',
+      intro:
+        'Clear, satin and matte paint protection film, plus ceramic window film. Durable, self-healing protection that keeps your car looking brand new.',
       seo: {
-        title: 'Services',
-        description: 'PPF, ceramic coating, window tinting, car wrapping and detailing in Dubai.',
+        title: 'Products',
+        description:
+          'Fossil clear PPF (Apex, Sapphire, Opal), Stealth satin, Frozen matte, and Solaris and Luminox ceramic window film.',
       },
     },
     gallery: {
-      title: 'Gallery',
-      intro: 'Cars we have protected, wrapped and detailed.',
-      seo: { title: 'Gallery', description: 'Photos and videos of our PPF, ceramic coating, tint and wrap projects.' },
+      title: 'Engineered to preserve',
+      intro: 'Paint protection film that preserves what makes your vehicle unique.',
+      seo: {
+        title: 'Engineered to preserve',
+        description: 'Fossil paint protection film and window film in pictures.',
+      },
     },
     prices: {
-      title: 'Prices',
-      intro: 'Starting prices for our most popular services.',
+      title: 'Our products',
+      intro: 'Contact us or your local installer for pricing on any Fossil film.',
       seo: {
-        title: 'Prices',
-        description: 'Starting prices for PPF, ceramic coating, window tint, wraps and detailing in Dubai.',
+        title: 'Product range',
+        description: 'The Fossil paint protection film and ceramic window film range. Contact us for pricing.',
       },
     },
     about: {
-      title: 'About PPF Phantom',
-      intro: 'A Dubai studio dedicated to protecting and perfecting cars.',
-      seo: { title: 'About us', description: 'Meet the certified team and studio behind PPF Phantom in Dubai.' },
+      title: 'About Fossil',
+      intro:
+        'That vision led to the birth of FOSSIL, a USA-based paint protection and window film brand headquartered in Abilene, Texas, engineered to redefine industry standards.',
+      seo: {
+        title: 'About us',
+        description:
+          'Fossil is a USA-based paint protection and window film brand from Abilene, Texas, built on over two decades of industry experience.',
+      },
     },
     contact: {
       title: 'Contact us',
-      intro: 'Call, WhatsApp or send the form. We usually reply within one working hour.',
-      seo: { title: 'Contact', description: 'Call, WhatsApp or request a quote from PPF Phantom in Dubai.' },
-      whatsappMessage: 'Hi PPF Phantom, I have a question.',
+      intro: 'We’d love to hear from you.',
+      seo: { title: 'Contact', description: 'Call, email or send a message to Fossil in Abilene, Texas.' },
     },
     blog: {
       title: 'Blog',
-      intro: 'Guides and advice on protecting your car in the UAE.',
-      seo: { title: 'Blog', description: 'Car care guides for UAE drivers: PPF, ceramic coating, tinting and more.' },
+      seo: { title: 'Blog', description: 'News and guides from Fossil Paint Protection Film.' },
     },
     privacyPolicy: {
       title: 'Privacy policy',
-      seo: { title: 'Privacy policy', description: 'How PPF Phantom collects, uses and protects your personal data.' },
+      seo: { title: 'Privacy policy', description: 'How Fossil collects, uses and protects your personal data.' },
     },
     terms: {
       title: 'Terms and conditions',
-      seo: { title: 'Terms and conditions', description: 'Terms that apply to services provided by PPF Phantom.' },
+      seo: { title: 'Terms and conditions', description: 'Terms that apply to this website.' },
     },
     notFound: {
       title: 'Page not found',
@@ -72,89 +80,9 @@ export const content: LocaleContentInput = {
     },
   },
   services,
-  packages: [
-    {
-      id: 'front-protection',
-      name: 'Front protection',
-      description: 'PPF on the areas hit most by stones.',
-      includes: ['Full bonnet', 'Front bumper', 'Front fenders', 'Mirrors'],
-    },
-    {
-      id: 'full-body-ppf',
-      name: 'Full body PPF',
-      description: 'Every painted panel covered for complete protection.',
-      includes: ['All painted panels', 'Door edges and cups', 'Paint correction', 'Ceramic top coat'],
-    },
-    {
-      id: 'ceramic-pro',
-      name: 'Ceramic pro',
-      description: 'Multi-layer ceramic coating with paint correction.',
-      includes: ['Two-stage paint correction', 'Body ceramic coating', 'Wheel and glass coating'],
-    },
-  ],
+  packages: [],
   faqs,
-  testimonials: [
-    {
-      id: 'sample-1',
-      author: 'Sample customer',
-      rating: 5,
-      text: 'SAMPLE REVIEW. Replace with a real customer review before launch.',
-      date: '2026-09-01',
-      source: 'Google',
-      vehicle: 'Sample vehicle',
-    },
-    {
-      id: 'sample-2',
-      author: 'Sample customer',
-      rating: 5,
-      text: 'SAMPLE REVIEW. Replace with a real customer review before launch.',
-      date: '2026-08-15',
-      source: 'Google',
-    },
-  ],
-  portfolio: [
-    {
-      id: 'project-1',
-      title: 'Full body PPF',
-      serviceSlug: 'paint-protection-film',
-      vehicle: 'Sports coupe',
-      image: { src: '/images/portfolio/1.jpg', alt: 'Sports coupe after full body PPF', width: 1200, height: 800 },
-    },
-    {
-      id: 'project-2',
-      title: 'Ceramic coating',
-      serviceSlug: 'ceramic-coating',
-      vehicle: 'Luxury SUV',
-      image: { src: '/images/portfolio/2.jpg', alt: 'SUV with a fresh ceramic coating', width: 1200, height: 800 },
-    },
-    {
-      id: 'project-3',
-      title: 'Satin grey wrap',
-      serviceSlug: 'car-wrapping',
-      vehicle: 'Sedan',
-      image: { src: '/images/portfolio/3.jpg', alt: 'Sedan wrapped in satin grey', width: 1200, height: 800 },
-    },
-    {
-      id: 'project-4',
-      title: 'Nano-ceramic tint',
-      serviceSlug: 'window-tinting',
-      vehicle: 'Pickup',
-      image: { src: '/images/portfolio/4.jpg', alt: 'Pickup with tinted windows', width: 1200, height: 800 },
-    },
-    {
-      id: 'project-5',
-      title: 'Front protection',
-      serviceSlug: 'paint-protection-film',
-      vehicle: 'Hatchback',
-      image: { src: '/images/portfolio/5.jpg', alt: 'Hatchback with front PPF', width: 1200, height: 800 },
-    },
-    {
-      id: 'project-6',
-      title: 'Paint correction',
-      serviceSlug: 'detailing',
-      vehicle: 'Classic car',
-      image: { src: '/images/portfolio/6.jpg', alt: 'Classic car after paint correction', width: 1200, height: 800 },
-    },
-  ],
+  testimonials: [],
+  portfolio: [],
   sections,
 };

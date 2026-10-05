@@ -1,7 +1,7 @@
 import type { SeoConfig } from '../src/lib/config/schema';
 
 export const seo = {
-  titleTemplate: '%s | PPF Phantom',
+  titleTemplate: '%s | Fossil',
   defaultOgImage: { src: '/og/default.jpg', width: 1200, height: 630 },
   aiCrawlers: {
     policy: 'allow',

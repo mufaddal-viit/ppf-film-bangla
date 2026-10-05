@@ -5,5 +5,5 @@ export const layout = {
   topBar: { enabled: true },
   header: { enabled: true, showQuoteButton: true },
   footer: { enabled: true },
-  floatingActions: { enabled: true, actions: ['call', 'map', 'whatsapp'] },
+  floatingActions: { enabled: true, actions: ['call', 'map'] },
 } satisfies LayoutConfig;

@@ -1,126 +1,182 @@
 import type { LocaleContentInput } from '../../src/lib/content/schema';
 
-/** Section copy, keyed by the contentRef used in config/pages.ts. */
+/** Arabic translation of content/en/sections.ts (source: getfossil.com). */
 export const sections: LocaleContentInput['sections'] = {
   'home-hero': {
     key: 'hero',
-    eyebrow: 'استوديو العناية بالسيارات في دبي',
-    heading: 'احمِ طلاء سيارتك من شمس الإمارات ورمالها وطرقها',
-    subheading: 'أفلام حماية الطلاء والطلاء السيراميكي وتظليل النوافذ والتغليف، بأيدي فنيين معتمدين.',
-    primaryCta: { action: 'route', label: 'احصل على عرض سعر مجاني', href: '/contact' },
-    secondaryCta: { action: 'whatsapp', label: 'تواصل عبر واتساب' },
+    eyebrow: 'Fossil لأفلام حماية الطلاء · الولايات المتحدة',
+    wordmark: 'FOSSIL',
+    heading: 'قوة لا تخطئها العين، وضوح استثنائي',
+    headingHighlight: 'وضوح استثنائي',
+    subheading: 'حماية موثوقة للطلاء دون تغيير شخصية سيارتك',
+    stats: [
+      { icon: 'shield-check', value: '{warrantyYearsMaxNumber}', label: 'سنوات ضمان كحد أقصى' },
+      { icon: 'shield', value: '7.5 mil', label: 'سماكة الفيلم' },
+      { icon: 'sparkles', value: '99 GU', label: 'اللمعان (Apex)' },
+      { icon: 'sun', value: '99%', label: 'حجب الأشعة فوق البنفسجية' },
+      { icon: 'badge-check', value: '∆E < 1', label: 'مقاومة الاصفرار' },
+    ],
+    primaryCta: { action: 'route', label: 'اكتشف Fossil PPF', href: '/services' },
+    secondaryCta: { action: 'route', label: 'تواصل معنا', href: '/contact' },
     media: {
       type: 'image',
-      image: { src: '/images/hero.jpg', alt: 'سيارة رياضية سوداء بلمسة فيلم حماية لامعة', width: 1920, height: 1080 },
+      image: {
+        src: '/images/hero/car.webp',
+        alt: 'سيارة كوبيه رياضية بيضاء محمية بفيلم حماية الطلاء الشفاف، منظر جانبي',
+        width: 2049,
+        height: 606,
+      },
     },
-    serviceChips: ['paint-protection-film', 'ceramic-coating', 'window-tinting', 'car-wrapping'],
+    serviceChips: [],
   },
   'home-trust': {
     key: 'trustStrip',
-    heading: 'لماذا يثق بنا السائقون',
-    ratingLabel: 'متوسط التقييم',
-    warrantyLabel: 'سنوات ضمان',
-    jobsLabel: 'سيارة محمية',
-    partnersLabel: 'مركّب معتمد لدى',
-    partners: [{ name: 'Partner Brand A' }, { name: 'Partner Brand B' }, { name: 'Partner Brand C' }],
+    heading: 'مصمم لتحمّل قسوة الواقع',
+    intro:
+      'كل رحلة تترك أثرها: صدمات وحصى وملوثات وتعرّض مستمر لعوامل البيئة. يعمل Fossil PPF كطبقة دفاعية عالية القوة تمتص إجهاد السطح قبل أن يصل إلى طلائك.',
+    stats: [
+      { label: 'سنوات ضمان كحد أقصى', value: { fact: 'warrantyYearsMax' } },
+      { label: 'عاماً من الخبرة في الصناعة', value: { number: 20 }, suffix: '+' },
+      { label: 'خطوط أفلام', value: { number: 7 } },
+      { label: 'حجب الأشعة فوق البنفسجية، أفلام النوافذ', value: { number: 99 }, suffix: '%' },
+    ],
   },
   'home-services': {
     key: 'servicesGrid',
-    heading: 'خدماتنا',
-    intro: 'كل ما تحتاجه سيارتك لتبدو جديدة وتبقى محمية.',
+    heading: 'منتجات Fossil لحماية السيارات',
+    intro: 'الزمن يغيّر كل شيء، إلا ما هو محمي.',
     serviceSlugs: [],
   },
-  'home-climate': {
+  'home-features': {
     key: 'climate',
-    heading: 'مصممة لظروف الإمارات',
-    intro: 'حرارة الصحراء والرمال والرحلات الطويلة على الطرق السريعة قاسية على الطلاء والزجاج والمقصورة.',
+    heading: 'فيلم Fossil لحماية الطلاء',
+    intro: 'بتوازن بين الصلابة والرقي، يحافظ فيلم Fossil لحماية الطلاء على ما يميّز سيارتك، اليوم ولسنوات قادمة.',
     points: [
-      { icon: 'sun', title: 'أشعة وحرارة شديدة', body: 'حرارة الصيف تُبهت الطلاء وتُشقق المقصورة دون حماية.' },
       {
-        icon: 'wind',
-        title: 'الرمال والغبار',
-        body: 'الرمال التي تحملها الرياح تعمل كورق الصنفرة على الطلاء والزجاج.',
+        icon: 'sparkles',
+        title: 'وضوح فائق',
+        body: 'شفافية لا مثيل لها تحافظ على لمسة الطلاء الأصلية دون تشويه، وتعزز اللمعان وتحافظ على مظهر المصنع.',
       },
       {
-        icon: 'road',
-        title: 'مخلفات الطرق السريعة',
-        body: 'القيادة السريعة على E11 وE311 تقذف الحصى على غطاء المحرك والصدام.',
+        icon: 'spray-can',
+        title: 'مقاومة البقع',
+        body: 'يحمي من بقع الماء وبقايا الحشرات وأوساخ الطريق والبقع الكيميائية الخفيفة لصيانة أسهل.',
+      },
+      {
+        icon: 'shield-check',
+        title: 'سطح ذاتي الإصلاح',
+        body: 'تختفي الخدوش البسيطة وآثار التلميع عند التعرض للحرارة، فيبقى السطح ناعماً ونظيفاً.',
+      },
+      {
+        icon: 'badge-check',
+        title: 'التصاق موثوق',
+        body: 'مصمم لالتصاق ثابت بالأسطح المطلية، بما يضمن أداءً مستقراً وإزالة نظيفة عند الحاجة.',
       },
     ],
   },
   'home-why': {
     key: 'whyChooseUs',
-    heading: 'لماذا PPF Phantom',
+    heading: 'لماذا Fossil',
     points: [
       {
-        icon: 'badge-check',
-        title: 'فنيون معتمدون',
-        body: 'كل فني مدرَّب ومعتمد من الشركة المصنعة للفيلم.',
-        proof: 'اعتماد الشركة المصنعة',
+        icon: 'clock',
+        title: 'مبني على الخبرة',
+        body: 'يستند إلى عقود من الريادة في الصناعة وتطوير الأسواق على أرض الواقع.',
       },
-      { icon: 'shield-check', title: 'ضمان مكتوب', body: 'الفيلم والعمل مشمولان بضمان مسجل.' },
-      { icon: 'warehouse', title: 'غرف خالية من الغبار', body: 'غرف تركيب نظيفة ومكيفة لنتيجة مثالية.' },
+      {
+        icon: 'shield',
+        title: 'مصمم ليدوم',
+        body: 'مصمم لمقاومة التقادم وتغيّر اللون والبقع وفقدان اللمعان.',
+      },
+      {
+        icon: 'star',
+        title: 'أداء ممتاز',
+        body: 'وضوح عالٍ وحماية متينة وتميّز بصري طويل الأمد.',
+      },
+      {
+        icon: 'badge-check',
+        title: 'موثوق من المحترفين',
+        body: 'طُوّر مع مراعاة فنيي التركيب، وأصحاب السيارات في القلب.',
+      },
     ],
   },
-  'home-packages': {
-    key: 'packages',
-    heading: 'الباقات الأكثر طلباً',
-    intro: 'أسعار تبدأ من. يعتمد السعر النهائي على حجم السيارة وحالتها.',
-    packageIds: [],
-    cta: { action: 'route', label: 'اطلب السعر الدقيق', href: '/contact' },
+  'home-technology': {
+    key: 'climate',
+    heading: 'تقنية متقدمة',
+    intro: 'حماية تعمل بهدوء في الخلفية وتدعم الحفاظ على اللمسة النهائية على المدى الطويل دون عناية مستمرة.',
+    points: [
+      {
+        icon: 'wind',
+        title: 'طبقة طاردة للماء',
+        body: 'طبقة علوية نانوية طاردة للماء تصدّ الماء والأوساخ والملوثات بزيادة زاوية تماس السطح، فيسهل التنظيف وتقل بقع الماء.',
+      },
+      {
+        icon: 'shield-check',
+        title: 'تقنية اللاصق',
+        body: 'لاصق أكريليك هندسي يضمن التصاقاً متجانساً دون أثر، ويقلل أخطاء التركيب وارتفاع الحواف.',
+      },
+      {
+        icon: 'sun',
+        title: 'مقاومة الاصفرار',
+        body: 'مثبتات الأشعة فوق البنفسجية ومضادات الأكسدة تمنع تغيّر اللون وتحافظ على الوضوح طوال عمر المنتج.',
+      },
+    ],
   },
-  'home-portfolio': {
-    key: 'portfolio',
-    heading: 'أعمالنا الأخيرة',
-    intro: 'مجموعة من السيارات التي حميناها وغيّرنا مظهرها.',
-    showFilters: true,
-    reels: [],
-  },
-  'home-facility': {
+  'home-about': {
     key: 'facility',
-    heading: 'الاستوديو',
-    intro: 'منشأة مخصصة ومكيفة مصممة لأعمال الأفلام والطلاء.',
+    heading: 'وعدنا',
+    intro:
+      'في FOSSIL نلتزم بتقديم حلول حماية الطلاء وأفلام النوافذ التي تحفظ القيمة وتعزز المظهر وتتجاوز التوقعات. كل منتج نصنعه يعكس تفانينا في الجودة والابتكار والحماية الدائمة لما هو أهم.',
     photos: [
-      { src: '/images/facility/1.jpg', alt: 'غرفة تركيب فيها سيارة تحت أضواء فحص ساطعة', width: 1200, height: 800 },
-      { src: '/images/facility/2.jpg', alt: 'صالة استقبال العملاء في الاستوديو', width: 1200, height: 800 },
-      { src: '/images/facility/3.jpg', alt: 'آلة قص تقطع نموذج فيلم PPF', width: 1200, height: 800 },
+      { src: '/images/facility/1.jpg', alt: 'شيفروليه كورفيت سوداء وحمراء من الأعلى', width: 1600, height: 1067 },
+      {
+        src: '/images/facility/2.jpg',
+        alt: 'سيارة خارقة حمراء تحت عبارة Engineered to preserve',
+        width: 1200,
+        height: 800,
+      },
+      {
+        src: '/images/facility/3.jpg',
+        alt: 'سيارة SUV مرسوم على هيكلها خطوط ألواح فيلم حماية الطلاء',
+        width: 1200,
+        height: 800,
+      },
     ],
-    stats: [
-      { label: 'سيارة محمية', value: { fact: 'jobsCompleted' }, suffix: '+' },
-      { label: 'سنوات ضمان', value: { fact: 'warrantyYearsMax' } },
-      { label: 'غرف تركيب', value: { number: 6 } },
+    stats: [],
+  },
+  'about-story': {
+    key: 'climate',
+    heading: 'عن Fossil',
+    intro: 'علامة أمريكية لأفلام حماية الطلاء وأفلام النوافذ مقرها أبيلين، تكساس، صُممت لتعيد تعريف معايير الصناعة.',
+    points: [
+      {
+        icon: 'clock',
+        title: 'القصة',
+        body: 'بخبرة تتجاوز عقدين في تأسيس وتنمية أسواق بعض أكثر الأسماء احتراماً في الصناعة، Solar Gard و Eastman و 3M، أدّت قيادتنا دوراً محورياً في تطور حلول حماية الطلاء وأفلام النوافذ حول العالم. ومن هذه الخلفية الواسعة انطلقت إدارتنا لإنشاء علامة تعكس جودة لا تقبل المساومة وابتكاراً وأداءً طويل الأمد.',
+      },
+      {
+        icon: 'shield',
+        title: 'مستوحاة من الحفظ',
+        body: 'تبقى الأحافير قروناً لأنها تحمي ما تحت السطح وتحفظ التاريخ في أنقى صوره. وبالطريقة نفسها صُمم فيلم FOSSIL لحماية الطلاء ليحفظ الطلاء الأصلي للسيارة ويقيه من أضرار البيئة وحصى الطريق والاستهلاك اليومي. اسمنا يرمز إلى طول العمر والقوة والالتزام بالحفاظ على لمسة المصنع كما أُريد لها.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'مصمم ليبقى',
+        body: 'كثيراً ما تعاني حلول PPF التقليدية من التقادم والبقع والاصفرار وفقدان اللمعان، وهي مشكلات تنقص المظهر والقيمة مع الوقت. عبر علم مواد متقدم وتصنيع دقيق ومراقبة جودة صارمة، صُممت أفلام FOSSIL لتقاوم التدهور وتحافظ على الوضوح البصري وتمنح لمعاناً يدوم. والنتيجة حل حماية يعمل بثبات ويُركّب بثقة ويصمد أمام الزمن.',
+      },
     ],
-  },
-  'home-process': {
-    key: 'process',
-    heading: 'كيف نعمل',
-    steps: [
-      { title: 'الاستشارة', body: 'أخبرنا عن سيارتك وطريقة قيادتك، ونرشح لك الحماية المناسبة.' },
-      { title: 'التحضير', body: 'نغسل السيارة ونزيل الشوائب ونصحح الطلاء قبل أي فيلم أو طلاء.' },
-      { title: 'التركيب', body: 'يركّب فنيون معتمدون في غرفة خالية من الغبار.' },
-      { title: 'الفحص والتسليم', body: 'نفحص السيارة تحت إضاءة الاستوديو ونسجل ضمانك.' },
-    ],
-  },
-  'home-reviews': {
-    key: 'reviews',
-    heading: 'آراء العملاء',
-  },
-  'home-faq': {
-    key: 'faq',
-    heading: 'الأسئلة الشائعة',
-    faqIds: [],
   },
   'home-contact': {
     key: 'contactCta',
-    heading: 'احصل على عرض سعر مجاني',
-    intro: 'أرسل بيانات سيارتك وسنرد عليك بالسعر، عادةً خلال ساعة عمل واحدة.',
-    formVariant: 'quote',
+    heading: 'يسعدنا أن نسمع منك',
+    intro: 'أرسل لنا رسالة وسيتواصل معك فريق Fossil.',
+    formVariant: 'contact',
     showMap: true,
   },
   'contact-form': {
     key: 'contactCta',
     heading: 'أرسل لنا رسالة',
-    intro: 'أسئلة أو حجوزات أو عروض أسعار: نرد خلال ساعة عمل واحدة.',
+    intro: 'ابقَ على تواصل: اتصل أو راسلنا أو استخدم النموذج.',
     formVariant: 'contact',
     showMap: true,
   },

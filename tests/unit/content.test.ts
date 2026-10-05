@@ -17,8 +17,8 @@ describe.each(siteConfig.locale.locales)('content (%s)', (locale) => {
       expect(service.answer).not.toMatch(/\{\w+\}/);
       expect(service.image.alt.length).toBeGreaterThan(0);
     }
-    const ppf = content.services.find((s) => s.slug === 'paint-protection-film');
-    expect(ppf?.priceFromLabel).toMatch(/4,500/);
+    const apex = content.services.find((s) => s.slug === 'apex');
+    expect(apex?.warrantyLabel).toMatch(/10/);
   });
 
   it('builds the home page section list and navigation', async () => {

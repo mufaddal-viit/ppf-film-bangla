@@ -34,8 +34,14 @@ const statSchema = z.object({
 const sectionContentSchemas = {
   hero: z.object({
     eyebrow: text.optional(),
+    /** Oversized brand word behind the car. Decorative: the heading is the page's <h1>. */
+    wordmark: text,
     heading: text,
+    /** Part of `heading` to print in the primary colour. Must appear in `heading`. */
+    headingHighlight: text.optional(),
     subheading: text,
+    /** Spec row under the heading. `value` accepts the tokens listed in src/lib/content/index.ts. */
+    stats: z.array(z.object({ icon: z.enum(ICON_NAMES), value: text, label: text })).max(5),
     primaryCta: ctaSchema,
     secondaryCta: ctaSchema,
     media: z
@@ -46,14 +52,7 @@ const sectionContentSchemas = {
       .nullable(),
     serviceChips: z.array(slug),
   }),
-  trustStrip: z.object({
-    heading: text,
-    ratingLabel: text,
-    warrantyLabel: text,
-    jobsLabel: text,
-    partnersLabel: text,
-    partners: z.array(z.object({ name: text, logo: imageSchema.optional() })),
-  }),
+  trustStrip: z.object({ heading: text, intro: text.optional(), stats: z.array(statSchema).max(4) }),
   servicesGrid: z.object({
     heading: text,
     intro: text.optional(),

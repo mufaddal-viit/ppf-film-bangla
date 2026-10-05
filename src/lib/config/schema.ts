@@ -187,17 +187,25 @@ const colorTokensSchema = z.object({
   danger: cssValue,
 });
 
-const FONT_KEYS = ['inter', 'ibmPlexArabic'] as const;
+const FONT_KEYS = ['inter', 'archivo', 'ibmPlexArabic'] as const;
 const fontKeySchema = z.enum(FONT_KEYS);
 
 export const themeConfigSchema = z
   .object({
     active: z.string(),
     mode: z.enum(['light', 'dark']),
+    /** Colour mode of the homepage hero stage only. Defaults to `mode`. */
+    heroMode: z.enum(['light', 'dark']).optional(),
     themes: z.record(
       z.string(),
       z.object({
-        fonts: z.object({ body: fontKeySchema, heading: fontKeySchema, arabic: fontKeySchema }),
+        fonts: z.object({
+          body: fontKeySchema,
+          heading: fontKeySchema,
+          arabic: fontKeySchema,
+          /** Oversized brand lettering (hero wordmark). Not swapped for the Arabic font in RTL. */
+          display: fontKeySchema,
+        }),
         radius: cssValue,
         spacingUnit: cssValue,
         containerWidth: cssValue,
@@ -210,6 +218,10 @@ export const themeConfigSchema = z
   .refine((t) => t.mode === 'dark' || t.themes[t.active]?.modes.light !== undefined, {
     message: 'theme.mode is "light" but the active theme has no light tokens',
     path: ['mode'],
+  })
+  .refine((t) => t.heroMode !== 'light' || t.themes[t.active]?.modes.light !== undefined, {
+    message: 'theme.heroMode is "light" but the active theme has no light tokens',
+    path: ['heroMode'],
   });
 
 // ---------------------------------------------------------------- seo
@@ -228,7 +240,8 @@ export const seoConfigSchema = z.object({
 
 export const integrationsConfigSchema = z.object({
   gtm: z.object({ enabled: z.boolean(), containerId: z.string().regex(/^GTM-[A-Z0-9]+$/) }),
-  whatsapp: z.object({ number: e164 }),
+  /** `enabled: false` hides every WhatsApp link (top bar, contact section). */
+  whatsapp: z.object({ enabled: z.boolean(), number: e164 }),
   turnstile: z.object({ enabled: z.boolean() }),
 });
 

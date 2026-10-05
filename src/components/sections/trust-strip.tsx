@@ -1,49 +1,44 @@
-import Image from 'next/image';
 import { Section } from '@/components/ui/section';
+import { formatNumber } from '@/lib/content/format';
 import type { SectionProps } from './types';
 
 export function TrustStrip({ section, data }: SectionProps<'trustStrip'>) {
-  const { rating } = data.site.facts;
+  const services = data.content.services.map((s) => s.name);
   return (
-    <Section id={section.id} name="trustStrip" heading={section.heading} className="c-trust-strip">
-      <dl className="grid gap-4 sm:grid-cols-3">
-        {rating && (
-          <div className="c-card">
-            <dt className="text-sm text-muted-foreground">{section.ratingLabel}</dt>
-            <dd className="text-2xl font-semibold">{rating.value} / 5</dd>
-          </div>
-        )}
-        <div className="c-card">
-          <dt className="text-sm text-muted-foreground">{section.warrantyLabel}</dt>
-          <dd className="text-2xl font-semibold">{data.content.stats.warrantyYearsMax}</dd>
-        </div>
-        <div className="c-card">
-          <dt className="text-sm text-muted-foreground">{section.jobsLabel}</dt>
-          <dd className="text-2xl font-semibold">{data.content.stats.jobsCompleted}+</dd>
-        </div>
-      </dl>
-      {section.partners.length > 0 && (
-        <div className="c-partners mt-6">
-          <p className="mb-2 text-sm text-muted-foreground">{section.partnersLabel}</p>
-          <ul className="flex flex-wrap items-center gap-6">
-            {section.partners.map((partner) => (
-              <li key={partner.name}>
-                {partner.logo ? (
-                  <Image
-                    src={partner.logo.src}
-                    alt={partner.name}
-                    width={partner.logo.width}
-                    height={partner.logo.height}
-                    className="h-8 w-auto"
-                  />
-                ) : (
-                  <span className="font-medium">{partner.name}</span>
-                )}
-              </li>
+    <Section
+      id={section.id}
+      name="trustStrip"
+      heading={section.heading}
+      intro={section.intro}
+      tone="inverse"
+      className="c-trust-strip"
+    >
+      {section.stats.length > 0 && (
+        <dl className="c-stats">
+          {section.stats.map((stat) => (
+            <div key={stat.label} className="c-stat">
+              <dt className="c-stat-label">{stat.label}</dt>
+              <dd className="c-stat-value">
+                {'fact' in stat.value
+                  ? data.content.stats[stat.value.fact]
+                  : formatNumber(stat.value.number, data.locale, data.site.region)}
+                {stat.suffix}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      {/* Decorative ticker of the product names; the real links live in the products grid. */}
+      <div aria-hidden="true" className="c-marquee">
+        {[0, 1].map((copy) => (
+          <ul key={copy} className="c-marquee-track">
+            {services.map((name) => (
+              <li key={name}>{name}</li>
             ))}
           </ul>
-        </div>
-      )}
+        ))}
+      </div>
     </Section>
   );
 }

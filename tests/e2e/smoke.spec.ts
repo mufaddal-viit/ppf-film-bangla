@@ -46,5 +46,5 @@ test('shows field errors without submitting invalid data', async ({ page }) => {
   const form = page.locator('form.c-lead-form');
   await form.getByLabel('Mobile number').fill('123');
   await form.getByLabel('Full name').click();
-  await expect(form.getByText('Enter a valid UAE mobile or landline number.')).toBeVisible();
+  await expect(form.getByText('Enter a valid phone number.')).toBeVisible();
 });

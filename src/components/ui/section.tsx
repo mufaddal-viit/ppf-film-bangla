@@ -7,6 +7,7 @@ export function Section({
   name,
   heading,
   intro,
+  tone,
   className,
   children,
 }: {
@@ -15,17 +16,27 @@ export function Section({
   name: string;
   heading: string;
   intro?: string | undefined;
+  /** 'inverse' renders the section in the opposite colour mode (a dark band on a light site). */
+  tone?: 'inverse';
   className?: string;
   children: ReactNode;
 }) {
   const headingId = `${id}-heading`;
   return (
-    <section id={id} aria-labelledby={headingId} data-section={name} className={cn('c-section', className)}>
+    <section
+      id={id}
+      aria-labelledby={headingId}
+      data-section={name}
+      data-tone={tone}
+      className={cn('c-section', className)}
+    >
       <div className="c-container">
-        <h2 id={headingId} className="c-section-heading">
-          {heading}
-        </h2>
-        {intro && <p className="c-section-intro mb-6 text-muted-foreground">{intro}</p>}
+        <div className="c-section-head">
+          <h2 id={headingId} className="c-section-heading">
+            {heading}
+          </h2>
+          {intro && <p className="c-section-intro">{intro}</p>}
+        </div>
         {children}
       </div>
     </section>

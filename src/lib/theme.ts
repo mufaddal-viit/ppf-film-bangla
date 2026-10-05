@@ -24,16 +24,28 @@ export function buildThemeCss(): string {
         `${scope}{` +
         `--ff-body:var(${fonts[t.fonts.body].cssVar});` +
         `--ff-heading:var(${fonts[t.fonts.heading].cssVar});` +
+        `--ff-display:var(${fonts[t.fonts.display].cssVar});` +
         `--radius:${t.radius};--space-unit:${t.spacingUnit};--container-width:${t.containerWidth};` +
         `--elevation-sm:${t.shadows.sm};--elevation-md:${t.shadows.md};--elevation-lg:${t.shadows.lg};}`;
       const rtl = rtlSelectors
         ? `${rtlSelectors.replaceAll(':root', `:root${scope}`)}{--ff-body:var(${fonts[t.fonts.arabic].cssVar});--ff-heading:var(${fonts[t.fonts.arabic].cssVar});}`
         : '';
-      const modes = Object.entries(t.modes)
-        .filter((entry): entry is [string, ColorTokens] => entry[1] !== undefined)
+      const entries = Object.entries(t.modes).filter((entry): entry is [string, ColorTokens] => entry[1] !== undefined);
+      const modes = entries
         .map(([mode, tokens]) => `${scope}[data-mode="${mode}"]{color-scheme:${mode};${colorVars(tokens)}}`)
         .join('');
-      return base + rtl + modes;
+      // [data-tone="inverse"] flips a block to the opposite mode (dark bands on a light site and vice versa).
+      const inverse = entries
+        .flatMap(([mode, tokens]) =>
+          entries
+            .filter(([other]) => other !== mode)
+            .map(
+              ([other]) =>
+                `${scope}[data-mode="${other}"] [data-tone="inverse"]{color-scheme:${mode};${colorVars(tokens)}}`,
+            ),
+        )
+        .join('');
+      return base + rtl + modes + inverse;
     })
     .join('');
 }

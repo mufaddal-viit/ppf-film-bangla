@@ -1,144 +1,190 @@
 import type { LocaleContentInput } from '../../src/lib/content/schema';
 
-/** Section copy, keyed by the contentRef used in config/pages.ts. */
+/** Section copy, keyed by the contentRef used in config/pages.ts. Wording follows getfossil.com. */
 export const sections: LocaleContentInput['sections'] = {
   'home-hero': {
     key: 'hero',
-    eyebrow: 'Car care studio in Dubai',
-    heading: 'Protect your paint from the UAE sun, sand and road',
-    subheading: 'Paint protection film, ceramic coating, window tint and wraps, installed by certified technicians.',
-    primaryCta: { action: 'route', label: 'Get a free quote', href: '/contact' },
-    secondaryCta: { action: 'whatsapp', label: 'Chat on WhatsApp' },
+    eyebrow: 'Fossil Paint Protection Film · USA',
+    wordmark: 'FOSSIL',
+    heading: 'Unmistakably strong, exceptionally clear',
+    headingHighlight: 'exceptionally clear',
+    subheading: 'Reliable paint protection without altering the character of your vehicle',
+    stats: [
+      { icon: 'shield-check', value: '{warrantyYearsMaxNumber} yr', label: 'Max warranty' },
+      { icon: 'shield', value: '7.5 mil', label: 'Film thickness' },
+      { icon: 'sparkles', value: '99 GU', label: 'Gloss (Apex)' },
+      { icon: 'sun', value: '99%', label: 'UV rejection' },
+      { icon: 'badge-check', value: '∆E < 1', label: 'Anti-yellowing' },
+    ],
+    primaryCta: { action: 'route', label: 'Discover Fossil PPF', href: '/services' },
+    secondaryCta: { action: 'route', label: 'Contact us', href: '/contact' },
     media: {
       type: 'image',
       image: {
-        src: '/images/hero.jpg',
-        alt: 'Black sports car with a gloss paint protection film finish',
-        width: 1920,
-        height: 1080,
+        src: '/images/hero/car.webp',
+        alt: 'White sports coupe protected with clear paint protection film, side view',
+        width: 2049,
+        height: 606,
       },
     },
-    serviceChips: ['paint-protection-film', 'ceramic-coating', 'window-tinting', 'car-wrapping'],
+    serviceChips: [],
   },
   'home-trust': {
     key: 'trustStrip',
-    heading: 'Why drivers trust us',
-    ratingLabel: 'Average rating',
-    warrantyLabel: 'Years warranty',
-    jobsLabel: 'Cars protected',
-    partnersLabel: 'Certified installer for',
-    partners: [{ name: 'Partner Brand A' }, { name: 'Partner Brand B' }, { name: 'Partner Brand C' }],
+    heading: 'Built to withstand real-world abuse',
+    intro:
+      'Every drive introduces wear — from impact, debris, contaminants, and constant environmental exposure. Fossil PPF acts as a high-strength defensive layer that absorbs surface stress before it reaches your paint.',
+    stats: [
+      { label: 'Year maximum warranty', value: { fact: 'warrantyYearsMax' } },
+      { label: 'Years of industry experience', value: { number: 20 }, suffix: '+' },
+      { label: 'Film lines', value: { number: 7 } },
+      { label: 'UV rejection, window film', value: { number: 99 }, suffix: '%' },
+    ],
   },
   'home-services': {
     key: 'servicesGrid',
-    heading: 'Our services',
-    intro: 'Everything your car needs to look new and stay protected.',
+    heading: 'Fossil car protection products',
+    intro: 'Time changes everything — except what is protected.',
     serviceSlugs: [],
   },
-  'home-climate': {
+  'home-features': {
     key: 'climate',
-    heading: 'Built for UAE conditions',
-    intro: 'Desert heat, sand and long highway drives are hard on paint, glass and interiors.',
+    heading: 'Fossil paint protection film',
+    intro:
+      'With a balance of toughness and refinement, Fossil paint protection film preserves what makes your vehicle unique — today and for years to come.',
     points: [
       {
-        icon: 'sun',
-        title: 'Extreme UV and heat',
-        body: 'Summer temperatures fade paint and crack interiors without protection.',
+        icon: 'sparkles',
+        title: 'Outstanding clarity',
+        body: 'Unparalleled transparency that preserves the original paint finish without distortion, enhancing gloss and maintaining the vehicle’s factory appearance.',
       },
-      { icon: 'wind', title: 'Sand and dust', body: 'Wind-blown sand acts like sandpaper on clear coat and glass.' },
       {
-        icon: 'road',
-        title: 'Highway debris',
-        body: 'High-speed driving on E11 and E311 throws stones at your bonnet and bumper.',
+        icon: 'spray-can',
+        title: 'Stain resistance',
+        body: 'Protects against water spots, bug splatter, road grime, and light chemical stains for easier maintenance.',
+      },
+      {
+        icon: 'shield-check',
+        title: 'Self-healing surface',
+        body: 'Minor scratches and swirl marks disappear with exposure to heat, keeping the surface smooth and clean.',
+      },
+      {
+        icon: 'badge-check',
+        title: 'Reliable adhesion',
+        body: 'Designed for consistent bonding with painted surfaces, ensuring stable performance and clean removal when required.',
       },
     ],
   },
   'home-why': {
     key: 'whyChooseUs',
-    heading: 'Why choose PPF Phantom',
+    heading: 'Why Fossil',
     points: [
       {
+        icon: 'clock',
+        title: 'Built on experience',
+        body: 'Backed by decades of industry leadership and real-world market development.',
+      },
+      {
+        icon: 'shield',
+        title: 'Engineered for longevity',
+        body: 'Designed to combat aging, discoloration, staining, and gloss loss.',
+      },
+      {
+        icon: 'star',
+        title: 'Premium performance',
+        body: 'High clarity, durable protection, and long-term visual excellence.',
+      },
+      {
         icon: 'badge-check',
-        title: 'Certified installers',
-        body: 'Every technician is trained and certified by the film manufacturer.',
-        proof: 'Manufacturer certification',
+        title: 'Trusted by professionals',
+        body: 'Developed with installers in mind and vehicle owners at heart.',
+      },
+    ],
+  },
+  'home-technology': {
+    key: 'climate',
+    heading: 'Advanced technology',
+    intro:
+      'This is protection that works quietly in the background, supporting long-term finish preservation without constant upkeep.',
+    points: [
+      {
+        icon: 'wind',
+        title: 'Hydrophobic coating',
+        body: 'A nanoscale hydrophobic top layer repels water, dirt, and contaminants by increasing surface contact angle, resulting in easier cleaning and reduced water spotting.',
       },
       {
         icon: 'shield-check',
-        title: 'Written warranty',
-        body: 'Your film and workmanship are covered by a registered warranty.',
+        title: 'Adhesive technology',
+        body: 'Engineered acrylic adhesive ensures uniform bonding without residue, reducing installation errors and edge lifting.',
       },
       {
-        icon: 'warehouse',
-        title: 'Dust-controlled bays',
-        body: 'Clean, climate-controlled installation bays for a flawless finish.',
+        icon: 'sun',
+        title: 'Anti-yellowing',
+        body: 'UV stabilizers and anti-oxidation additives prevent discoloration, maintaining clarity throughout the product’s lifespan.',
       },
     ],
   },
-  'home-packages': {
-    key: 'packages',
-    heading: 'Popular packages',
-    intro: 'Starting prices. Your exact quote depends on vehicle size and condition.',
-    packageIds: [],
-    cta: { action: 'route', label: 'Request exact price', href: '/contact' },
-  },
-  'home-portfolio': {
-    key: 'portfolio',
-    heading: 'Recent work',
-    intro: 'A selection of cars we have protected and transformed.',
-    showFilters: true,
-    reels: [],
-  },
-  'home-facility': {
+  'home-about': {
     key: 'facility',
-    heading: 'Our studio',
-    intro: 'A dedicated, climate-controlled facility built for film and coating work.',
+    heading: 'Our promise',
+    intro:
+      'At FOSSIL, we are committed to delivering paint protection and window film solutions that preserve value, enhance appearance, and exceed expectations. Every product we create reflects our dedication to quality, innovation, and the enduring protection of what matters most.',
     photos: [
       {
         src: '/images/facility/1.jpg',
-        alt: 'Installation bay with a car under bright inspection lights',
+        alt: 'Black and red Chevrolet Corvette seen from above',
+        width: 1600,
+        height: 1067,
+      },
+      {
+        src: '/images/facility/2.jpg',
+        alt: 'Red hypercar under the words Engineered to preserve',
         width: 1200,
         height: 800,
       },
-      { src: '/images/facility/2.jpg', alt: 'Customer lounge at the studio', width: 1200, height: 800 },
-      { src: '/images/facility/3.jpg', alt: 'Film plotter cutting a PPF pattern', width: 1200, height: 800 },
+      {
+        src: '/images/facility/3.jpg',
+        alt: 'SUV with paint protection film panel outlines traced over the bodywork',
+        width: 1200,
+        height: 800,
+      },
     ],
-    stats: [
-      { label: 'Cars protected', value: { fact: 'jobsCompleted' }, suffix: '+' },
-      { label: 'Years warranty', value: { fact: 'warrantyYearsMax' } },
-      { label: 'Installation bays', value: { number: 6 } },
+    stats: [],
+  },
+  'about-story': {
+    key: 'climate',
+    heading: 'About Fossil',
+    intro:
+      'A USA-based paint protection and window film brand headquartered in Abilene, Texas, engineered to redefine industry standards.',
+    points: [
+      {
+        icon: 'clock',
+        title: 'Story',
+        body: 'With over two decades of experience helping establish and grow markets for some of the most respected names in the industry — Solar Gard, Eastman, and 3M — our leadership has played a pivotal role in shaping the evolution of paint protection and window film solutions worldwide. Drawing from this extensive background, our management set out to create a brand that reflects uncompromising quality, innovation, and long-term performance.',
+      },
+      {
+        icon: 'shield',
+        title: 'Inspired by preservation',
+        body: 'Fossils endure for centuries by protecting what lies beneath the surface — capturing history in its purest form. In the same way, FOSSIL Paint Protection Film is designed to preserve a vehicle’s original paint, shielding it from environmental damage, road debris, and everyday wear. Our name represents longevity, strength, and the commitment to maintaining a vehicle’s factory finish exactly as intended.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'Engineered to last',
+        body: 'Traditional PPF solutions often suffer from aging, staining, yellowing, and loss of gloss — issues that diminish both appearance and value over time. Through advanced material science, precision manufacturing, and rigorous quality control, FOSSIL films are engineered to resist degradation, maintain optical clarity, and deliver long-lasting gloss. The result is a protection solution that performs consistently, installs confidently, and stands the test of time.',
+      },
     ],
-  },
-  'home-process': {
-    key: 'process',
-    heading: 'How it works',
-    steps: [
-      { title: 'Consultation', body: 'Tell us about your car and how you drive. We recommend the right protection.' },
-      { title: 'Preparation', body: 'We wash, decontaminate and correct the paint before any film or coating.' },
-      { title: 'Installation', body: 'Certified technicians install in a dust-controlled bay.' },
-      { title: 'Inspection and handover', body: 'We inspect under studio lights and register your warranty.' },
-    ],
-  },
-  'home-reviews': {
-    key: 'reviews',
-    heading: 'What customers say',
-  },
-  'home-faq': {
-    key: 'faq',
-    heading: 'Frequently asked questions',
-    faqIds: [],
   },
   'home-contact': {
     key: 'contactCta',
-    heading: 'Get your free quote',
-    intro: 'Send your car details and we will reply with a price, usually within one working hour.',
-    formVariant: 'quote',
+    heading: 'We’d love to hear from you',
+    intro: 'Send us a message and the Fossil team will get back to you.',
+    formVariant: 'contact',
     showMap: true,
   },
   'contact-form': {
     key: 'contactCta',
     heading: 'Send us a message',
-    intro: 'Questions, bookings or quotes: we reply within one working hour.',
+    intro: 'Stay connected: call, email or use the form.',
     formVariant: 'contact',
     showMap: true,
   },

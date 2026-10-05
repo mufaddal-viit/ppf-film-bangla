@@ -9,6 +9,7 @@ import {
   SprayCan,
   Star,
   Sun,
+  Tag,
   Warehouse,
   Wind,
   type LucideIcon,
@@ -28,6 +29,7 @@ const ICONS = {
   warehouse: Warehouse,
   clock: Clock,
   star: Star,
+  tag: Tag,
 } satisfies Record<IconName, LucideIcon>;
 
 /** Decorative icon referenced by name from config or content. Hidden from screen readers. */

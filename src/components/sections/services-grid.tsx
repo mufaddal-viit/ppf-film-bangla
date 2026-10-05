@@ -1,3 +1,5 @@
+import { ArrowUpRight } from 'lucide-react';
+import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Icon } from '@/components/ui/icon';
 import { Section } from '@/components/ui/section';
@@ -22,15 +24,37 @@ export async function ServicesGrid({ section, data }: SectionProps<'servicesGrid
       <ul className="c-grid">
         {services.map((service) => (
           <li key={service.slug}>
-            <article className="c-card c-service-card flex h-full flex-col gap-2">
-              <Icon name={service.icon} />
-              <h3 className="text-lg font-semibold">
-                <Link href={service.href}>{service.name}</Link>
-              </h3>
-              <p className="text-muted-foreground">{service.shortDescription}</p>
-              <p className="c-price mt-auto font-medium">
-                {service.priceFromLabel ? t('from', { price: service.priceFromLabel }) : t('onRequest')}
-              </p>
+            <article className="c-card c-service-card">
+              <div className="c-service-media">
+                <Image
+                  src={service.image.src}
+                  alt={service.image.alt}
+                  width={service.image.width}
+                  height={service.image.height}
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="c-service-image"
+                />
+                <span className="c-service-icon">
+                  <Icon name={service.icon} className="size-5" />
+                </span>
+              </div>
+              <div className="c-service-body">
+                <h3 className="c-card-title">
+                  {/* The link's ::after stretches over the card, so the whole card is one click target. */}
+                  <Link href={service.href} className="c-card-link">
+                    {service.name}
+                  </Link>
+                </h3>
+                <p className="text-muted-foreground">{service.shortDescription}</p>
+                <p className="c-price c-service-price">
+                  {service.priceFromLabel
+                    ? t('from', { price: service.priceFromLabel })
+                    : service.warrantyYears
+                      ? t('warranty', { years: service.warrantyYears })
+                      : t('onRequest')}
+                  <ArrowUpRight aria-hidden="true" className="c-card-arrow size-5 rtl:-scale-x-100" />
+                </p>
+              </div>
             </article>
           </li>
         ))}

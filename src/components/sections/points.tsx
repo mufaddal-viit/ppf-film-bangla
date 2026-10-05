@@ -9,7 +9,7 @@ function PointList({ points }: { points: readonly Point[] }) {
     <ul className="c-grid">
       {points.map((point) => (
         <li key={point.title} className="c-card c-point flex flex-col gap-2">
-          <Icon name={point.icon} />
+          <Icon name={point.icon} className="c-point-icon" />
           <h3 className="text-lg font-semibold">{point.title}</h3>
           <p className="text-muted-foreground">{point.body}</p>
           {point.proof && <p className="c-point-proof text-sm">{point.proof}</p>}

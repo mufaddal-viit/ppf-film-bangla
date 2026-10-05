@@ -17,28 +17,30 @@ export function PageHeader({
   breadcrumbLabel: string;
 }) {
   return (
-    <header className="c-page-header c-container py-10">
-      <nav aria-label={breadcrumbLabel} className="c-breadcrumbs mb-4 text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          {breadcrumbs.map((crumb, i) => {
-            const last = i === breadcrumbs.length - 1;
-            return (
-              <li key={crumb.href} className="flex gap-2">
-                {last ? (
-                  <span aria-current="page">{crumb.name}</span>
-                ) : (
-                  <>
-                    <Link href={crumb.href}>{crumb.name}</Link>
-                    <span aria-hidden="true">/</span>
-                  </>
-                )}
-              </li>
-            );
-          })}
-        </ol>
-      </nav>
-      <h1 className="text-3xl font-bold">{title}</h1>
-      {intro && <p className="mt-3 max-w-prose text-muted-foreground">{intro}</p>}
+    <header className="c-page-header">
+      <div className="c-container">
+        <nav aria-label={breadcrumbLabel} className="c-breadcrumbs">
+          <ol className="flex flex-wrap gap-2">
+            {breadcrumbs.map((crumb, i) => {
+              const last = i === breadcrumbs.length - 1;
+              return (
+                <li key={crumb.href} className="flex gap-2">
+                  {last ? (
+                    <span aria-current="page">{crumb.name}</span>
+                  ) : (
+                    <>
+                      <Link href={crumb.href}>{crumb.name}</Link>
+                      <span aria-hidden="true">/</span>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+        <h1 className="c-page-title">{title}</h1>
+        {intro && <p className="c-page-intro">{intro}</p>}
+      </div>
       <JsonLd data={breadcrumbJsonLd(breadcrumbs.map((b) => ({ name: b.name, url: b.url })))} />
     </header>
   );

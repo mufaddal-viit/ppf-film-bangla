@@ -12,22 +12,26 @@
   },
   "nav": {
     "home": "Home",
-    "services": "Services",
-    "allServices": "All services",
+    "services": "Products",
+    "allServices": "All products",
     "prices": "Prices",
     "gallery": "Gallery",
     "about": "About",
     "blog": "Blog",
     "contact": "Contact",
-    "ppf": "Paint protection film",
-    "ceramic": "Ceramic coating",
-    "tint": "Window tinting",
-    "wrap": "Car wrapping",
-    "detailing": "Detailing",
     "company": "Company",
     "privacy": "Privacy policy",
     "terms": "Terms and conditions",
-    "account": "My account"
+    "account": "My account",
+    "clearPpf": "Clear PPF",
+    "windowFilm": "Window film",
+    "apex": "Apex",
+    "sapphire": "Sapphire",
+    "opal": "Opal",
+    "stealth": "Stealth - Clear Satin",
+    "frozen": "Frozen - Clear Matte",
+    "solaris": "Solaris",
+    "luminox": "Luminox"
   },
   "locale": {
     "switchLabel": "Language",
@@ -42,7 +46,7 @@
     "hours": "Opening hours",
     "address": "Address",
     "areaServed": "Serving {areas}",
-    "getQuote": "Get a quote",
+    "getQuote": "Contact us",
     "mapTitle": "Map showing our location",
     "closed": "Closed"
   },
@@ -58,10 +62,10 @@
     "priceFrom": "Starting price",
     "warranty": "Warranty",
     "turnaround": "Turnaround",
-    "highlights": "Highlights",
+    "highlights": "Specifications and features",
     "faq": "Questions about {service}",
     "learnMore": "Learn more about {service}",
-    "related": "Other services"
+    "related": "Other products"
   },
   "portfolio": {
     "all": "All",
@@ -111,18 +115,18 @@
     },
     "fields": {
       "name": "Full name",
-      "phone": "Mobile number",
+      "phone": "Phone number",
       "email": "Email",
       "vehicleMake": "Car make",
       "vehicleModel": "Car model",
       "vehicleYear": "Year",
-      "service": "Service",
+      "service": "Product",
       "preferredTime": "Best time to call",
       "message": "Message"
     },
     "placeholders": {
-      "phone": "05X XXX XXXX",
-      "servicePrompt": "Choose a service"
+      "phone": "(555) 123-4567",
+      "servicePrompt": "Choose a product"
     },
     "optional": "(optional)",
     "consent": "I agree to be contacted about my enquiry and accept the privacy policy.",
@@ -138,7 +142,7 @@
     "honeypotLabel": "Leave this field empty",
     "errors": {
       "required": "This field is required.",
-      "invalid_phone": "Enter a valid UAE mobile or landline number.",
+      "invalid_phone": "Enter a valid phone number.",
       "invalid_email": "Enter a valid email address.",
       "too_long": "This is too long.",
       "too_short": "This is too short.",
@@ -152,7 +156,7 @@
       "BOT_CHECK_FAILED": "We could not verify you are human. Please try again.",
       "VALIDATION_FAILED": "Please check the highlighted fields.",
       "FORBIDDEN": "This request was blocked. Please reload the page and try again.",
-      "INTERNAL": "Something went wrong on our side. Please call or WhatsApp us instead."
+      "INTERNAL": "Something went wrong on our side. Please call or email us instead."
     }
   },
   "consent": {
@@ -173,7 +177,7 @@
   },
   "error": {
     "title": "Something went wrong",
-    "body": "Please try again. If the problem continues, call or WhatsApp us.",
+    "body": "Please try again. If the problem continues, call or email us.",
     "retry": "Try again"
   },
   "account": {
