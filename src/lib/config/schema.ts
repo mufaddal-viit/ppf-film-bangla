@@ -24,6 +24,8 @@ export const siteConfigSchema = z
   .object({
     business: z.object({
       name: z.string().min(1),
+      /** One word for oversized lettering (footer wordmark). Defaults to `name`. */
+      shortName: z.string().min(1).optional(),
       legalName: z.string().min(1),
       schemaType: z.enum(['AutomotiveBusiness', 'AutoBodyShop', 'AutoRepair', 'AutoWash']),
       logo: imageRefSchema,
@@ -125,6 +127,7 @@ export const navigationConfigSchema = z.object({
 
 const SECTION_KEYS = [
   'hero',
+  'showcase',
   'trustStrip',
   'servicesGrid',
   'climate',

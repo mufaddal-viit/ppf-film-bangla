@@ -1,0 +1,38 @@
+@layer components {
+  /* ------------------------------------------------------------ sections */
+  main {
+    counter-reset: section;
+  }
+  .c-section {
+    @apply relative overflow-clip bg-background py-16 text-foreground sm:py-24;
+    counter-increment: section;
+  }
+  .c-section[data-section='climate'],
+  .c-section[data-section='packages'],
+  .c-section[data-section='facility'],
+  .c-section[data-section='faq'] {
+    @apply bg-surface;
+  }
+  .c-section > .c-container {
+    @apply relative z-[1];
+  }
+  .c-section-head {
+    @apply mb-10 max-w-3xl sm:mb-14;
+  }
+  .c-section-heading {
+    @apply font-heading text-3xl leading-[1.05] font-extrabold sm:text-5xl ltr:tracking-tight ltr:uppercase;
+    text-wrap: balance;
+  }
+  /* Running "01 /" kicker, numbered by CSS so it follows the section order in config/pages.ts. */
+  .c-section-head > .c-section-heading::before {
+    @apply mb-4 block font-sans text-sm font-semibold text-primary;
+    content: counter(section, decimal-leading-zero) ' /';
+    letter-spacing: 0.2em;
+  }
+  .c-section-intro {
+    @apply mt-4 text-lg text-muted-foreground;
+  }
+  .c-section-cta {
+    @apply mt-10 flex justify-center;
+  }
+}

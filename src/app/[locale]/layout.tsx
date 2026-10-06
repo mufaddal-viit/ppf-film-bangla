@@ -90,6 +90,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
                 site={site}
                 items={navigation.header}
                 showQuoteButton={layoutConfig.header.showQuoteButton}
+                whatsappUrl={whatsappUrl}
                 labels={{
                   nav: t('a11y.mainNav'),
                   open: t('a11y.openMenu'),

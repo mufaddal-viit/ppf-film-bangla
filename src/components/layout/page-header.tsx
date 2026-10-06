@@ -20,11 +20,11 @@ export function PageHeader({
     <header className="c-page-header">
       <div className="c-container">
         <nav aria-label={breadcrumbLabel} className="c-breadcrumbs">
-          <ol className="flex flex-wrap gap-2">
+          <ol>
             {breadcrumbs.map((crumb, i) => {
               const last = i === breadcrumbs.length - 1;
               return (
-                <li key={crumb.href} className="flex gap-2">
+                <li key={crumb.href}>
                   {last ? (
                     <span aria-current="page">{crumb.name}</span>
                   ) : (

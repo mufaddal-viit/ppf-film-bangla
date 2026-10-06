@@ -1,0 +1,114 @@
+/*
+ * Component styles. Every component renders a stable `c-*` class, so the whole look lives here
+ * and in config/theme.ts; component files only carry structure.
+ * Colours are theme tokens only (or the `white` / `black` keywords for glints and scrims).
+ */
+@layer base {
+  html {
+    scroll-padding-top: 6rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  ::selection {
+    @apply bg-primary text-primary-foreground;
+  }
+}
+
+@layer components {
+  /* ------------------------------------------------------------ primitives */
+  .c-container {
+    @apply mx-auto w-full max-w-site px-5 sm:px-8;
+  }
+  .c-button {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border bg-background px-5 py-2 font-semibold transition duration-200;
+  }
+  .c-button:hover {
+    @apply -translate-y-0.5 shadow-md;
+  }
+  .c-button[data-variant='primary'] {
+    @apply border-primary bg-primary text-primary-foreground shadow-md;
+  }
+  .c-button[data-variant='primary']:hover {
+    @apply shadow-lg;
+    filter: brightness(1.08);
+  }
+  .c-button:disabled {
+    @apply cursor-not-allowed opacity-60;
+    transform: none;
+  }
+  .c-card {
+    @apply rounded-2xl border border-border bg-background p-6 shadow-sm transition duration-300;
+  }
+  .c-card-title {
+    @apply font-heading text-xl font-bold;
+  }
+  /* Stretches a card's title link over the whole card. */
+  .c-card-link::after {
+    @apply absolute inset-0 content-[''];
+  }
+  .c-grid {
+    @apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  /* Exactly four cards read better as one row of four than as three plus an orphan. */
+  .c-grid:has(> li:nth-child(4):last-child) {
+    @apply lg:grid-cols-4;
+  }
+  .c-badge {
+    @apply self-start rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground ltr:tracking-wide ltr:uppercase;
+  }
+  .c-checklist {
+    @apply mt-2 space-y-2;
+  }
+  .c-checklist li {
+    @apply relative ps-7;
+  }
+  .c-checklist li::before {
+    @apply absolute start-0 top-1 size-4 rounded-full bg-primary content-[''];
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16Zm3.7-9.3a1 1 0 0 0-1.4-1.4L7 8.6 5.7 7.3a1 1 0 0 0-1.4 1.4l2 2a1 1 0 0 0 1.4 0l4-4Z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+
+  /* ------------------------------------------------------------ forms */
+  .c-field {
+    @apply flex flex-col gap-1.5;
+  }
+  .c-field label {
+    @apply text-sm font-medium;
+  }
+  .c-input {
+    @apply min-h-12 rounded-xl border border-border bg-surface px-4 py-2.5 transition duration-200;
+  }
+  .c-input:focus {
+    @apply border-primary bg-background outline-none;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 18%, transparent);
+  }
+  .c-field-error {
+    @apply text-sm text-danger;
+  }
+  .c-lead-form {
+    @apply flex flex-col gap-4;
+  }
+  .c-lead-form h3 {
+    @apply font-heading text-2xl font-bold;
+  }
+  .c-form-success {
+    @apply border-primary font-medium;
+  }
+
+  /* ------------------------------------------------------------ prose (blog, legal, service copy) */
+  .c-prose {
+    @apply max-w-prose space-y-5 text-lg leading-relaxed;
+  }
+  .c-prose h2 {
+    @apply mt-10 font-heading text-2xl font-bold;
+  }
+  .c-prose ul {
+    @apply list-disc space-y-1 ps-6;
+  }
+  .c-prose a {
+    @apply text-primary underline underline-offset-4;
+  }
+}

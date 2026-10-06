@@ -1,3 +1,4 @@
+import { ArrowUpRight, Clock, MapPin, Phone } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { LazyLeadForm } from '@/components/forms/lazy-lead-form';
 import { WhatsAppIcon } from '@/components/icons/brand';
@@ -5,10 +6,15 @@ import { Section } from '@/components/ui/section';
 import { TrackedLink } from '@/components/ui/tracked-link';
 import type { SectionProps } from './types';
 
+/**
+ * Contact stage: the map fills a large rounded stage; the form floats over it as a white card
+ * and the contact details as a dark glass card. On small screens the three stack.
+ */
 export async function ContactCta({ section, data }: SectionProps<'contactCta'>) {
   const t = await getTranslations({ locale: data.locale, namespace: 'contact' });
   const tForm = await getTranslations({ locale: data.locale, namespace: 'form' });
   const { site } = data;
+  const hasMap = section.showMap && site.mapEmbedUrl !== null;
 
   return (
     <Section
@@ -18,35 +24,31 @@ export async function ContactCta({ section, data }: SectionProps<'contactCta'>) 
       intro={section.intro}
       className="c-contact-cta"
     >
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div className="c-card">
-          <LazyLeadForm {...data.leadForms[section.formVariant]} />
-        </div>
+      <div className="c-contact-stage" data-map={hasMap || undefined}>
+        {hasMap && site.mapEmbedUrl && (
+          <div className="c-contact-map">
+            <iframe
+              src={site.mapEmbedUrl}
+              title={t('mapTitle')}
+              className="c-map"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        )}
 
-        <div className="c-contact-details space-y-6">
-          {site.whatsapp.enabled && (
+        <div className="c-contact-details" data-tone="inverse">
+          <dl className="c-contact-list">
             <div>
-              <p className="mb-2 font-medium">{tForm('orWhatsapp')}</p>
-              <TrackedLink
-                href={data.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="c-button"
-                event={{ name: 'whatsapp_click', location: 'contact-section' }}
-              >
-                <WhatsAppIcon className="size-5" />
-                {t('whatsapp')}
-              </TrackedLink>
-            </div>
-          )}
-
-          <dl className="space-y-3">
-            <div>
-              <dt className="text-sm text-muted-foreground">{t('call')}</dt>
+              <dt>
+                <Phone aria-hidden="true" className="size-4" />
+                {t('call')}
+              </dt>
               <dd>
                 <TrackedLink
                   href={`tel:${site.phone.e164}`}
                   dir="ltr"
+                  className="c-contact-phone"
                   event={{ name: 'call_click', location: 'contact-section' }}
                 >
                   {site.phone.display}
@@ -54,7 +56,10 @@ export async function ContactCta({ section, data }: SectionProps<'contactCta'>) 
               </dd>
             </div>
             <div>
-              <dt className="text-sm text-muted-foreground">{t('address')}</dt>
+              <dt>
+                <MapPin aria-hidden="true" className="size-4" />
+                {t('address')}
+              </dt>
               <dd>
                 <address className="not-italic">
                   {site.name}
@@ -64,20 +69,14 @@ export async function ContactCta({ section, data }: SectionProps<'contactCta'>) 
                     </span>
                   ))}
                 </address>
-                <TrackedLink
-                  href={site.mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                  event={{ name: 'directions_click', location: 'contact-section' }}
-                >
-                  {t('directions')}
-                </TrackedLink>
               </dd>
             </div>
             {site.hours.length > 0 && (
               <div>
-                <dt className="text-sm text-muted-foreground">{t('hours')}</dt>
+                <dt>
+                  <Clock aria-hidden="true" className="size-4" />
+                  {t('hours')}
+                </dt>
                 <dd>
                   <ul>
                     {site.hours.map((h) => (
@@ -91,15 +90,35 @@ export async function ContactCta({ section, data }: SectionProps<'contactCta'>) 
             )}
           </dl>
 
-          {section.showMap && site.mapEmbedUrl && (
-            <iframe
-              src={site.mapEmbedUrl}
-              title={t('mapTitle')}
-              className="c-map aspect-video w-full rounded-lg border border-border"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          )}
+          <div className="c-contact-actions">
+            <TrackedLink
+              href={site.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="c-contact-link"
+              event={{ name: 'directions_click', location: 'contact-section' }}
+            >
+              {t('directions')}
+              <ArrowUpRight aria-hidden="true" className="size-4 rtl:-scale-x-100" />
+            </TrackedLink>
+            {site.whatsapp.enabled && (
+              <TrackedLink
+                href={data.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="c-contact-link"
+                aria-label={tForm('orWhatsapp')}
+                event={{ name: 'whatsapp_click', location: 'contact-section' }}
+              >
+                <WhatsAppIcon className="size-4" />
+                {t('whatsapp')}
+              </TrackedLink>
+            )}
+          </div>
+        </div>
+
+        <div className="c-contact-form">
+          <LazyLeadForm {...data.leadForms[section.formVariant]} />
         </div>
       </div>
     </Section>

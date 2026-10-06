@@ -11,6 +11,7 @@ import { Portfolio } from './portfolio';
 import { Process } from './process';
 import { Reviews } from './reviews';
 import { ServicesGrid } from './services-grid';
+import { Showcase } from './showcase';
 import { TrustStrip } from './trust-strip';
 import type { SectionOf, SectionProps } from './types';
 
@@ -22,6 +23,7 @@ type SectionComponent<K extends SectionKey> = (props: SectionProps<K>) => ReactN
  */
 const registry: { [K in SectionKey]: SectionComponent<K> } = {
   hero: Hero,
+  showcase: Showcase,
   trustStrip: TrustStrip,
   servicesGrid: ServicesGrid,
   climate: Climate,

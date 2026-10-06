@@ -1,13 +1,13 @@
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { Icon } from '@/components/ui/icon';
 import { Section } from '@/components/ui/section';
 import { Link } from '@/i18n/navigation';
 import type { SectionProps } from './types';
 
+/** The product index: one full-width row per film line, numbered by CSS (see products.css). */
 export async function ServicesGrid({ section, data }: SectionProps<'servicesGrid'>) {
-  const t = await getTranslations({ locale: data.locale, namespace: 'pricing' });
+  const t = await getTranslations({ locale: data.locale });
   const services =
     section.serviceSlugs.length === 0
       ? data.content.services
@@ -21,44 +21,46 @@ export async function ServicesGrid({ section, data }: SectionProps<'servicesGrid
       intro={section.intro}
       className="c-services-grid"
     >
-      <ul className="c-grid">
-        {services.map((service) => (
-          <li key={service.slug}>
-            <article className="c-card c-service-card">
-              <div className="c-service-media">
+      <ol className="c-product-index">
+        {services.map((service) => {
+          const meta = service.priceFromLabel
+            ? { label: t('service.priceFrom'), value: service.priceFromLabel }
+            : service.warrantyLabel
+              ? { label: t('service.warranty'), value: service.warrantyLabel }
+              : { label: null, value: t('pricing.onRequest') };
+
+          return (
+            <li key={service.slug} className="c-product-row" data-reveal>
+              <div className="c-product-body">
+                <h3 className="c-product-name">
+                  {/* The link's ::after stretches over the row, so the whole row is one click target. */}
+                  <Link href={service.href} className="c-card-link">
+                    {service.name}
+                  </Link>
+                </h3>
+                <p className="c-product-tagline">{service.shortDescription}</p>
+              </div>
+              <p className="c-product-meta">
+                {meta.label && <span className="c-product-meta-label">{meta.label}</span>}
+                <span className="c-product-meta-value">{meta.value}</span>
+              </p>
+              <div className="c-product-media">
                 <Image
                   src={service.image.src}
                   alt={service.image.alt}
                   width={service.image.width}
                   height={service.image.height}
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="c-service-image"
+                  sizes="(min-width: 1280px) 20rem, (min-width: 1024px) 18rem, (min-width: 768px) 14rem, 100vw"
+                  className="c-product-image"
                 />
-                <span className="c-service-icon">
-                  <Icon name={service.icon} className="size-5" />
-                </span>
               </div>
-              <div className="c-service-body">
-                <h3 className="c-card-title">
-                  {/* The link's ::after stretches over the card, so the whole card is one click target. */}
-                  <Link href={service.href} className="c-card-link">
-                    {service.name}
-                  </Link>
-                </h3>
-                <p className="text-muted-foreground">{service.shortDescription}</p>
-                <p className="c-price c-service-price">
-                  {service.priceFromLabel
-                    ? t('from', { price: service.priceFromLabel })
-                    : service.warrantyYears
-                      ? t('warranty', { years: service.warrantyYears })
-                      : t('onRequest')}
-                  <ArrowUpRight aria-hidden="true" className="c-card-arrow size-5 rtl:-scale-x-100" />
-                </p>
-              </div>
-            </article>
-          </li>
-        ))}
-      </ul>
+              <span className="c-product-arrow" aria-hidden="true">
+                <ArrowUpRight />
+              </span>
+            </li>
+          );
+        })}
+      </ol>
     </Section>
   );
 }

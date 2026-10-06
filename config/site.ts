@@ -1,12 +1,13 @@
 import type { SiteConfig } from '../src/lib/config/schema';
 
-/** Business identity and NAP (name, address, phone), taken from getfossil.com. */
+/** Business identity: the Phantom PPF brand, with the address and phone taken from getfossil.com. */
 export const site = {
   business: {
-    name: 'Fossil',
-    legalName: 'FOSSIL Paint Protection Film',
+    name: 'Phantom PPF',
+    shortName: 'Phantom',
+    legalName: 'Phantom PPF',
     schemaType: 'AutomotiveBusiness',
-    logo: { src: '/brand/logo-fossil.png', width: 110, height: 40 },
+    logo: { src: '/brand/logo-phantom.png', width: 141, height: 44 },
     priceRange: '$$',
   },
   locale: {

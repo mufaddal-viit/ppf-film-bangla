@@ -52,6 +52,14 @@ const sectionContentSchemas = {
       .nullable(),
     serviceChips: z.array(slug),
   }),
+  showcase: z.object({
+    heading: text,
+    intro: text.optional(),
+    slides: z
+      .array(z.object({ image: imageSchema, title: text, body: text }))
+      .min(2)
+      .max(6),
+  }),
   trustStrip: z.object({ heading: text, intro: text.optional(), stats: z.array(statSchema).max(4) }),
   servicesGrid: z.object({
     heading: text,
@@ -104,6 +112,7 @@ const s = sectionContentSchemas;
 /** A section copy entry carries its section key so the loader can check it matches config/pages.ts. */
 const sectionCopySchema = z.discriminatedUnion('key', [
   s.hero.extend({ key: z.literal('hero') }),
+  s.showcase.extend({ key: z.literal('showcase') }),
   s.trustStrip.extend({ key: z.literal('trustStrip') }),
   s.servicesGrid.extend({ key: z.literal('servicesGrid') }),
   s.climate.extend({ key: z.literal('climate') }),

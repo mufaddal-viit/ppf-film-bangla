@@ -100,7 +100,7 @@ export function LeadForm({
 
   return (
     <form
-      className="c-lead-form space-y-4"
+      className="c-lead-form"
       aria-labelledby={`${id}-title`}
       noValidate
       onSubmit={form.handleSubmit((values) => mutation.mutate(values))}

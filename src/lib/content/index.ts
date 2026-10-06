@@ -90,6 +90,7 @@ export const getSite = cache(async (locale: string) => {
     region,
     dir: isRtl(locale) ? ('rtl' as const) : ('ltr' as const),
     name: business.name,
+    shortName: business.shortName ?? business.name,
     legalName: business.legalName,
     schemaType: business.schemaType,
     priceRange: business.priceRange,
@@ -324,7 +325,16 @@ export async function getWhatsAppUrl(locale: string, page?: PageCopyKey): Promis
 
 // ---------------------------------------------------------------- navigation
 
-export type NavLink = { label: string; href: string };
+export type NavLink = {
+  label: string;
+  href: string;
+  slug?: string;
+  icon?: string;
+  description?: string;
+  warrantyLabel?: string | null;
+  badge?: string;
+  category?: 'ppf' | 'window-film' | 'general';
+};
 export type NavItem = NavLink & { children?: NavLink[] };
 
 export const getNavigation = cache(async (locale: string) => {
@@ -347,8 +357,31 @@ export const getNavigation = cache(async (locale: string) => {
     href: hrefOf(item.href),
     ...('servicesMenu' in item.href && {
       children: [
-        ...content.services.map((s) => ({ label: s.name, href: s.href })),
-        { label: label('allServices'), href: ROUTES.services },
+        ...content.services.map((s) => ({
+          label: s.name,
+          href: s.href,
+          slug: s.slug,
+          icon: s.icon,
+          description: s.shortDescription,
+          warrantyLabel: s.warrantyLabel,
+          badge:
+            s.slug === 'apex'
+              ? 'Flagship'
+              : s.slug === 'stealth'
+                ? 'Satin'
+                : s.slug === 'frozen'
+                  ? 'Matte'
+                  : s.slug === 'solaris'
+                    ? 'Ceramic'
+                    : undefined,
+          category: (s.slug === 'solaris' || s.slug === 'luminox' ? 'window-film' : 'ppf') as 'ppf' | 'window-film',
+        })),
+        {
+          label: label('allServices'),
+          href: ROUTES.services,
+          description: 'Compare all film series, specs & warranties',
+          category: 'general' as const,
+        },
       ],
     }),
   }));

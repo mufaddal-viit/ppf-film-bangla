@@ -7,19 +7,21 @@ import { HeroParallax } from './hero-parallax';
 import type { SectionProps } from './types';
 
 /**
- * Leaves drifting around the car. Position and width are percentages of the stage;
- * `depth` is how far the leaf travels with the pointer (bigger reads as closer),
- * `wide` leaves are hidden on phones to keep the copy clear.
+ * Water beads floating around the car, the way water sits on protected paint. Position and
+ * width are percentages of the stage; `depth` is how far a bead travels with the pointer (bigger
+ * reads as closer), `wide` beads are hidden on phones to keep the copy clear.
  */
 const LEAVES = [
-  { leaf: 'broad', x: '-3%', y: '-8%', size: '9%', rot: 148, blur: 5, depth: 46, wide: false },
-  { leaf: 'broad', x: '15%', y: '9%', size: '2.6%', rot: 118, blur: 0, depth: 22, wide: true },
-  { leaf: 'slim', x: '86%', y: '10%', size: '7%', rot: -32, blur: 0, depth: 30, wide: false },
-  { leaf: 'broad', x: '91%', y: '46%', size: '2.2%', rot: 64, blur: 0, depth: 18, wide: true },
-  { leaf: 'slim', x: '-2%', y: '60%', size: '6%', rot: 24, blur: 1, depth: 26, wide: true },
-  { leaf: 'broad', x: '93%', y: '58%', size: '7%', rot: -24, blur: 4, depth: 52, wide: false },
-  { leaf: 'broad', x: '74%', y: '80%', size: '6.5%', rot: 56, blur: 1, depth: 38, wide: true },
-  { leaf: 'slim', x: '6%', y: '88%', size: '11%', rot: -18, blur: 3, depth: 44, wide: true },
+  { leaf: 'broad', x: '-1.5%', y: '5%', size: '6.5%', rot: -12, blur: 4, depth: 50, wide: false },
+  { leaf: 'slim', x: '7%', y: '21%', size: '1.5%', rot: 18, blur: 0, depth: 20, wide: true },
+  { leaf: 'broad', x: '12.5%', y: '8%', size: '2.6%', rot: 30, blur: 0, depth: 28, wide: true },
+  { leaf: 'broad', x: '86.5%', y: '9%', size: '3.8%', rot: -20, blur: 0, depth: 32, wide: false },
+  { leaf: 'slim', x: '93.5%', y: '29%', size: '1.4%', rot: 8, blur: 0, depth: 18, wide: true },
+  { leaf: 'broad', x: '95%', y: '50%', size: '5.6%', rot: 14, blur: 3, depth: 54, wide: false },
+  { leaf: 'slim', x: '3.5%', y: '60%', size: '2.2%', rot: -25, blur: 0, depth: 26, wide: true },
+  { leaf: 'broad', x: '-2.5%', y: '82%', size: '7.5%', rot: 22, blur: 5, depth: 46, wide: true },
+  { leaf: 'broad', x: '89.5%', y: '83%', size: '2.9%', rot: -8, blur: 0, depth: 34, wide: true },
+  { leaf: 'slim', x: '9.5%', y: '90%', size: '1.3%', rot: 40, blur: 0, depth: 16, wide: true },
 ] as const;
 
 /** Custom properties consumed by the .c-hero-* rules in globals.css. */

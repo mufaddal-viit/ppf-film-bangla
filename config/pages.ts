@@ -8,6 +8,7 @@ export const pages = {
   home: {
     sections: [
       { key: 'hero', enabled: true, contentRef: 'home-hero' },
+      { key: 'showcase', enabled: true, contentRef: 'home-showcase' },
       { key: 'trustStrip', enabled: true, contentRef: 'home-trust' },
       { key: 'servicesGrid', enabled: true, contentRef: 'home-services' },
       { key: 'climate', enabled: true, contentRef: 'home-features' },

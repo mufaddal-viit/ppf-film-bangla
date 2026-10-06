@@ -1,0 +1,85 @@
+@layer components {
+  /* ------------------------------------------------------------ motion */
+  @keyframes c-page-in {
+    from {
+      opacity: 0.01;
+      translate: 0 14px;
+    }
+  }
+  @keyframes c-marquee {
+    to {
+      translate: -100% 0;
+    }
+  }
+  @keyframes c-marquee-rtl {
+    to {
+      translate: 100% 0;
+    }
+  }
+  @keyframes c-reveal {
+    from {
+      opacity: 0;
+      translate: 0 var(--reveal-y, 3.5rem);
+      scale: 0.96;
+    }
+  }
+  @keyframes c-zoom-settle {
+    from {
+      scale: 1.2;
+    }
+  }
+  @keyframes c-progress {
+    from {
+      scale: 0 1;
+    }
+  }
+
+  /*
+   * Scroll-driven motion: reveals, image settle and the header progress line are tied
+   * to the scroll position itself (no JavaScript, no layout cost). Browsers without scroll
+   * timelines, and visitors who prefer reduced motion, simply get the finished layout.
+   */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      [data-reveal],
+      .c-section-head,
+      .c-grid > li,
+      .c-portfolio-grid > li,
+      .c-steps > li,
+      .c-faq-item,
+      .c-carousel,
+      .c-section-cta {
+        animation: c-reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 100%;
+      }
+      /* Later items in a row travel further, so a row settles left to right. */
+      .c-grid > li:nth-child(3n + 2),
+      .c-portfolio-grid > li:nth-child(3n + 2),
+      .c-steps > li:nth-child(4n + 2),
+      .c-stats > div:nth-child(2) {
+        --reveal-y: 6rem;
+      }
+      .c-grid > li:nth-child(3n + 3),
+      .c-portfolio-grid > li:nth-child(3n + 3),
+      .c-steps > li:nth-child(4n + 3),
+      .c-stats > div:nth-child(3) {
+        --reveal-y: 8.5rem;
+      }
+      .c-steps > li:nth-child(4n + 4),
+      .c-stats > div:nth-child(4) {
+        --reveal-y: 11rem;
+      }
+      .c-portfolio-image {
+        animation: c-zoom-settle linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 55%;
+      }
+      .c-header::after {
+        @apply fixed inset-x-0 top-0 h-0.5 origin-left bg-primary content-[''] rtl:origin-right;
+        animation: c-progress linear both;
+        animation-timeline: scroll(root);
+      }
+    }
+  }
+}

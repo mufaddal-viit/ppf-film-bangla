@@ -1,0 +1,123 @@
+@layer components {
+  /* ------------------------------------------------------------ packages */
+  .c-packages .c-grid {
+    @apply items-stretch lg:py-3;
+  }
+  .c-package {
+    @apply gap-4 p-7;
+  }
+  .c-package h3 {
+    @apply font-heading text-2xl font-extrabold;
+  }
+  .c-package-price {
+    @apply font-heading text-3xl font-extrabold text-primary;
+  }
+  .c-package[data-highlighted] {
+    @apply border-primary shadow-lg lg:-translate-y-3;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--primary) 9%, var(--background)),
+      var(--background) 45%
+    );
+  }
+
+  /* ------------------------------------------------------------ portfolio */
+  .c-portfolio-filters {
+    @apply mb-8 flex flex-wrap gap-2;
+  }
+  .c-portfolio-filters .c-button {
+    @apply min-h-10 px-4 text-sm;
+  }
+  .c-portfolio-grid {
+    @apply grid gap-5 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  .c-portfolio-item {
+    @apply relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-sm;
+  }
+  .c-portfolio-caption {
+    @apply absolute inset-x-0 bottom-0 flex flex-col gap-0.5 p-5 pt-20;
+    color: white;
+    background: linear-gradient(to top, color-mix(in oklab, black 80%, transparent), transparent);
+  }
+  .c-portfolio-vehicle {
+    @apply font-heading text-xl font-bold;
+  }
+  .c-portfolio-title {
+    @apply text-sm opacity-85;
+  }
+
+  /* ------------------------------------------------------------ process */
+  .c-steps {
+    @apply grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4;
+  }
+  .c-step {
+    @apply relative flex flex-col gap-3 border-t border-border pt-6;
+  }
+  .c-step::before {
+    @apply absolute start-0 -top-px h-0.5 w-14 bg-primary content-[''];
+  }
+  .c-step-number {
+    @apply text-6xl leading-none font-black text-transparent;
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    -webkit-text-stroke: 1.5px var(--primary);
+  }
+  .c-step h3 {
+    @apply font-heading text-xl font-bold;
+  }
+  .c-step p {
+    @apply text-muted-foreground;
+  }
+
+  /* ------------------------------------------------------------ reviews */
+  .c-carousel-track {
+    @apply gap-5 py-2;
+    scrollbar-width: none;
+  }
+  .c-review {
+    @apply p-7;
+  }
+  .c-review [role='img'] {
+    @apply text-warning;
+  }
+  .c-review blockquote {
+    @apply text-lg leading-relaxed;
+  }
+  .c-carousel-controls .c-button {
+    @apply size-11 p-0;
+  }
+
+  /* ------------------------------------------------------------ FAQ */
+  @media (min-width: 64rem) {
+    .c-faq > .c-container {
+      @apply grid grid-cols-[1fr_1.6fr] items-start gap-16;
+    }
+    .c-faq .c-section-head {
+      @apply sticky top-28 mb-0;
+    }
+  }
+  .c-faq-list {
+    @apply space-y-3;
+  }
+  .c-faq-item {
+    @apply p-0;
+  }
+  .c-faq-item[open] {
+    @apply border-primary shadow-md;
+  }
+  .c-faq-item summary {
+    @apply flex list-none items-center justify-between gap-4 p-5 font-semibold;
+  }
+  .c-faq-item summary::-webkit-details-marker {
+    @apply hidden;
+  }
+  .c-faq-item summary::after {
+    @apply grid size-8 shrink-0 place-items-center rounded-full bg-muted text-xl leading-none font-normal text-primary transition duration-300 content-['+'];
+  }
+  .c-faq-item[open] summary::after {
+    @apply rotate-45 bg-primary text-primary-foreground;
+  }
+  .c-faq-item > p {
+    @apply mt-0 px-5 pb-5;
+  }
+}

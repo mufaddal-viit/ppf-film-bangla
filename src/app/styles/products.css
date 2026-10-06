@@ -1,0 +1,460 @@
+/*
+ * Products: the numbered index list (home and /services) and the product detail page.
+ * Open layouts on hairlines; the muted diagonal panel and the thin blue stripe echo the hero.
+ * Product images are studio shots on white, so they are multiplied onto the page instead of framed.
+ */
+@layer components {
+  /* ------------------------------------------------------------ shared hover behaviour (cards, galleries) */
+  .c-point:hover,
+  .c-post-card:hover {
+    @apply -translate-y-1.5 border-primary shadow-lg;
+  }
+  .c-portfolio-image,
+  .c-mosaic-image {
+    @apply size-full object-cover;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .c-portfolio-item:hover .c-portfolio-image,
+  .c-mosaic-item:hover .c-mosaic-image {
+    transform: scale(1.07);
+  }
+  .c-post-card h2 {
+    @apply font-heading text-xl font-bold;
+  }
+
+  /* ------------------------------------------------------------ product index (services grid) */
+  /* Horizontal motion is multiplied by --flip so it runs the right way in RTL. */
+  .c-product-index,
+  .c-product-related {
+    --flip: 1;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [dir='rtl'] .c-product-index,
+  [dir='rtl'] .c-product-related {
+    --flip: -1;
+  }
+
+  /* On wide screens the heading and its intro sit side by side on one baseline. */
+  .c-services-grid .c-section-head {
+    @apply lg:mb-16 lg:grid lg:max-w-none lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-end lg:gap-16;
+  }
+  .c-services-grid .c-section-heading {
+    @apply lg:text-6xl;
+  }
+  .c-services-grid .c-section-intro {
+    @apply lg:mt-0 lg:border-s-2 lg:border-primary lg:ps-6;
+  }
+
+  .c-product-index {
+    @apply border-b border-border;
+    counter-reset: product;
+  }
+  .c-product-row {
+    @apply relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-5 border-t border-border py-7;
+    grid-template-areas:
+      'num meta'
+      'media media'
+      'body arrow';
+    counter-increment: product;
+  }
+  /* Oversized outlined index numeral. */
+  .c-product-row::before {
+    @apply text-4xl leading-none text-transparent;
+    grid-area: num;
+    content: counter(product, decimal-leading-zero);
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 900;
+    -webkit-text-stroke: 1.5px color-mix(in oklab, var(--foreground) 38%, transparent);
+    transition: -webkit-text-stroke-color 0.5s var(--ease);
+  }
+  /* The row's hairline is redrawn in blue on hover. */
+  .c-product-row::after {
+    @apply pointer-events-none absolute inset-x-0 -top-px h-0.5 origin-left bg-primary content-[''] rtl:origin-right;
+    transform: scaleX(0);
+    transition: transform 0.7s var(--ease);
+  }
+  .c-product-body {
+    @apply flex min-w-0 flex-col gap-2;
+    grid-area: body;
+  }
+  .c-product-name {
+    @apply font-heading text-3xl leading-[1.05] font-extrabold lg:text-4xl xl:text-[2.75rem] ltr:tracking-tight ltr:uppercase rtl:leading-snug;
+    text-wrap: balance;
+    transition:
+      transform 0.5s var(--ease),
+      color 0.3s;
+  }
+  .c-product-tagline {
+    @apply max-w-md text-muted-foreground;
+    transition: transform 0.5s var(--ease) 0.04s;
+  }
+  .c-product-meta {
+    @apply flex flex-wrap items-baseline justify-end gap-x-2 text-sm;
+    grid-area: meta;
+  }
+  .c-product-meta-label {
+    @apply flex items-center gap-2 text-xs font-semibold text-muted-foreground ltr:tracking-widest ltr:uppercase;
+  }
+  .c-product-meta-label::before {
+    @apply size-1.5 shrink-0 rotate-45 bg-primary content-[''];
+  }
+  .c-product-meta-value {
+    @apply font-heading text-base font-bold;
+  }
+  .c-product-media {
+    @apply relative isolate aspect-[3/2] overflow-hidden bg-background;
+    grid-area: media;
+  }
+  /* A leaning panel behind the car; it opens to the full frame on hover. */
+  .c-product-media::before {
+    @apply absolute inset-0 -z-10 bg-muted content-[''];
+    clip-path: polygon(24% 0, 100% 0, 76% 100%, 0 100%);
+    transition: clip-path 0.7s var(--ease);
+  }
+  [dir='rtl'] .c-product-media::before {
+    transform: scaleX(-1);
+  }
+  .c-product-image {
+    @apply size-full object-cover mix-blend-multiply;
+    transition: transform 0.7s var(--ease);
+  }
+  .c-product-arrow {
+    @apply flex size-11 items-center justify-center justify-self-end rounded-full border border-border;
+    grid-area: arrow;
+    transition:
+      background-color 0.4s var(--ease),
+      border-color 0.4s var(--ease),
+      color 0.4s var(--ease);
+  }
+  .c-product-arrow svg {
+    @apply size-5 rtl:-scale-x-100;
+    transition: transform 0.5s var(--ease);
+  }
+
+  .c-product-row:hover::before,
+  .c-product-row:focus-within::before {
+    -webkit-text-stroke-color: var(--primary);
+  }
+  .c-product-row:hover::after,
+  .c-product-row:focus-within::after {
+    transform: scaleX(1);
+  }
+  .c-product-row:hover .c-product-media::before,
+  .c-product-row:focus-within .c-product-media::before {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .c-product-row:hover .c-product-image,
+  .c-product-row:focus-within .c-product-image {
+    transform: scale(1.06);
+  }
+  .c-product-row:hover .c-product-arrow,
+  .c-product-row:focus-within .c-product-arrow {
+    @apply border-primary bg-primary text-primary-foreground;
+  }
+  .c-product-row:hover .c-product-arrow svg,
+  .c-product-row:focus-within .c-product-arrow svg {
+    transform: rotate(45deg);
+  }
+  /* Keep the stretched link above the (positioned) image so the whole row stays clickable. */
+  .c-product-row .c-card-link::after {
+    @apply z-[1];
+  }
+  .c-product-row .c-card-link:focus-visible {
+    @apply outline-none;
+  }
+  .c-product-row .c-card-link:focus-visible::after {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  @media (min-width: 48rem) {
+    .c-product-row {
+      @apply gap-x-8 gap-y-3 py-8;
+      grid-template-columns: 3.5rem minmax(0, 1fr) 14rem 2.75rem;
+      grid-template-areas:
+        'num body media arrow'
+        'num meta media arrow';
+    }
+    .c-product-row::before {
+      @apply self-center text-5xl;
+    }
+    .c-product-body {
+      @apply self-end;
+    }
+    .c-product-meta {
+      @apply justify-start self-start;
+    }
+    .c-product-row:hover .c-product-name,
+    .c-product-row:hover .c-product-tagline,
+    .c-product-row:focus-within .c-product-name,
+    .c-product-row:focus-within .c-product-tagline {
+      transform: translateX(calc(0.75rem * var(--flip)));
+    }
+  }
+  @media (min-width: 64rem) {
+    .c-product-row {
+      @apply gap-x-10;
+      grid-template-columns: 4.5rem minmax(0, 1fr) 18rem 2.75rem;
+    }
+    .c-product-row::before {
+      @apply text-6xl;
+    }
+  }
+  @media (min-width: 80rem) {
+    .c-product-row {
+      @apply py-9;
+      grid-template-columns: 6rem minmax(0, 1fr) 9rem 20rem 2.75rem;
+      grid-template-areas: 'num body meta media arrow';
+    }
+    .c-product-row::before {
+      @apply text-7xl;
+    }
+    .c-product-body {
+      @apply self-center;
+    }
+    .c-product-meta {
+      @apply flex-col flex-nowrap items-start gap-1 self-center;
+    }
+    .c-product-meta-value {
+      @apply text-xl;
+    }
+  }
+
+  /* ------------------------------------------------------------ product detail: stage */
+  @keyframes c-product-stripe {
+    from {
+      clip-path: polygon(52% 0, 54.2% 0, 54.2% 0, 52% 0);
+    }
+  }
+  @keyframes c-product-panel {
+    from {
+      opacity: 0;
+      translate: 3rem 0;
+    }
+  }
+  @keyframes c-product-settle {
+    from {
+      scale: 1.12;
+    }
+  }
+
+  .c-product-stage {
+    @apply relative isolate overflow-clip border-b border-border bg-background py-10 sm:py-14 lg:py-20;
+  }
+  .c-product-stage > .c-container {
+    @apply grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-end lg:gap-16;
+  }
+  .c-product-visual {
+    @apply relative;
+  }
+  /* Muted panel with a diagonal edge, bleeding out behind the car. */
+  .c-product-visual::before {
+    @apply pointer-events-none absolute inset-y-0 end-0 -z-10 w-[68%] bg-muted content-[''];
+    clip-path: polygon(38% 0, 100% 0, 100% 100%, 0 100%);
+    animation: c-product-panel 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* The hero's blue stripe, as a thin line running along the panel's edge. */
+  .c-product-visual::after {
+    @apply pointer-events-none absolute inset-0 -z-10 content-[''];
+    background: linear-gradient(to bottom left, color-mix(in oklab, var(--primary), white 28%), var(--primary));
+    clip-path: polygon(52% 0, 54.2% 0, 28.4% 100%, 26.2% 100%);
+    animation: c-product-stripe 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  }
+  [dir='rtl'] .c-product-visual::before,
+  [dir='rtl'] .c-product-visual::after {
+    transform: scaleX(-1);
+  }
+  .c-product-visual-image {
+    @apply h-auto w-full mix-blend-multiply;
+  }
+  .c-product-summary {
+    @apply flex flex-col gap-8;
+  }
+  .c-product-facts {
+    @apply flex flex-col gap-5;
+  }
+  /* Small label with a blue lead-in rule. */
+  .c-product-kicker {
+    @apply flex items-center gap-3 font-sans text-xs font-semibold text-muted-foreground ltr:tracking-[0.25em] ltr:uppercase;
+  }
+  .c-product-kicker::before {
+    @apply h-0.5 w-10 shrink-0 bg-primary content-[''];
+  }
+  .c-product-stats {
+    @apply flex flex-col;
+  }
+  .c-product-stat {
+    @apply flex flex-col gap-2 border-t border-border py-5;
+  }
+  .c-product-stat dt {
+    @apply text-sm font-medium text-muted-foreground ltr:tracking-widest ltr:uppercase;
+  }
+  /* The hero stat: warranty (and price / turnaround when the catalogue has them). */
+  .c-product-stat dd {
+    @apply leading-[0.92] ltr:uppercase rtl:leading-tight;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 5.25rem);
+    font-stretch: 125%;
+    font-weight: 900;
+    text-wrap: balance;
+  }
+  .c-product-stat:nth-child(n + 2) dd {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+  }
+  .c-product-lead {
+    @apply max-w-sm border-s-2 border-primary ps-5 text-lg text-muted-foreground;
+  }
+
+  /* ------------------------------------------------------------ product detail: body */
+  .c-product-layout {
+    @apply grid gap-14 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-16 xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-24;
+  }
+  .c-product-detail {
+    @apply flex min-w-0 flex-col gap-14 sm:gap-20;
+  }
+  .c-product-section {
+    @apply min-w-0;
+  }
+  .c-product-heading {
+    @apply mb-8 text-2xl sm:text-4xl;
+  }
+  /* First paragraph reads as a standfirst. */
+  .c-product-copy p {
+    @apply text-muted-foreground;
+  }
+  .c-product-copy p:first-child {
+    @apply font-heading text-2xl leading-snug font-bold text-foreground sm:text-3xl;
+    text-wrap: pretty;
+  }
+
+  /* Spec sheet: short values as large figures two-up, long values as full-width rows. */
+  .c-product-specs {
+    @apply grid grid-cols-2 gap-x-6 sm:gap-x-10;
+  }
+  .c-product-spec {
+    @apply relative flex min-w-0 flex-col gap-2 border-t border-border py-5 sm:py-6;
+  }
+  .c-product-spec::before {
+    @apply absolute start-0 -top-px h-0.5 w-8 bg-primary content-[''];
+  }
+  .c-product-spec dt {
+    @apply text-xs font-semibold text-muted-foreground ltr:tracking-widest ltr:uppercase;
+  }
+  .c-product-spec dd {
+    @apply font-heading text-2xl leading-none font-extrabold sm:text-4xl ltr:tracking-tight rtl:leading-snug;
+    overflow-wrap: anywhere;
+  }
+  .c-product-spec[data-wide] {
+    @apply col-span-2 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8;
+  }
+  .c-product-spec[data-wide]::before {
+    @apply hidden;
+  }
+  .c-product-spec[data-wide] dt {
+    @apply sm:shrink-0 sm:pt-1;
+  }
+  .c-product-spec[data-wide] dd {
+    @apply font-sans text-lg leading-snug font-semibold tracking-normal sm:max-w-[64%] sm:text-end;
+  }
+  .c-product-specs:has(+ .c-product-features) {
+    @apply mb-10 sm:mb-14;
+  }
+
+  /* Feature checklist on hairlines. */
+  .c-product-features {
+    @apply border-b border-border;
+  }
+  .c-product-features li {
+    @apply relative border-t border-border py-4 ps-10 text-lg;
+  }
+  .c-product-features li::before {
+    @apply absolute start-0 top-[1.15rem] size-6 bg-primary content-[''];
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='square'%3E%3Cpath d='M4 12.5l5 5L20 6.5'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+
+  /* Enquiry form: a quiet surface panel under a blue rule, sticky while the specs scroll. */
+  .c-product-aside {
+    @apply min-w-0;
+  }
+  @media (min-width: 64rem) and (min-height: 56rem) {
+    .c-product-aside {
+      @apply sticky top-28;
+    }
+  }
+  .c-product-enquiry {
+    @apply border-t-2 border-primary bg-surface p-6 sm:p-8;
+  }
+  .c-product-enquiry .c-input {
+    @apply bg-background;
+  }
+
+  /* ------------------------------------------------------------ product detail: other products */
+  .c-product-related {
+    @apply border-t border-border bg-surface py-14 sm:py-20;
+  }
+  .c-product-related > .c-container {
+    @apply grid gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)] lg:items-start lg:gap-16;
+  }
+  .c-product-related-list {
+    @apply grid sm:grid-cols-2 sm:gap-x-12;
+    counter-reset: related;
+  }
+  .c-product-related-list li {
+    @apply relative border-t border-border;
+    counter-increment: related;
+  }
+  .c-product-related-list li::after {
+    @apply pointer-events-none absolute inset-x-0 -top-px h-0.5 origin-left bg-primary content-[''] rtl:origin-right;
+    transform: scaleX(0);
+    transition: transform 0.6s var(--ease);
+  }
+  .c-product-related-link {
+    @apply flex min-h-16 items-center gap-4 py-4;
+  }
+  .c-product-related-link::before {
+    @apply w-6 shrink-0 text-xs font-semibold text-primary tabular-nums;
+    content: counter(related, decimal-leading-zero);
+  }
+  .c-product-related-text {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5;
+    transition: transform 0.5s var(--ease);
+  }
+  .c-product-related-name {
+    @apply font-heading text-lg leading-tight font-bold ltr:tracking-tight ltr:uppercase;
+  }
+  .c-product-related-meta {
+    @apply text-sm text-muted-foreground;
+  }
+  .c-product-related-arrow {
+    @apply size-5 shrink-0 text-muted-foreground rtl:-scale-x-100;
+    transition:
+      transform 0.5s var(--ease),
+      color 0.3s;
+  }
+  .c-product-related-list li:hover::after,
+  .c-product-related-list li:focus-within::after {
+    transform: scaleX(1);
+  }
+  .c-product-related-link:hover .c-product-related-text,
+  .c-product-related-link:focus-visible .c-product-related-text {
+    transform: translateX(calc(0.5rem * var(--flip)));
+  }
+  .c-product-related-link:hover .c-product-related-arrow,
+  .c-product-related-link:focus-visible .c-product-related-arrow {
+    @apply text-primary;
+    transform: rotate(45deg);
+  }
+
+  /* ------------------------------------------------------------ scroll-driven motion */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      /* Each car eases back to rest as its row scrolls into view. */
+      .c-product-image {
+        animation: c-product-settle linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 45%;
+      }
+    }
+  }
+}

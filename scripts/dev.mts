@@ -14,14 +14,19 @@ const LOCAL_URI = 'mongodb://127.0.0.1:27018/';
 let stopDatabase: (() => Promise<unknown>) | undefined;
 
 if (!process.env.MONGODB_URI || process.env.MONGODB_URI === LOCAL_URI) {
-  const { MongoMemoryServer } = await import('mongodb-memory-server');
-  mkdirSync('.data/mongo', { recursive: true });
-  const server = await MongoMemoryServer.create({
-    instance: { dbPath: '.data/mongo', storageEngine: 'wiredTiger', port: 27018 },
-  });
-  process.env.MONGODB_URI = LOCAL_URI;
-  stopDatabase = () => server.stop({ doCleanup: false });
-  console.log(`Local MongoDB running at ${process.env.MONGODB_URI} (data in .data/mongo)`);
+  try {
+    const { MongoMemoryServer } = await import('mongodb-memory-server');
+    mkdirSync('.data/mongo', { recursive: true });
+    const server = await MongoMemoryServer.create({
+      instance: { dbPath: '.data/mongo', storageEngine: 'wiredTiger', port: 27018 },
+    });
+    process.env.MONGODB_URI = LOCAL_URI;
+    stopDatabase = () => server.stop({ doCleanup: false });
+    console.log(`Local MongoDB running at ${process.env.MONGODB_URI} (data in .data/mongo)`);
+  } catch {
+    console.log('MongoDB already active on port 27018, reusing existing instance.');
+    process.env.MONGODB_URI = LOCAL_URI;
+  }
 }
 
 const { getDb, closeDb } = await import('../src/lib/db/client');

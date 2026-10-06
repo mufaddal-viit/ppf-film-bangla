@@ -5,7 +5,7 @@ export const sections: LocaleContentInput['sections'] = {
   'home-hero': {
     key: 'hero',
     eyebrow: 'Fossil لأفلام حماية الطلاء · الولايات المتحدة',
-    wordmark: 'FOSSIL',
+    wordmark: 'PHANTOM',
     heading: 'قوة لا تخطئها العين، وضوح استثنائي',
     headingHighlight: 'وضوح استثنائي',
     subheading: 'حماية موثوقة للطلاء دون تغيير شخصية سيارتك',
@@ -21,13 +21,59 @@ export const sections: LocaleContentInput['sections'] = {
     media: {
       type: 'image',
       image: {
-        src: '/images/hero/car.webp',
+        src: '/images/hero/car-blue.webp',
         alt: 'سيارة كوبيه رياضية بيضاء محمية بفيلم حماية الطلاء الشفاف، منظر جانبي',
         width: 2049,
         height: 606,
       },
     },
     serviceChips: [],
+  },
+  'home-showcase': {
+    key: 'showcase',
+    heading: 'مصمم ليحفظ',
+    slides: [
+      {
+        image: {
+          src: '/images/showcase/1.jpg',
+          alt: 'شيفروليه كورفيت سوداء وحمراء من الأعلى',
+          width: 1920,
+          height: 1080,
+        },
+        title: 'محمية اليوم ولسنوات قادمة',
+        body: 'الزمن يغيّر كل شيء، إلا ما هو محمي.',
+      },
+      {
+        image: {
+          src: '/images/showcase/2.jpg',
+          alt: 'قطرات ماء على هيكل أسود لامع بجانب المصباح الأمامي',
+          width: 1920,
+          height: 1080,
+        },
+        title: 'فيلم حماية الطلاء',
+        body: 'حماية متينة ذاتية الإصلاح تُبقي سيارتك كأنها جديدة.',
+      },
+      {
+        image: {
+          src: '/images/showcase/3.jpg',
+          alt: 'سيارة سيدان سوداء بنوافذ جانبية مظللة داكنة',
+          width: 1920,
+          height: 1080,
+        },
+        title: 'فيلم النوافذ',
+        body: 'يحجب الحرارة والأشعة فوق البنفسجية والوهج ويعزز راحة المقصورة.',
+      },
+      {
+        image: {
+          src: '/images/showcase/4.jpg',
+          alt: 'مطر على الزجاج الأمامي وغطاء محرك سيارة كلاسيكية',
+          width: 1920,
+          height: 1080,
+        },
+        title: 'حماية الزجاج الأمامي',
+        body: 'درع شفاف كالكريستال يمنع الشروخ والتكسّر على الطريق.',
+      },
+    ],
   },
   'home-trust': {
     key: 'trustStrip',
@@ -146,12 +192,12 @@ export const sections: LocaleContentInput['sections'] = {
   },
   'about-story': {
     key: 'climate',
-    heading: 'عن Fossil',
+    heading: 'القصة',
     intro: 'علامة أمريكية لأفلام حماية الطلاء وأفلام النوافذ مقرها أبيلين، تكساس، صُممت لتعيد تعريف معايير الصناعة.',
     points: [
       {
         icon: 'clock',
-        title: 'القصة',
+        title: 'عقدان من الخبرة',
         body: 'بخبرة تتجاوز عقدين في تأسيس وتنمية أسواق بعض أكثر الأسماء احتراماً في الصناعة، Solar Gard و Eastman و 3M، أدّت قيادتنا دوراً محورياً في تطور حلول حماية الطلاء وأفلام النوافذ حول العالم. ومن هذه الخلفية الواسعة انطلقت إدارتنا لإنشاء علامة تعكس جودة لا تقبل المساومة وابتكاراً وأداءً طويل الأمد.',
       },
       {

@@ -1,0 +1,212 @@
+/*
+ * Showcase reel (src/components/sections/showcase.tsx).
+ * Base: a horizontal scroll-snap carousel that works everywhere.
+ * Enhanced (scroll timelines + motion allowed): the section becomes one viewport tall per slide,
+ * the stage pins, and the vertical scroll drives the track sideways. Slides have slanted edges
+ * that interlock, echoing the hero stripe; photos drift and breathe inside their frames.
+ */
+@layer components {
+  .c-showcase {
+    @apply relative bg-background text-foreground;
+  }
+  .c-showcase-pin {
+    @apply relative overflow-hidden;
+  }
+  .c-showcase-head {
+    @apply pointer-events-none absolute inset-x-0 top-0 z-[3] flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 px-5 pt-6 sm:px-10 sm:pt-8;
+  }
+  .c-showcase-heading {
+    @apply font-heading text-sm font-bold ltr:tracking-[0.3em] ltr:uppercase;
+  }
+  .c-showcase-heading::before {
+    @apply me-3 inline-block h-0.5 w-10 bg-primary align-middle content-[''];
+  }
+  .c-showcase-intro {
+    @apply max-w-md text-sm text-muted-foreground;
+  }
+
+  .c-showcase-track {
+    @apply flex snap-x snap-mandatory overflow-x-auto;
+    scrollbar-width: none;
+  }
+  .c-showcase-slide {
+    @apply relative h-[78svh] min-h-[30rem] w-full shrink-0 snap-start overflow-hidden;
+  }
+  .c-showcase-media {
+    @apply absolute inset-0;
+  }
+  /* Scrim: keeps the copy readable on any photo. */
+  .c-showcase-media::after {
+    @apply absolute inset-0 content-[''];
+    background:
+      linear-gradient(to top, color-mix(in oklab, black 82%, transparent) 0%, transparent 58%),
+      linear-gradient(to right, color-mix(in oklab, black 55%, transparent) 0%, transparent 62%);
+  }
+  [dir='rtl'] .c-showcase-media::after {
+    background:
+      linear-gradient(to top, color-mix(in oklab, black 82%, transparent) 0%, transparent 58%),
+      linear-gradient(to left, color-mix(in oklab, black 55%, transparent) 0%, transparent 62%);
+  }
+  .c-showcase-image {
+    @apply size-full object-cover;
+  }
+
+  .c-showcase-copy {
+    @apply absolute inset-x-0 bottom-0 z-[2] flex max-w-3xl flex-col gap-3 px-5 pb-14 sm:px-10 sm:pb-20 lg:ps-[9vw];
+  }
+  .c-showcase-count {
+    @apply flex items-baseline gap-3;
+  }
+  .c-showcase-index {
+    @apply text-6xl leading-none font-black text-transparent sm:text-8xl;
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    -webkit-text-stroke: 1.5px var(--primary);
+  }
+  .c-showcase-total {
+    @apply text-sm font-semibold text-muted-foreground;
+  }
+  .c-showcase-total::before {
+    @apply me-3 inline-block h-px w-8 bg-muted-foreground align-middle content-[''];
+  }
+  .c-showcase-title {
+    @apply font-heading text-4xl leading-[0.95] font-extrabold sm:text-6xl lg:text-7xl ltr:tracking-tight ltr:uppercase;
+    text-wrap: balance;
+  }
+  .c-showcase-body {
+    @apply max-w-xl text-base text-muted-foreground sm:text-lg;
+  }
+
+  .c-showcase-progress {
+    @apply absolute inset-x-5 bottom-6 z-[3] hidden h-px bg-border sm:inset-x-10 sm:bottom-8;
+  }
+  .c-showcase-progress > span {
+    @apply absolute inset-y-0 start-0 -top-px h-0.5 w-full origin-left bg-primary rtl:origin-right;
+  }
+
+  @keyframes c-showcase-travel {
+    to {
+      translate: calc((var(--slides) - 1) * var(--step) * -1) 0;
+    }
+  }
+  @keyframes c-showcase-travel-rtl {
+    to {
+      translate: calc((var(--slides) - 1) * var(--step)) 0;
+    }
+  }
+  @keyframes c-showcase-fill {
+    from {
+      scale: 0 1;
+    }
+  }
+  /* Slow push-in so every photo is always moving a little, like footage. */
+  @keyframes c-showcase-breathe {
+    from {
+      scale: 1.04;
+    }
+    to {
+      scale: 1.16;
+    }
+  }
+  /* The photo slides against the direction of travel, which reads as depth. */
+  @keyframes c-showcase-drift {
+    from {
+      translate: -6% 0;
+    }
+    to {
+      translate: 6% 0;
+    }
+  }
+  @keyframes c-showcase-copy-in {
+    from {
+      opacity: 0;
+      translate: 0 3rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .c-showcase-image {
+      animation: c-showcase-breathe 14s ease-in-out infinite alternate;
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .c-showcase {
+        /*
+         * One stage-height of scrolling per slide. The stage sits under the sticky site header,
+         * so the timeline's viewport is inset by the header height. On that timeline the stage is
+         * pinned between cover 1/(n+1) and cover n/(n+1), where n is the number of slides.
+         */
+        --header-h: 4.8125rem;
+        --stage-h: calc(100svh - var(--header-h));
+        --slant: 9vw;
+        --step: calc(100vw - var(--slant));
+        --pin-start: calc(100% / (var(--slides) + 1));
+        --pin-end: calc(100% * var(--slides) / (var(--slides) + 1));
+        height: calc(var(--slides) * var(--stage-h));
+        view-timeline: --showcase block;
+        view-timeline-inset: var(--header-h) 0px;
+      }
+      .c-showcase-pin {
+        @apply sticky;
+        top: var(--header-h);
+        height: var(--stage-h);
+      }
+      .c-showcase-track {
+        @apply h-full snap-none overflow-visible;
+        width: max-content;
+        animation: c-showcase-travel linear both;
+        animation-timeline: --showcase;
+        animation-range: cover var(--pin-start) cover var(--pin-end);
+      }
+      [dir='rtl'] .c-showcase-track {
+        animation-name: c-showcase-travel-rtl;
+      }
+      .c-showcase-slide {
+        @apply h-full min-h-0 w-screen;
+      }
+      /* Slanted edges that interlock (left-to-right pages only; RTL keeps straight edges). */
+      [dir='ltr'] .c-showcase-slide {
+        clip-path: polygon(var(--slant) 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+      }
+      [dir='ltr'] .c-showcase-slide + .c-showcase-slide {
+        margin-inline-start: calc(var(--slant) * -1);
+      }
+      [dir='ltr'] .c-showcase-slide:first-child {
+        clip-path: polygon(0 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+      }
+      [dir='ltr'] .c-showcase-slide:last-child {
+        clip-path: polygon(var(--slant) 0, 100% 0, 100% 100%, 0 100%);
+      }
+      [dir='rtl'] .c-showcase {
+        --slant: 0vw;
+      }
+      /* Each slide owns the slice of the scroll in which it crosses the screen (--i is its index). */
+      .c-showcase-media {
+        @apply -inset-x-[8%];
+        animation: c-showcase-drift linear both;
+        animation-timeline: --showcase;
+        animation-range: cover calc(100% * var(--i) / (var(--slides) + 1)) cover
+          calc(100% * (var(--i) + 2) / (var(--slides) + 1));
+      }
+      .c-showcase-copy {
+        animation: c-showcase-copy-in linear both;
+        animation-timeline: --showcase;
+        animation-range: cover calc(100% * (var(--i) + 0.45) / (var(--slides) + 1)) cover
+          calc(100% * (var(--i) + 1) / (var(--slides) + 1));
+      }
+      .c-showcase-slide:first-child .c-showcase-copy {
+        animation: none;
+      }
+      .c-showcase-progress {
+        @apply block;
+      }
+      .c-showcase-progress > span {
+        animation: c-showcase-fill linear both;
+        animation-timeline: --showcase;
+        animation-range: cover var(--pin-start) cover var(--pin-end);
+      }
+    }
+  }
+}

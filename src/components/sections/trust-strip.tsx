@@ -16,13 +16,13 @@ export function TrustStrip({ section, data }: SectionProps<'trustStrip'>) {
       {section.stats.length > 0 && (
         <dl className="c-stats">
           {section.stats.map((stat) => (
-            <div key={stat.label} className="c-stat">
+            <div key={stat.label} className="c-stat" data-reveal>
               <dt className="c-stat-label">{stat.label}</dt>
               <dd className="c-stat-value">
                 {'fact' in stat.value
                   ? data.content.stats[stat.value.fact]
                   : formatNumber(stat.value.number, data.locale, data.site.region)}
-                {stat.suffix}
+                {stat.suffix && <span className="c-stat-suffix">{stat.suffix}</span>}
               </dd>
             </div>
           ))}

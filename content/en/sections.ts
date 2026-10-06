@@ -5,7 +5,7 @@ export const sections: LocaleContentInput['sections'] = {
   'home-hero': {
     key: 'hero',
     eyebrow: 'Fossil Paint Protection Film · USA',
-    wordmark: 'FOSSIL',
+    wordmark: 'PHANTOM',
     heading: 'Unmistakably strong, exceptionally clear',
     headingHighlight: 'exceptionally clear',
     subheading: 'Reliable paint protection without altering the character of your vehicle',
@@ -21,13 +21,59 @@ export const sections: LocaleContentInput['sections'] = {
     media: {
       type: 'image',
       image: {
-        src: '/images/hero/car.webp',
+        src: '/images/hero/car-blue.webp',
         alt: 'White sports coupe protected with clear paint protection film, side view',
         width: 2049,
         height: 606,
       },
     },
     serviceChips: [],
+  },
+  'home-showcase': {
+    key: 'showcase',
+    heading: 'Engineered to preserve',
+    slides: [
+      {
+        image: {
+          src: '/images/showcase/1.jpg',
+          alt: 'Black and red Chevrolet Corvette seen from above',
+          width: 1920,
+          height: 1080,
+        },
+        title: 'Protected, today and for years to come',
+        body: 'Time changes everything — except what is protected.',
+      },
+      {
+        image: {
+          src: '/images/showcase/2.jpg',
+          alt: 'Water beading on glossy black bodywork beside a headlight',
+          width: 1920,
+          height: 1080,
+        },
+        title: 'Paint protection film',
+        body: 'Durable, self-healing protection that keeps your car looking brand new.',
+      },
+      {
+        image: {
+          src: '/images/showcase/3.jpg',
+          alt: 'Black saloon with dark tinted side windows',
+          width: 1920,
+          height: 1080,
+        },
+        title: 'Window film',
+        body: 'Rejects heat, UV rays, and glare while enhancing interior comfort.',
+      },
+      {
+        image: {
+          src: '/images/showcase/4.jpg',
+          alt: 'Rain on the windscreen and bonnet of a classic car',
+          width: 1920,
+          height: 1080,
+        },
+        title: 'Windshield protection',
+        body: 'Crystal-clear shield to prevent chips and cracks on the road.',
+      },
+    ],
   },
   'home-trust': {
     key: 'trustStrip',
@@ -153,13 +199,13 @@ export const sections: LocaleContentInput['sections'] = {
   },
   'about-story': {
     key: 'climate',
-    heading: 'About Fossil',
+    heading: 'Story',
     intro:
       'A USA-based paint protection and window film brand headquartered in Abilene, Texas, engineered to redefine industry standards.',
     points: [
       {
         icon: 'clock',
-        title: 'Story',
+        title: 'Two decades of experience',
         body: 'With over two decades of experience helping establish and grow markets for some of the most respected names in the industry — Solar Gard, Eastman, and 3M — our leadership has played a pivotal role in shaping the evolution of paint protection and window film solutions worldwide. Drawing from this extensive background, our management set out to create a brand that reflects uncompromising quality, innovation, and long-term performance.',
       },
       {

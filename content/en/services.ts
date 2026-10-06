@@ -8,7 +8,7 @@ import type { LocaleContentInput } from '../../src/lib/content/schema';
 const PPF_FEATURES = [
   'Outstanding clarity that preserves the original paint finish without distortion',
   'Stain resistance against water spots, bug splatter, road grime and light chemical stains',
-  'Self-healing surface: minor scratches and swirl marks disappear with exposure to heat',
+  'Self-healing surface where minor scratches and swirl marks disappear with exposure to heat',
   'Reliable adhesion for stable performance and clean removal when required',
   'Nanoscale hydrophobic top layer for easier cleaning and reduced water spotting',
   'Engineered acrylic adhesive that bonds uniformly without residue',

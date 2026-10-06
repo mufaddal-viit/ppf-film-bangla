@@ -1,0 +1,69 @@
+/*
+ * Curves: where one band of the page meets the next, the upper band keeps a large rounded
+ * bottom (or the lower one a rounded top) and the neighbour slides underneath, so sections
+ * stack like sheets instead of meeting on a straight line. Also rounds the panels and frames
+ * that were square. Imported late so it can adjust the per-area files.
+ */
+@layer components {
+  :root {
+    --curve: 2.25rem;
+  }
+  @media (min-width: 40rem) {
+    :root {
+      --curve: 3.5rem;
+    }
+  }
+
+  /* Hero ends in a curve; the reel behind it shows through the corners. */
+  .c-hero {
+    @apply z-[2];
+    border-end-start-radius: var(--curve);
+    border-end-end-radius: var(--curve);
+  }
+  .c-showcase {
+    margin-top: calc(var(--curve) * -1);
+  }
+
+  /* A light section that follows a dark band rises over it with rounded shoulders. */
+  [data-tone='inverse'] + .c-section:not([data-tone='inverse']) {
+    @apply z-[1];
+    margin-top: calc(var(--curve) * -1);
+    border-start-start-radius: var(--curve);
+    border-start-end-radius: var(--curve);
+  }
+  /* The footer does the same over whatever precedes it. */
+  .c-footer {
+    @apply relative z-[1];
+    margin-top: calc(var(--curve) * -1);
+    border-start-start-radius: var(--curve);
+    border-start-end-radius: var(--curve);
+  }
+  .c-footer-brand {
+    border-start-start-radius: var(--curve);
+    border-start-end-radius: var(--curve);
+  }
+  /* Keep the last section's content clear of the footer that overlaps it. */
+  .c-page > :last-child {
+    padding-bottom: calc(var(--curve) + 4rem);
+  }
+
+  /* Inner-page title band. */
+  .c-page-header {
+    border-end-start-radius: var(--curve);
+    border-end-end-radius: var(--curve);
+  }
+
+  /* Panels and frames. */
+  .c-product-enquiry {
+    @apply overflow-hidden rounded-[2rem];
+  }
+  .c-promise-frame {
+    @apply rounded-[1.75rem];
+  }
+  .c-input {
+    @apply rounded-2xl;
+  }
+  .c-submenu {
+    @apply rounded-3xl;
+  }
+}
