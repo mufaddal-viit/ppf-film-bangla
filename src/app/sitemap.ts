@@ -1,8 +1,11 @@
 import type { MetadataRoute } from 'next';
+import { getPublishedPosts } from '@/lib/blog';
 import { featuresConfig, siteConfig } from '@/lib/config';
 import { ROUTES, serviceSlugs } from '@/lib/content';
-import { getBlogPosts } from '@/lib/content/mdx';
 import { absoluteUrl, languageAlternates, localePath } from '@/lib/seo/metadata';
+
+/** Rebuilt hourly so scheduled posts are listed; saving a post refreshes it at once. */
+export const revalidate = 3600;
 
 /** Every indexable page in every locale, each with hreflang alternates. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -30,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
 
   // Blog posts can differ between locales, so only list alternates that exist.
-  const postsByLocale = await Promise.all(locales.map(async (l) => [l, await getBlogPosts(l)] as const));
+  const postsByLocale = await Promise.all(locales.map(async (l) => [l, await getPublishedPosts(l)] as const));
   for (const [locale, posts] of postsByLocale) {
     for (const post of posts) {
       const path = ROUTES.blogPost(post.slug);
@@ -41,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       );
       entries.push({
         url: absoluteUrl(localePath(locale, path)),
-        lastModified: post.updatedAt ?? post.publishedAt,
+        lastModified: post.updatedAt > post.publishedAt ? post.updatedAt : post.publishedAt,
         alternates: { languages },
         changeFrequency: 'yearly',
         priority: 0.5,

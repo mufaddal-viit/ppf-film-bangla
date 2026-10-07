@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { addLeadNote, updateLeadFollowUp, updateLeadStatus } from '@/app/actions/admin';
+import { addLeadNote, convertLeadToCustomer, updateLeadFollowUp, updateLeadStatus } from '@/app/actions/admin';
 import { AdminForm } from '@/components/admin/admin-form';
 import { EmptyState, Field, PageHead, Panel, StatusBadge } from '@/components/admin/ui';
 import { ADMIN_ROUTES, LEAD_STATUSES, LEAD_STATUS_LABELS, LEAD_TYPE_LABELS } from '@/lib/admin/constants';
 import { adminDates, humanize } from '@/lib/admin/format';
 import { requireSession } from '@/lib/auth/session';
 import { siteConfig } from '@/lib/config';
+import { customerRepository } from '@/lib/db/repositories/customer.repository';
 import { leadRepository } from '@/lib/db/repositories/lead.repository';
 
 export const metadata: Metadata = { title: 'Lead' };
@@ -17,6 +18,7 @@ export default async function AdminLeadPage({ params }: PageProps<'/admin/leads/
   const { id } = await params;
   const lead = await leadRepository.findById(id);
   if (!lead) notFound();
+  const customer = await customerRepository.findByPhone(lead.phone);
 
   const format = adminDates(siteConfig.locale.timezone);
   const vehicle = [lead.vehicle?.make, lead.vehicle?.model, lead.vehicle?.year].filter(Boolean).join(' ');
@@ -115,6 +117,26 @@ export default async function AdminLeadPage({ params }: PageProps<'/admin/leads/
                 </select>
               </Field>
             </AdminForm>
+          </Panel>
+
+          <Panel title="Customer">
+            {customer ? (
+              <>
+                <p className="c-admin-muted">This phone number belongs to a customer.</p>
+                <Link href={`${ADMIN_ROUTES.customers}/${customer.id}`} className="c-button">
+                  Open {customer.name}
+                </Link>
+              </>
+            ) : (
+              <>
+                <p className="c-admin-muted">
+                  When the job is agreed, save this person as a customer. The enquiry is marked as Won.
+                </p>
+                <AdminForm action={convertLeadToCustomer} submitLabel="Convert to customer" quiet>
+                  <input type="hidden" name="leadId" value={lead.id} />
+                </AdminForm>
+              </>
+            )}
           </Panel>
 
           <Panel title="Follow-up">

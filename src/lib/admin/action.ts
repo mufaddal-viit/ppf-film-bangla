@@ -1,4 +1,5 @@
 import 'server-only';
+import { unstable_rethrow } from 'next/navigation';
 import type { z } from 'zod';
 import { requireSession, type Session } from '@/lib/auth/session';
 import { logger } from '@/lib/logger';
@@ -51,6 +52,8 @@ export function adminAction<S extends z.ZodType>(def: AdminActionDefinition<S>) 
       }
       return { ok: true, message: await def.handler(parsed.data, session) };
     } catch (error) {
+      // A handler may end with redirect(); that is a thrown signal, not a failure.
+      unstable_rethrow(error);
       if (error instanceof ActionError) return { ok: false, message: error.message };
       logger.error('admin.action_failed', { action: def.name }, error);
       return { ok: false, message: 'Something went wrong. Try again.' };

@@ -18,6 +18,7 @@
     "db:setup": "tsx --conditions=react-server scripts/db-setup.mts",
     "db:seed": "tsx --conditions=react-server scripts/seed.mts",
     "admin:create": "tsx --conditions=react-server scripts/create-admin.mts",
+    "blog:seed": "tsx --conditions=react-server scripts/seed-blog.mts",
     "assets:placeholders": "tsx scripts/generate-placeholders.mts",
     "prepare": "husky"
   },

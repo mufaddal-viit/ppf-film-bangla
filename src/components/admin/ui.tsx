@@ -42,6 +42,15 @@ export function StatusBadge({ status }: { status: LeadStatus }) {
   );
 }
 
+/** A small coloured label for states that are not lead statuses. */
+export function Pill({ tone, children }: { tone: 'success' | 'warning' | 'muted' | 'primary'; children: ReactNode }) {
+  return (
+    <span className="c-admin-status" data-tone={tone}>
+      {children}
+    </span>
+  );
+}
+
 export function EmptyState({ children }: { children: ReactNode }) {
   return <p className="c-admin-empty">{children}</p>;
 }

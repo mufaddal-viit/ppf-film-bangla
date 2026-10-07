@@ -157,6 +157,26 @@ export function serviceJsonLd(
   };
 }
 
+export function articleJsonLd(
+  post: { title: string; excerpt: string; author: string; publishedAt: string; updatedAt: string; tags: string[] },
+  opts: { siteUrl: string; pageUrl: string; image: string; locale: string; publisher: string },
+): JsonLd {
+  return {
+    '@context': ctx,
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    image: opts.image,
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt > post.publishedAt ? post.updatedAt : post.publishedAt,
+    inLanguage: opts.locale,
+    ...(post.tags.length > 0 && { keywords: post.tags.join(', ') }),
+    author: { '@type': 'Organization', name: post.author },
+    publisher: { '@id': ids(opts.siteUrl).organization, name: opts.publisher },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': opts.pageUrl },
+  };
+}
+
 export function faqPageJsonLd(faqs: Array<Pick<FaqView, 'question' | 'answer'>>): JsonLd | null {
   if (faqs.length === 0) return null;
   return {

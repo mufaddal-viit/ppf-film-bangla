@@ -170,7 +170,13 @@
     "publishedOn": "Published {date}",
     "updatedOn": "Updated {date}",
     "by": "By {author}",
-    "empty": "No articles yet."
+    "empty": "No articles yet. Check back soon.",
+    "latest": "Latest article",
+    "readingTime": "{minutes} min read",
+    "onThisPage": "In this article",
+    "moreArticles": "More articles",
+    "ctaTitle": "Thinking about protecting your car?",
+    "ctaText": "Tell us about your vehicle and we will recommend the right film."
   },
   "notFound": {
     "home": "Go to the homepage"

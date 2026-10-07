@@ -12,8 +12,12 @@
     @apply sticky top-0 flex h-dvh flex-col gap-6 overflow-y-auto bg-foreground p-4 text-background;
   }
   .c-admin-brand {
-    @apply px-2 font-display text-lg font-black uppercase;
+    @apply flex items-baseline gap-2 px-2 font-display text-lg font-black uppercase;
     font-stretch: 125%;
+  }
+  .c-admin-brand span {
+    @apply rounded-md bg-primary px-1.5 py-0.5 font-sans text-[0.6rem] font-bold tracking-widest text-primary-foreground;
+    font-stretch: normal;
   }
   .c-admin-nav {
     @apply flex flex-1 flex-col gap-4;
@@ -26,15 +30,24 @@
     color: color-mix(in oklab, var(--background) 50%, transparent);
   }
   .c-admin-nav a {
-    @apply flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors;
+    @apply flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors;
     color: color-mix(in oklab, var(--background) 78%, transparent);
+  }
+  .c-admin-nav a svg {
+    @apply size-[1.05rem] shrink-0 opacity-80;
+  }
+  .c-admin-nav-count {
+    @apply ms-auto;
   }
   .c-admin-nav a:hover {
     @apply text-background;
     background: color-mix(in oklab, var(--background) 10%, transparent);
   }
   .c-admin-nav a[aria-current='page'] {
-    @apply bg-primary font-semibold text-primary-foreground;
+    @apply bg-primary font-semibold text-primary-foreground shadow-md;
+  }
+  .c-admin-nav a[aria-current='page'] svg {
+    @apply opacity-100;
   }
   .c-admin-nav-count {
     @apply rounded-full bg-background px-2 text-xs font-semibold text-foreground;
@@ -44,7 +57,10 @@
     border-color: color-mix(in oklab, var(--background) 16%, transparent);
   }
   .c-admin-user a {
-    @apply flex flex-col px-2;
+    @apply flex flex-col rounded-lg px-2 py-1 transition-colors;
+  }
+  .c-admin-user a:hover {
+    background: color-mix(in oklab, var(--background) 10%, transparent);
   }
   .c-admin-user a span,
   .c-admin-user button {
@@ -85,7 +101,8 @@
     .c-admin-user {
       @apply ml-auto flex-row items-center border-t-0 pt-0;
     }
-    .c-admin-user a span {
+    .c-admin-user a span,
+    .c-admin-user a[target] {
       @apply hidden;
     }
   }
@@ -94,8 +111,23 @@
   .c-admin-head {
     @apply flex flex-wrap items-end justify-between gap-4;
   }
+  .c-admin-head {
+    @apply border-b border-border pb-5;
+  }
   .c-admin-head h1 {
-    @apply text-2xl font-extrabold sm:text-3xl;
+    @apply text-2xl font-extrabold text-balance sm:text-3xl;
+  }
+  /* The public site uses large pill buttons; the panel is denser. */
+  .c-admin .c-button {
+    @apply min-h-10 rounded-xl px-4 text-sm;
+  }
+  .c-admin .c-button:hover {
+    @apply translate-y-0;
+  }
+  .c-admin-notice {
+    @apply rounded-xl border px-4 py-3 text-sm;
+    border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
+    background: color-mix(in oklab, var(--primary) 7%, var(--background));
   }
   .c-admin-head p,
   .c-admin-muted,
@@ -136,10 +168,28 @@
 
   /* ------------------------------------------------------------ dashboard */
   .c-admin-tiles {
-    @apply grid grid-cols-2 gap-4 lg:grid-cols-4;
+    @apply grid grid-cols-2 gap-4 lg:grid-cols-3;
   }
   .c-admin-tile {
-    @apply flex flex-col gap-1 rounded-2xl border border-border bg-background p-4 shadow-sm;
+    --tile-color: var(--border);
+    @apply relative flex h-full flex-col gap-2 overflow-hidden rounded-2xl border border-border bg-background p-5 ps-6 shadow-sm transition duration-200;
+  }
+  .c-admin-tile::before {
+    @apply absolute inset-y-0 start-0 w-1.5 content-[''];
+    background: var(--tile-color);
+  }
+  .c-admin-tile:hover {
+    @apply -translate-y-0.5 shadow-md;
+    border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+  }
+  .c-admin-tile[data-tone='primary'] {
+    --tile-color: var(--primary);
+  }
+  .c-admin-tile[data-tone='warning'] {
+    --tile-color: var(--warning);
+  }
+  .c-admin-tile[data-tone='success'] {
+    --tile-color: var(--success);
   }
   .c-admin-tile strong {
     @apply font-heading text-3xl leading-none font-extrabold tabular-nums;
@@ -202,6 +252,18 @@
   [data-status='spam'] {
     --status-color: var(--danger);
   }
+  [data-tone='success'] {
+    --status-color: var(--success);
+  }
+  [data-tone='warning'] {
+    --status-color: var(--warning);
+  }
+  [data-tone='muted'] {
+    --status-color: var(--muted-foreground);
+  }
+  [data-tone='primary'] {
+    --status-color: var(--primary);
+  }
   .c-admin-status {
     @apply inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap;
     color: var(--status-color);
@@ -223,6 +285,27 @@
   }
   .c-admin-table td a {
     @apply font-semibold text-primary underline-offset-4 hover:underline;
+  }
+  .c-admin-table td small {
+    @apply block text-xs text-muted-foreground;
+  }
+  .c-admin-table tbody tr {
+    @apply transition-colors;
+  }
+  .c-admin-table tbody tr:hover {
+    background: color-mix(in oklab, var(--primary) 4%, var(--background));
+  }
+  .c-admin-tabs {
+    @apply flex gap-1 overflow-x-auto border-b border-border;
+  }
+  .c-admin-tabs a {
+    @apply -mb-px flex items-center gap-2 border-b-2 border-transparent px-3 py-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground;
+  }
+  .c-admin-tabs a[aria-current='page'] {
+    @apply border-primary font-semibold text-foreground;
+  }
+  .c-admin-tabs a span {
+    @apply rounded-full bg-muted px-2 text-xs font-semibold tabular-nums;
   }
   .c-admin-pager {
     @apply flex items-center justify-center gap-5 text-sm;
@@ -276,6 +359,43 @@
   .c-admin-form-errors {
     @apply list-disc space-y-1 ps-5 text-sm text-danger;
   }
+  /* Post editor: content on the left, settings on the right, the save bar always in reach. */
+  .c-admin-editor {
+    @apply gap-6 lg:grid lg:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)] lg:items-start;
+  }
+  .c-admin-editor > .c-admin-form-errors {
+    @apply lg:col-span-2;
+  }
+  .c-admin-editor > .c-admin-form-foot {
+    @apply sticky bottom-3 z-10 rounded-2xl border border-border bg-background p-3 shadow-lg lg:col-span-2;
+  }
+  .c-admin-field .c-admin-editor-body {
+    @apply min-h-80 font-mono text-sm leading-relaxed;
+  }
+  .c-admin-disclosure {
+    @apply rounded-xl border border-border;
+  }
+  .c-admin-disclosure summary {
+    @apply cursor-pointer px-4 py-3 text-sm font-medium;
+  }
+  .c-admin-disclosure[open] {
+    @apply flex flex-col gap-4 pb-4;
+  }
+  .c-admin-disclosure > .c-admin-field {
+    @apply px-4;
+  }
+  .c-admin-vehicles {
+    @apply flex flex-col;
+  }
+  .c-admin-vehicles li {
+    @apply flex items-center justify-between gap-3 border-t border-border py-3 first:border-t-0;
+  }
+  .c-admin-vehicles li > div {
+    @apply flex min-w-0 flex-col;
+  }
+  .c-admin-vehicles li span {
+    @apply text-xs text-muted-foreground;
+  }
   .c-admin-filters {
     @apply flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-background p-4 shadow-sm;
   }
@@ -320,10 +440,16 @@
 
   /* ------------------------------------------------------------ sign in */
   .c-admin-login {
-    @apply grid min-h-dvh place-items-center bg-surface p-5;
+    @apply grid min-h-dvh place-items-center p-5;
+    background:
+      radial-gradient(60rem 30rem at 85% -10%, color-mix(in oklab, var(--primary) 16%, transparent), transparent),
+      var(--surface);
   }
   .c-admin-login-card {
-    @apply flex w-full max-w-sm flex-col gap-5 rounded-2xl border border-border bg-background p-7 shadow-md;
+    @apply flex w-full max-w-sm flex-col gap-5 rounded-3xl border border-border bg-background p-8 shadow-lg;
+  }
+  .c-admin-login-card .c-admin-brand span {
+    @apply hidden;
   }
   .c-admin-login-card .c-admin-brand {
     @apply px-0 text-xl;

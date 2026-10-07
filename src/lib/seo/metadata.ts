@@ -15,10 +15,15 @@ export function absoluteUrl(path: string): string {
 }
 
 /** hreflang map for a path, including x-default. */
-export function languageAlternates(path: string): Record<string, string> {
+export function languageAlternates(
+  path: string,
+  /** Languages the page exists in. Defaults to all of them. */
+  locales: readonly string[] = siteConfig.locale.locales,
+): Record<string, string> {
   const alternates: Record<string, string> = {};
-  for (const locale of siteConfig.locale.locales) alternates[locale] = absoluteUrl(localePath(locale, path));
-  alternates['x-default'] = absoluteUrl(localePath(siteConfig.locale.defaultLocale, path));
+  for (const locale of locales) alternates[locale] = absoluteUrl(localePath(locale, path));
+  const fallback = locales.includes(siteConfig.locale.defaultLocale) ? siteConfig.locale.defaultLocale : locales[0];
+  if (fallback) alternates['x-default'] = absoluteUrl(localePath(fallback, path));
   return alternates;
 }
 
@@ -44,6 +49,7 @@ export function buildMetadata({
   image = seoConfig.defaultOgImage,
   noindex = false,
   type = 'website',
+  locales,
 }: {
   locale: string;
   /** Path without locale prefix, e.g. "/services/ceramic-coating" or "/". */
@@ -53,13 +59,15 @@ export function buildMetadata({
   image?: { src: string; width: number; height: number };
   noindex?: boolean;
   type?: 'website' | 'article';
+  /** Languages the page exists in, when it is not translated into all of them. */
+  locales?: readonly string[];
 }): Metadata {
   const url = absoluteUrl(localePath(locale, path));
   const ogImage = { url: absoluteUrl(image.src), width: image.width, height: image.height };
   return {
     title,
     description,
-    alternates: { canonical: url, languages: languageAlternates(path) },
+    alternates: { canonical: url, languages: languageAlternates(path, locales) },
     openGraph: {
       type,
       url,

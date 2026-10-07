@@ -1,6 +1,6 @@
 import 'server-only';
 import type { Db, Document, IndexDescription, ObjectId } from 'mongodb';
-import { LEAD_STATUSES, type LeadStatus, type UserRole } from '@/lib/admin/constants';
+import { LEAD_STATUSES, type LeadStatus, type PostStatus, type UserRole } from '@/lib/admin/constants';
 import type { LeadType } from '@/lib/config/schema';
 import { getDb } from './client';
 
@@ -63,8 +63,55 @@ export type AuditDocument = {
   detail?: string;
 };
 
+export type PostTranslation = {
+  title: string;
+  excerpt: string;
+  /** Markdown subset, see src/lib/blog/markdown.ts. */
+  body: string;
+  seoTitle?: string;
+  seoDescription?: string;
+};
+
+/** Blog post. A post shows in a language only when it has that translation. */
+export type PostDocument = {
+  _id?: ObjectId;
+  slug: string;
+  status: PostStatus;
+  /** A date in the future schedules the post. */
+  publishedAt?: Date;
+  author: string;
+  /** Site image path, one of BLOG_COVERS. */
+  cover?: string;
+  tags: string[];
+  translations: { en: PostTranslation; ar?: PostTranslation };
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CustomerVehicle = { id: string; make: string; model: string; year?: number; plate?: string };
+
+/** A person who has bought from the business. Phones are E.164 and unique. */
+export type CustomerDocument = {
+  _id?: ObjectId;
+  name: string;
+  phone: string;
+  email?: string;
+  vehicles: CustomerVehicle[];
+  tags: string[];
+  /** True only when the customer agreed to receive offers. */
+  marketingOptIn: boolean;
+  notes: LeadNote[];
+  /** The enquiry this customer was created from, if any. */
+  leadId?: string;
+  lastContactedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const COLLECTIONS = {
   leads: 'leads',
+  posts: 'posts',
+  customers: 'customers',
   users: 'users',
   sessions: 'sessions',
   auditLog: 'auditLog',
@@ -87,6 +134,14 @@ export async function sessionsCollection() {
 
 export async function auditCollection() {
   return (await getDb()).collection<AuditDocument>(COLLECTIONS.auditLog);
+}
+
+export async function postsCollection() {
+  return (await getDb()).collection<PostDocument>(COLLECTIONS.posts);
+}
+
+export async function customersCollection() {
+  return (await getDb()).collection<CustomerDocument>(COLLECTIONS.customers);
 }
 
 /** Database-level guard in addition to Zod: required fields, types and length caps. */
@@ -124,6 +179,8 @@ const INDEXES: Record<string, IndexDescription[]> = {
     { key: { followUpAt: 1 }, sparse: true },
   ],
   [COLLECTIONS.auditLog]: [{ key: { at: -1 } }],
+  [COLLECTIONS.posts]: [{ key: { slug: 1 }, unique: true }, { key: { status: 1, publishedAt: -1 } }],
+  [COLLECTIONS.customers]: [{ key: { phone: 1 }, unique: true }, { key: { createdAt: -1 } }],
   [COLLECTIONS.users]: [{ key: { email: 1 }, unique: true, sparse: true }],
   [COLLECTIONS.accounts]: [{ key: { provider: 1, providerAccountId: 1 }, unique: true }, { key: { userId: 1 } }],
   [COLLECTIONS.sessions]: [

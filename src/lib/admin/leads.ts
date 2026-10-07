@@ -6,6 +6,7 @@ import { auditRepository } from '@/lib/db/repositories/audit.repository';
 import { leadRepository, type Lead, type LeadFilter } from '@/lib/db/repositories/lead.repository';
 import { ActionError, adminAction } from './action';
 import { ADMIN_ROUTES, LEAD_STATUSES, LEAD_STATUS_LABELS, LEAD_TYPE_LABELS } from './constants';
+import { toCsv, type CsvColumn } from './csv';
 
 const idSchema = z.string().regex(/^[0-9a-f]{24}$/);
 const NOT_FOUND = 'That enquiry no longer exists.';
@@ -72,40 +73,25 @@ export function parseLeadFilter(params: Record<string, string | string[] | undef
 
 // ---------------------------------------------------------------- CSV export
 
-const CSV_COLUMNS: Array<[header: string, value: (lead: Lead) => string | number | undefined]> = [
-  ['Received', (l) => l.createdAt.toISOString()],
-  ['Status', (l) => LEAD_STATUS_LABELS[l.status]],
-  ['Type', (l) => LEAD_TYPE_LABELS[l.type]],
-  ['Name', (l) => l.name],
-  ['Phone', (l) => l.phone],
-  ['Email', (l) => l.email],
-  ['Product', (l) => l.service],
-  ['Vehicle', (l) => [l.vehicle?.make, l.vehicle?.model, l.vehicle?.year].filter(Boolean).join(' ')],
-  ['Preferred time', (l) => l.preferredTime],
-  ['Message', (l) => l.message],
-  ['Follow-up', (l) => l.followUpAt?.toISOString().slice(0, 10)],
-  ['Language', (l) => l.locale],
-  ['Page', (l) => l.sourcePage],
-  ['Source', (l) => l.utm?.source],
-  ['Medium', (l) => l.utm?.medium],
-  ['Campaign', (l) => l.utm?.campaign],
+const CSV_COLUMNS: Array<CsvColumn<Lead>> = [
+  { header: 'Received', value: (l) => l.createdAt.toISOString() },
+  { header: 'Status', value: (l) => LEAD_STATUS_LABELS[l.status] },
+  { header: 'Type', value: (l) => LEAD_TYPE_LABELS[l.type] },
+  { header: 'Name', value: (l) => l.name },
+  { header: 'Phone', value: (l) => l.phone, phone: true },
+  { header: 'Email', value: (l) => l.email },
+  { header: 'Product', value: (l) => l.service },
+  { header: 'Vehicle', value: (l) => [l.vehicle?.make, l.vehicle?.model, l.vehicle?.year].filter(Boolean).join(' ') },
+  { header: 'Preferred time', value: (l) => l.preferredTime },
+  { header: 'Message', value: (l) => l.message },
+  { header: 'Follow-up', value: (l) => l.followUpAt?.toISOString().slice(0, 10) },
+  { header: 'Language', value: (l) => l.locale },
+  { header: 'Page', value: (l) => l.sourcePage },
+  { header: 'Source', value: (l) => l.utm?.source },
+  { header: 'Medium', value: (l) => l.utm?.medium },
+  { header: 'Campaign', value: (l) => l.utm?.campaign },
 ];
 
-/**
- * Visitors type these values, so a cell starting with = + - @ could run as a formula when
- * the file is opened in Excel. Such cells get a leading apostrophe; phone numbers keep their +.
- */
-function csvCell(value: string | number | undefined, isPhone = false): string {
-  let text = value === undefined ? '' : String(value);
-  if (!isPhone && /^[=+\-@\t\r]/.test(text)) text = `'${text}`;
-  return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
-}
-
 export function leadsToCsv(leads: Lead[]): string {
-  const rows = [
-    CSV_COLUMNS.map(([header]) => header).join(','),
-    ...leads.map((lead) => CSV_COLUMNS.map(([header, value]) => csvCell(value(lead), header === 'Phone')).join(',')),
-  ];
-  // The BOM makes Excel read the file as UTF-8, which Arabic names need.
-  return `﻿${rows.join('\r\n')}\r\n`;
+  return toCsv(CSV_COLUMNS, leads);
 }

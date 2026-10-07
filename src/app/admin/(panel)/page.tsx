@@ -5,36 +5,56 @@ import { ADMIN_ROUTES, LEAD_STATUSES, LEAD_STATUS_LABELS } from '@/lib/admin/con
 import { adminDates } from '@/lib/admin/format';
 import { requireSession } from '@/lib/auth/session';
 import { siteConfig } from '@/lib/config';
+import { customerRepository } from '@/lib/db/repositories/customer.repository';
 import { leadRepository } from '@/lib/db/repositories/lead.repository';
+import { postRepository } from '@/lib/db/repositories/post.repository';
 
 export const metadata: Metadata = { title: 'Dashboard' };
 
 export default async function AdminDashboardPage() {
   const session = await requireSession();
-  const [stats, recent, due] = await Promise.all([
+  const [stats, recent, due, customers, posts] = await Promise.all([
     leadRepository.stats(),
     leadRepository.list({}, { skip: 0, limit: 6 }),
     leadRepository.followUpsDue(6),
+    customerRepository.stats(),
+    postRepository.counts(),
   ]);
   const format = adminDates(siteConfig.locale.timezone);
   const total = LEAD_STATUSES.reduce((sum, status) => sum + stats.byStatus[status], 0);
 
   const tiles = [
-    { label: 'New in the last 24 hours', value: stats.last24Hours },
-    { label: 'New in the last 7 days', value: stats.last7Days },
-    { label: 'Open enquiries', value: stats.open },
-    { label: 'Follow-ups due', value: stats.followUpsDue },
+    {
+      label: 'New enquiries waiting',
+      value: stats.byStatus.new,
+      href: `${ADMIN_ROUTES.leads}?status=new`,
+      tone: 'primary',
+    },
+    { label: 'Enquiries in the last 7 days', value: stats.last7Days, href: ADMIN_ROUTES.leads },
+    { label: 'Follow-ups due', value: stats.followUpsDue, href: ADMIN_ROUTES.leads, tone: 'warning' },
+    { label: 'Customers', value: customers.total, href: ADMIN_ROUTES.customers },
+    { label: 'Customers due a message', value: customers.due, href: `${ADMIN_ROUTES.customers}?segment=due` },
+    { label: 'Published posts', value: posts.published, href: ADMIN_ROUTES.blog, tone: 'success' },
   ];
 
   return (
     <>
-      <PageHead title={`Welcome, ${session.name.split(' ')[0]}`} intro="Enquiries from the website at a glance." />
+      <PageHead title={`Welcome, ${session.name.split(' ')[0]}`} intro="Enquiries, customers and the blog at a glance.">
+        <Link className="c-button" href={ADMIN_ROUTES.customersNew}>
+          Add customer
+        </Link>
+        <Link className="c-button" data-variant="primary" href={ADMIN_ROUTES.blogNew}>
+          New post
+        </Link>
+      </PageHead>
 
       <ul className="c-admin-tiles">
         {tiles.map((tile) => (
-          <li key={tile.label} className="c-admin-tile">
-            <strong>{tile.value}</strong>
-            <span>{tile.label}</span>
+          <li key={tile.label}>
+            <Link href={tile.href} className="c-admin-tile" data-tone={tile.value > 0 ? tile.tone : undefined}>
+              <strong>{tile.value}</strong>
+              <span>{tile.label}</span>
+            </Link>
           </li>
         ))}
       </ul>

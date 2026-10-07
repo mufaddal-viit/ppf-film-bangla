@@ -199,13 +199,3 @@ export type LocaleContentInput = z.input<typeof localeContentSchema>;
 export type LocaleContent = z.infer<typeof localeContentSchema>;
 export type Cta = z.infer<typeof ctaSchema>;
 export type PageCopyKey = keyof LocaleContent['pages'];
-
-export const blogFrontmatterSchema = z.object({
-  title: text.max(70),
-  description: text.max(170),
-  publishedAt: z.iso.date(),
-  updatedAt: z.iso.date().optional(),
-  author: text,
-  draft: z.boolean().default(false),
-});
-export type BlogFrontmatter = z.infer<typeof blogFrontmatterSchema>;

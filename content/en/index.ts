@@ -63,7 +63,12 @@ export const content: LocaleContentInput = {
     },
     blog: {
       title: 'Blog',
-      seo: { title: 'Blog', description: 'News and guides from Fossil Paint Protection Film.' },
+      intro: 'Plain guides on paint protection film, window film and looking after your car.',
+      seo: {
+        title: 'Blog: paint protection film and car care guides',
+        description:
+          'Guides on paint protection film, window film and car care: what each film does and how to choose.',
+      },
     },
     privacyPolicy: {
       title: 'Privacy policy',

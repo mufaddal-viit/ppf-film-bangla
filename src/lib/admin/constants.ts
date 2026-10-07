@@ -7,6 +7,11 @@ export const ADMIN_ROUTES = {
   dashboard: '/admin',
   leads: '/admin/leads',
   leadsExport: '/admin/leads/export',
+  customers: '/admin/customers',
+  customersNew: '/admin/customers/new',
+  customersExport: '/admin/customers/export',
+  blog: '/admin/blog',
+  blogNew: '/admin/blog/new',
   users: '/admin/users',
   activity: '/admin/activity',
   account: '/admin/account',
@@ -33,5 +38,20 @@ export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
 export const OPEN_LEAD_STATUSES: readonly LeadStatus[] = ['new', 'contacted', 'quoted'];
 
 export const LEAD_TYPE_LABELS = { quote: 'Quote', contact: 'Contact', callback: 'Callback' } as const;
+
+export const POST_STATUSES = ['draft', 'published'] as const;
+export type PostStatus = (typeof POST_STATUSES)[number];
+export const POST_STATUS_LABELS: Record<PostStatus, string> = { draft: 'Draft', published: 'Published' };
+
+/** Customer list segments used for retargeting. */
+export const CUSTOMER_SEGMENTS = ['all', 'opted-in', 'due'] as const;
+export type CustomerSegment = (typeof CUSTOMER_SEGMENTS)[number];
+export const CUSTOMER_SEGMENT_LABELS: Record<CustomerSegment, string> = {
+  all: 'All customers',
+  'opted-in': 'Agreed to offers',
+  due: 'Agreed to offers, not contacted in 90 days',
+};
+/** A customer is due for a message when nobody has contacted them for this many days. */
+export const RETARGET_AFTER_DAYS = 90;
 
 export const PASSWORD_MIN_LENGTH = 10;

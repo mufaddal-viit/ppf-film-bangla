@@ -16,15 +16,22 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
   const { byStatus } = await leadRepository.stats();
 
   const groups: AdminNavGroup[] = [
-    { links: [{ href: ADMIN_ROUTES.dashboard, label: 'Dashboard' }] },
-    { label: 'Sales', links: [{ href: ADMIN_ROUTES.leads, label: 'Leads', count: byStatus.new }] },
+    { links: [{ href: ADMIN_ROUTES.dashboard, label: 'Dashboard', icon: 'dashboard' }] },
+    {
+      label: 'Sales',
+      links: [
+        { href: ADMIN_ROUTES.leads, label: 'Leads', icon: 'leads', count: byStatus.new },
+        { href: ADMIN_ROUTES.customers, label: 'Customers', icon: 'customers' },
+      ],
+    },
+    { label: 'Website', links: [{ href: ADMIN_ROUTES.blog, label: 'Blog', icon: 'blog' }] },
     ...(session.role === 'owner'
       ? [
           {
             label: 'Owner',
             links: [
-              { href: ADMIN_ROUTES.users, label: 'Users' },
-              { href: ADMIN_ROUTES.activity, label: 'Activity' },
+              { href: ADMIN_ROUTES.users, label: 'Users', icon: 'users' as const },
+              { href: ADMIN_ROUTES.activity, label: 'Activity', icon: 'activity' as const },
             ],
           },
         ]
@@ -36,6 +43,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
       <aside className="c-admin-side">
         <Link href={ADMIN_ROUTES.dashboard} className="c-admin-brand">
           {siteConfig.business.shortName}
+          <span>Admin</span>
         </Link>
         <AdminNav groups={groups} rootHref={ADMIN_ROUTES.dashboard} />
         <div className="c-admin-user">
@@ -43,6 +51,9 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
             <strong>{session.name}</strong>
             <span>{ROLE_LABELS[session.role]}</span>
           </Link>
+          <a href={`/${siteConfig.locale.defaultLocale}`} target="_blank" rel="noopener">
+            <span>View website</span>
+          </a>
           <form action={logout}>
             <button type="submit">Sign out</button>
           </form>

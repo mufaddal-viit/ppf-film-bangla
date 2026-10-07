@@ -1,8 +1,10 @@
 'use server';
 
 import * as auth from '@/lib/admin/auth';
+import * as customers from '@/lib/admin/customers';
 import type { FormState } from '@/lib/admin/form-state';
 import * as leads from '@/lib/admin/leads';
+import * as posts from '@/lib/admin/posts';
 import * as users from '@/lib/admin/users';
 
 /**
@@ -44,4 +46,40 @@ export async function updateLeadFollowUp(previous: FormState, formData: FormData
 
 export async function addLeadNote(previous: FormState, formData: FormData): Promise<FormState> {
   return leads.addLeadNote(previous, formData);
+}
+
+export async function convertLeadToCustomer(previous: FormState, formData: FormData): Promise<FormState> {
+  return customers.convertLeadToCustomer(previous, formData);
+}
+
+export async function createCustomer(previous: FormState, formData: FormData): Promise<FormState> {
+  return customers.createCustomer(previous, formData);
+}
+
+export async function updateCustomer(previous: FormState, formData: FormData): Promise<FormState> {
+  return customers.updateCustomer(previous, formData);
+}
+
+export async function addCustomerVehicle(previous: FormState, formData: FormData): Promise<FormState> {
+  return customers.addCustomerVehicle(previous, formData);
+}
+
+export async function removeCustomerVehicle(previous: FormState, formData: FormData): Promise<FormState> {
+  return customers.removeCustomerVehicle(previous, formData);
+}
+
+export async function addCustomerNote(previous: FormState, formData: FormData): Promise<FormState> {
+  return customers.addCustomerNote(previous, formData);
+}
+
+export async function markCustomerContacted(previous: FormState, formData: FormData): Promise<FormState> {
+  return customers.markCustomerContacted(previous, formData);
+}
+
+export async function savePost(previous: FormState, formData: FormData): Promise<FormState> {
+  return posts.savePost(previous, formData);
+}
+
+export async function deletePost(previous: FormState, formData: FormData): Promise<FormState> {
+  return posts.deletePost(previous, formData);
 }

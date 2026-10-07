@@ -1,3 +1,4 @@
+import { csvHeaders } from '@/lib/admin/csv';
 import { leadsToCsv, parseLeadFilter } from '@/lib/admin/leads';
 import { getSession } from '@/lib/auth/session';
 import { auditRepository } from '@/lib/db/repositories/audit.repository';
@@ -15,11 +16,5 @@ export async function GET(request: Request) {
   const { items } = await leadRepository.list(filter, { skip: 0, limit: MAX_ROWS });
   await auditRepository.record(session, 'lead.exported', undefined, `${items.length} rows`);
 
-  return new Response(leadsToCsv(items), {
-    headers: {
-      'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': `attachment; filename="leads-${new Date().toISOString().slice(0, 10)}.csv"`,
-      'Cache-Control': 'no-store',
-    },
-  });
+  return new Response(leadsToCsv(items), { headers: csvHeaders('leads') });
 }

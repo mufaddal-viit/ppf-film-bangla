@@ -5,6 +5,7 @@ export const navigation = {
   header: [
     { labelKey: 'services', href: { servicesMenu: true } },
     { labelKey: 'about', href: { route: '/about' } },
+    { labelKey: 'blog', href: { route: '/blog' } },
     { labelKey: 'contact', href: { route: '/contact' } },
   ],
   footer: [
@@ -30,6 +31,7 @@ export const navigation = {
       links: [
         { labelKey: 'about', href: { route: '/about' } },
         { labelKey: 'allServices', href: { route: '/services' } },
+        { labelKey: 'blog', href: { route: '/blog' } },
         { labelKey: 'contact', href: { route: '/contact' } },
       ],
     },

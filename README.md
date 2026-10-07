@@ -30,6 +30,7 @@ pnpm dev
 | `pnpm db:setup`             | Create or update collections, validators and indexes  |
 | `pnpm db:seed`              | Insert sample leads (run while `pnpm dev` is running) |
 | `pnpm admin:create`         | Create the first admin user, or reset a password      |
+| `pnpm blog:seed`            | Add three starter blog posts (English and Arabic)     |
 | `pnpm assets:placeholders`  | Regenerate placeholder images                         |
 
 ## How the project is organised
@@ -151,9 +152,28 @@ Staff sign in at `/admin` (English only, outside the locale routes, never indexe
 
 `src/proxy.ts` redirects visitors without a session cookie to the sign-in page. That is only a shortcut: the real check is `requireSession()` in every page and action.
 
+### Blog
+
+Posts are written at `/admin/blog` and stored in the `posts` collection, not in files.
+
+- **Languages:** English is required, Arabic is optional. A post appears on a language's site only when it has that translation, and `hreflang` links list only the languages that exist.
+- **Writing:** the article field takes a small Markdown subset (`##` headings, lists, quotes, bold, italic, links). It is parsed into a tree and rendered as React elements (`src/lib/blog/markdown.ts`), so post text can never inject HTML.
+- **Publishing:** drafts are visible only in the admin panel. A publish date in the future schedules the post.
+- **Caching:** the public blog pages and the sitemap are cached for an hour and refreshed at once when a post is saved or deleted.
+- **Cover images:** chosen from the site's existing photos (`src/lib/blog/covers.ts`) until uploads are built.
+- **Search:** each post has optional search title and description, and outputs `BlogPosting` structured data.
+
+### Customers
+
+`/admin/customers` holds the people who have bought: contact details, vehicles, tags, notes and whether they agreed to receive offers.
+
+- **From a lead:** "Convert to customer" on a lead creates the customer (or opens the existing one with the same phone number) and marks the lead as Won.
+- **Retargeting:** the "not contacted in 90 days" group lists customers who agreed to offers and are due a message. "Mark as contacted today" removes them from it. Any group can be exported as CSV.
+- **Consent:** a customer made from an enquiry starts as not agreed. Staff tick the box after asking.
+
 ## Not built yet
 
-- Customers, guarantee cards and invoices.
+- Guarantee cards and invoices.
 - Content editing for non-developers: content is loaded through the `ContentSource` interface (`src/lib/content/source.ts`), so the admin panel can replace the files without changing components.
-- Blog management and AI drafting.
+- AI drafting and automatic posting for the blog, and image uploads.
 - Customer accounts: the `(account)` route group is reserved for them.
