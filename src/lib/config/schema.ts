@@ -291,6 +291,7 @@ export const securityConfigSchema = z.object({
     quote: rateLimitSchema,
     contact: rateLimitSchema,
     callback: rateLimitSchema,
+    adminLogin: rateLimitSchema,
   }),
   csp: z.object({
     extraScriptSrc: z.array(z.string()),

@@ -1,10 +1,10 @@
 import 'server-only';
 import type { Db, Document, IndexDescription, ObjectId } from 'mongodb';
+import { LEAD_STATUSES, type LeadStatus, type UserRole } from '@/lib/admin/constants';
 import type { LeadType } from '@/lib/config/schema';
 import { getDb } from './client';
 
-const LEAD_STATUSES = ['new', 'contacted', 'quoted', 'won', 'lost', 'spam'] as const;
-export type LeadStatus = (typeof LEAD_STATUSES)[number];
+export type LeadNote = { id: string; text: string; authorName: string; at: Date };
 
 export type LeadDocument = {
   _id?: ObjectId;
@@ -23,21 +23,70 @@ export type LeadDocument = {
   referrer?: string;
   utm?: { source?: string; medium?: string; campaign?: string; term?: string; content?: string };
   consent: { given: true; at: Date; policyVersion: string };
+  /** Staff notes, oldest first. Added from the admin panel. */
+  notes?: LeadNote[];
+  followUpAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 };
 
+/** Admin panel user. Emails are stored lowercase. */
+export type UserDocument = {
+  _id?: ObjectId;
+  email: string;
+  name: string;
+  role: UserRole;
+  passwordHash: string;
+  active: boolean;
+  lastLoginAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+/** sessionToken holds the SHA-256 of the cookie value, so a database leak cannot be replayed. */
+type SessionDocument = {
+  _id?: ObjectId;
+  sessionToken: string;
+  userId: ObjectId;
+  expires: Date;
+  createdAt: Date;
+};
+
+export type AuditDocument = {
+  _id?: ObjectId;
+  at: Date;
+  actorId: string;
+  actorEmail: string;
+  /** Dotted event name, e.g. "lead.status_changed". */
+  action: string;
+  target?: string;
+  detail?: string;
+};
+
 const COLLECTIONS = {
   leads: 'leads',
-  // Reserved for phase 2 auth. The auth library's MongoDB adapter owns their documents.
   users: 'users',
-  accounts: 'accounts',
   sessions: 'sessions',
+  auditLog: 'auditLog',
+  // Reserved: OAuth accounts and emailed tokens (password reset links).
+  accounts: 'accounts',
   verificationTokens: 'verificationTokens',
 } as const;
 
 export async function leadsCollection() {
   return (await getDb()).collection<LeadDocument>(COLLECTIONS.leads);
+}
+
+export async function usersCollection() {
+  return (await getDb()).collection<UserDocument>(COLLECTIONS.users);
+}
+
+export async function sessionsCollection() {
+  return (await getDb()).collection<SessionDocument>(COLLECTIONS.sessions);
+}
+
+export async function auditCollection() {
+  return (await getDb()).collection<AuditDocument>(COLLECTIONS.auditLog);
 }
 
 /** Database-level guard in addition to Zod: required fields, types and length caps. */
@@ -68,7 +117,13 @@ const leadValidator: Document = {
 };
 
 const INDEXES: Record<string, IndexDescription[]> = {
-  [COLLECTIONS.leads]: [{ key: { createdAt: -1 } }, { key: { status: 1, createdAt: -1 } }, { key: { phone: 1 } }],
+  [COLLECTIONS.leads]: [
+    { key: { createdAt: -1 } },
+    { key: { status: 1, createdAt: -1 } },
+    { key: { phone: 1 } },
+    { key: { followUpAt: 1 }, sparse: true },
+  ],
+  [COLLECTIONS.auditLog]: [{ key: { at: -1 } }],
   [COLLECTIONS.users]: [{ key: { email: 1 }, unique: true, sparse: true }],
   [COLLECTIONS.accounts]: [{ key: { provider: 1, providerAccountId: 1 }, unique: true }, { key: { userId: 1 } }],
   [COLLECTIONS.sessions]: [

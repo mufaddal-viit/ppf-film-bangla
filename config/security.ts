@@ -6,6 +6,8 @@ export const security = {
     quote: { requests: 5, windowSeconds: 600 },
     contact: { requests: 5, windowSeconds: 600 },
     callback: { requests: 3, windowSeconds: 600 },
+    /** Admin sign-in attempts, counted per IP and per email address. */
+    adminLogin: { requests: 8, windowSeconds: 600 },
   },
   /** Hosts added on top of the defaults built in src/lib/security/csp.ts. */
   csp: {

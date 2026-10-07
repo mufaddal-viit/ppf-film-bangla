@@ -48,3 +48,23 @@ test('shows field errors without submitting invalid data', async ({ page }) => {
   await form.getByLabel('Full name').click();
   await expect(form.getByText('Enter a valid phone number.')).toBeVisible();
 });
+
+test.describe('admin panel', () => {
+  test('sends signed-out visitors to the sign-in page', async ({ page }) => {
+    for (const path of ['/admin', '/admin/leads', '/admin/users', '/admin/leads/export']) {
+      await page.goto(path);
+      await expect(page).toHaveURL(/\/admin\/login$/);
+    }
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in to the admin panel');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  });
+
+  test('rejects wrong credentials without saying which part was wrong', async ({ page }) => {
+    await page.goto('/admin/login');
+    await page.getByLabel('Email').fill('nobody@example.com');
+    await page.getByLabel('Password').fill('not-the-password');
+    await page.getByRole('button', { name: 'Sign in' }).click();
+    await expect(page.getByRole('status')).toHaveText('Email or password is incorrect.');
+    await expect(page).toHaveURL(/\/admin\/login$/);
+  });
+});

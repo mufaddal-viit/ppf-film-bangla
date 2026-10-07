@@ -29,6 +29,7 @@ pnpm dev
 | `pnpm test:e2e`             | Playwright smoke tests (starts `pnpm dev` itself)     |
 | `pnpm db:setup`             | Create or update collections, validators and indexes  |
 | `pnpm db:seed`              | Insert sample leads (run while `pnpm dev` is running) |
+| `pnpm admin:create`         | Create the first admin user, or reset a password      |
 | `pnpm assets:placeholders`  | Regenerate placeholder images                         |
 
 ## How the project is organised
@@ -36,7 +37,7 @@ pnpm dev
 ```
 config/            Site config (TypeScript, Zod-validated): business, catalog, navigation, pages, theme, fonts, SEO, integrations, forms, security, features
 content/{locale}/  Copy per language: index.ts, services.ts, faqs.ts, sections.ts, messages.json (UI strings), legal/*.mdx, blog/*.mdx
-src/app/           Routes. [locale]/ holds every page; actions/ holds server actions; api/health is the health check
+src/app/           Routes. [locale]/ holds every public page; admin/ is the staff panel; actions/ holds server actions; api/health is the health check
 src/components/    sections/ (homepage section system), layout/ (top bar, header, footer, floating actions), forms/, ui/, seo/
 src/lib/           config/ (schemas + loader), content/ (loader, view models), db/ (MongoDB client + repositories),
                    actions/ (mutation pipeline), security/, email/, seo/, tracking/, validation/
@@ -137,7 +138,22 @@ Uptime monitoring can poll `GET /api/health` (200 when the database is reachable
 
 `.github/workflows/ci.yml` runs on every pull request: typecheck, lint, Prettier, knip, unit tests, build and dependency audit; Playwright smoke tests; and Lighthouse budgets (LCP < 2.5 s, CLS < 0.1, accessibility and SEO ≥ 95, mobile). Lighthouse has no INP lab metric, so Total Blocking Time is tracked as its proxy.
 
-## Phase 2 (not built yet)
+## Admin panel
 
-- Customer accounts: the `(account)` route group, `src/lib/auth/session.ts` stub and reserved auth collections (`users`, `accounts`, `sessions`, `verificationTokens`) are ready for an auth library.
-- Content editing for non-developers: content is loaded through the `ContentSource` interface (`src/lib/content/source.ts`), so a CMS or admin panel can replace the files without changing components.
+Staff sign in at `/admin` (English only, outside the locale routes, never indexed).
+
+- **First owner:** `pnpm admin:create --email owner@example.com --name "Owner Name"`. The password is typed at the prompt or read from `ADMIN_PASSWORD`. Run it against production by setting `MONGODB_URI` and `MONGODB_DB` for that one command. Running it again for an existing email resets the password.
+- **Roles:** `owner` manages users and sees the activity log; `staff` works with leads. Owners add users and set passwords on the Users page; there is no emailed reset link yet.
+- **Leads:** search and filter the inbox, change status, add notes, set a follow-up date, export the filtered list to CSV. The dashboard shows counts and follow-ups due.
+- **Sessions:** a random token in an `HttpOnly`, `SameSite=Lax` cookie scoped to `/admin`; MongoDB stores only its SHA-256 hash. Sessions end after 7 days idle or 30 days in total. Passwords are hashed with scrypt (`src/lib/auth/password.ts`).
+- **Adding a mutation:** define it with `adminAction` (`src/lib/admin/action.ts`), which runs the session, origin and role checks and Zod validation, then export it from `src/app/actions/admin.ts`. Render it with `<AdminForm>`. Record it with `auditRepository.record`.
+- **Sign-in rate limit:** `rateLimits.adminLogin` in `config/security.ts`, counted per IP and per email.
+
+`src/proxy.ts` redirects visitors without a session cookie to the sign-in page. That is only a shortcut: the real check is `requireSession()` in every page and action.
+
+## Not built yet
+
+- Customers, guarantee cards and invoices.
+- Content editing for non-developers: content is loaded through the `ContentSource` interface (`src/lib/content/source.ts`), so the admin panel can replace the files without changing components.
+- Blog management and AI drafting.
+- Customer accounts: the `(account)` route group is reserved for them.
