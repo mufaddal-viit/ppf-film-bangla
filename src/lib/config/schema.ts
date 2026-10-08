@@ -190,7 +190,7 @@ const colorTokensSchema = z.object({
   danger: cssValue,
 });
 
-const FONT_KEYS = ['inter', 'archivo', 'ibmPlexArabic'] as const;
+const FONT_KEYS = ['inter', 'archivo', 'ibmPlexArabic', 'poppins'] as const;
 const fontKeySchema = z.enum(FONT_KEYS);
 
 export const themeConfigSchema = z

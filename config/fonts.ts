@@ -1,4 +1,4 @@
-import { Archivo, IBM_Plex_Sans_Arabic, Inter } from 'next/font/google';
+import { Archivo, IBM_Plex_Sans_Arabic, Inter, Poppins } from 'next/font/google';
 import type { FontKey } from '../src/lib/config/schema';
 
 /**
@@ -18,9 +18,18 @@ const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   display: 'optional',
   preload: false,
 });
+// Admin panel only (see src/app/styles/admin.css). Not preloaded, so the public site never downloads it.
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',
+  preload: false,
+});
 
 export const fonts: Record<FontKey, { className: string; cssVar: string }> = {
   inter: { className: inter.variable, cssVar: '--font-inter' },
   archivo: { className: archivo.variable, cssVar: '--font-archivo' },
   ibmPlexArabic: { className: ibmPlexArabic.variable, cssVar: '--font-ibm-plex-arabic' },
+  poppins: { className: poppins.variable, cssVar: '--font-poppins' },
 };

@@ -11,6 +11,12 @@ export function adminDates(timeZone: string) {
   };
 }
 
+/** "Sara Al Mansoori" -> "SA", for avatar circles. */
+export function initials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  return ((words[0]?.[0] ?? '') + (words.length > 1 ? (words.at(-1)?.[0] ?? '') : '')).toUpperCase() || '?';
+}
+
 /** "apex-clear-ppf" -> "Apex clear ppf", for slugs that have no display name to hand. */
 export function humanize(slug: string): string {
   const text = slug.replaceAll('-', ' ');

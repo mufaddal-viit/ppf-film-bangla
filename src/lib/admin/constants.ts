@@ -55,3 +55,28 @@ export const CUSTOMER_SEGMENT_LABELS: Record<CustomerSegment, string> = {
 export const RETARGET_AFTER_DAYS = 90;
 
 export const PASSWORD_MIN_LENGTH = 10;
+
+/** Plain-English names for audit log actions. Unknown actions are shown as recorded. */
+export const AUDIT_ACTION_LABELS: Record<string, string> = {
+  'auth.signed_in': 'Signed in',
+  'auth.signed_out': 'Signed out',
+  'account.password_changed': 'Changed own password',
+  'user.created': 'Added a user',
+  'user.updated': 'Updated a user',
+  'user.password_reset': 'Reset a password',
+  'lead.status_changed': 'Changed lead status',
+  'lead.follow_up_set': 'Set a follow-up',
+  'lead.note_added': 'Added a lead note',
+  'lead.exported': 'Exported leads',
+  'customer.created': 'Added a customer',
+  'customer.created_from_lead': 'Turned a lead into a customer',
+  'customer.updated': 'Updated a customer',
+  'customer.vehicle_added': 'Added a vehicle',
+  'customer.vehicle_removed': 'Removed a vehicle',
+  'customer.note_added': 'Added a customer note',
+  'customer.contacted': 'Marked a customer as contacted',
+  'customer.exported': 'Exported customers',
+  'post.created': 'Created a post',
+  'post.updated': 'Updated a post',
+  'post.deleted': 'Deleted a post',
+};

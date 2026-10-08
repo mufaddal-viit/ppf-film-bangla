@@ -143,3 +143,27 @@ describe('admin action guard', async () => {
     });
   });
 });
+
+describe('dashboard trend chart', () => {
+  it('fills every day in the business timezone, oldest first', async () => {
+    const { fillDays } = await import('@/lib/admin/chart');
+    // 21:30 UTC on 7 Oct is already 8 Oct in Dubai.
+    const points = fillDays({ '2026-10-08': 3, '2026-10-06': 1 }, 3, 'Asia/Dubai', new Date('2026-10-07T21:30:00Z'));
+    expect(points.map((point) => [point.key, point.value])).toEqual([
+      ['2026-10-06', 1],
+      ['2026-10-07', 0],
+      ['2026-10-08', 3],
+    ]);
+    expect(points[2]?.label).toBe('8 Oct');
+  });
+
+  it('draws a line that stays inside the box and closes the area', async () => {
+    const { trendPaths } = await import('@/lib/admin/chart');
+    const { line, area } = trendPaths([0, 4, 2], 100, 50);
+    expect(line.startsWith('M0,50')).toBe(true);
+    expect(line).toContain('50,6');
+    expect(line.endsWith('100,28')).toBe(true);
+    expect(area.endsWith('L100,50 L0,50 Z')).toBe(true);
+    expect(trendPaths([5], 100, 50)).toEqual({ line: '', area: '' });
+  });
+});

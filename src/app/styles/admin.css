@@ -1,80 +1,135 @@
 /*
- * Admin panel (/admin). Same theme tokens as the public site: an ink sidebar, a soft work
- * surface and white panels. English and left-to-right only, so physical properties are fine here.
+ * Admin panel (/admin): a white sidebar, a soft grey canvas and rounded white cards with one blue accent.
+ * English and left-to-right only, so physical properties are fine here.
  */
 @layer components {
+  /* ------------------------------------------------------------ skin */
+  /*
+   * The panel has its own look, separate from the public site. It keeps the token names from
+   * config/theme.ts and gives them admin values here, so every rule below still uses tokens only.
+   */
+  .c-admin,
+  .c-admin-login {
+    --ff-body: var(--font-poppins);
+    --ff-heading: var(--font-poppins);
+    --ff-display: var(--font-poppins);
+    --background: oklch(1 0 0);
+    --surface: oklch(0.972 0.007 264);
+    --foreground: oklch(0.22 0.035 265);
+    --muted: oklch(0.948 0.01 264);
+    --muted-foreground: oklch(0.52 0.025 264);
+    --primary: oklch(0.54 0.21 264);
+    --primary-foreground: oklch(1 0 0);
+    --accent: oklch(0.95 0.03 264);
+    --accent-foreground: oklch(0.3 0.1 264);
+    --border: oklch(0.925 0.01 264);
+    --ring: oklch(0.54 0.21 264);
+    --elevation-sm: 0 1px 2px oklch(0.22 0.035 265 / 0.05);
+    --elevation-md: 0 10px 24px -10px oklch(0.22 0.035 265 / 0.16);
+    --elevation-lg: 0 28px 56px -20px oklch(0.22 0.035 265 / 0.28);
+    @apply font-sans text-foreground;
+  }
+
   /* ------------------------------------------------------------ shell */
   .c-admin {
-    @apply grid min-h-dvh bg-surface text-foreground;
-    grid-template-columns: 15rem minmax(0, 1fr);
+    @apply grid min-h-dvh bg-surface;
+    grid-template-columns: 16.5rem minmax(0, 1fr);
   }
   .c-admin-side {
-    @apply sticky top-0 flex h-dvh flex-col gap-6 overflow-y-auto bg-foreground p-4 text-background;
+    @apply sticky top-0 flex h-dvh flex-col gap-6 overflow-y-auto border-r border-border bg-background p-5;
   }
   .c-admin-brand {
-    @apply flex items-baseline gap-2 px-2 font-display text-lg font-black uppercase;
-    font-stretch: 125%;
+    @apply flex px-1;
   }
-  .c-admin-brand span {
-    @apply rounded-md bg-primary px-1.5 py-0.5 font-sans text-[0.6rem] font-bold tracking-widest text-primary-foreground;
-    font-stretch: normal;
+  .c-admin-brand img {
+    @apply h-10 w-auto;
   }
   .c-admin-nav {
-    @apply flex flex-1 flex-col gap-4;
+    @apply flex flex-1 flex-col gap-5;
   }
   .c-admin-nav-group {
     @apply flex flex-col gap-1;
   }
   .c-admin-nav-label {
-    @apply px-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase;
-    color: color-mix(in oklab, var(--background) 50%, transparent);
+    @apply px-2 pb-1 text-[0.68rem] font-semibold tracking-[0.14em] text-muted-foreground uppercase;
   }
   .c-admin-nav a {
-    @apply flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors;
-    color: color-mix(in oklab, var(--background) 78%, transparent);
+    @apply flex items-center gap-3 rounded-2xl p-1.5 pe-3 text-sm font-medium text-muted-foreground transition-colors;
   }
+  /* The icon sits in its own tile, which turns blue on the current page. */
   .c-admin-nav a svg {
-    @apply size-[1.05rem] shrink-0 opacity-80;
-  }
-  .c-admin-nav-count {
-    @apply ms-auto;
+    @apply box-content size-[1.05rem] shrink-0 rounded-xl bg-surface p-2 transition-colors;
   }
   .c-admin-nav a:hover {
-    @apply text-background;
-    background: color-mix(in oklab, var(--background) 10%, transparent);
+    @apply bg-surface text-foreground;
+  }
+  .c-admin-nav a:hover svg {
+    @apply bg-accent text-primary;
   }
   .c-admin-nav a[aria-current='page'] {
-    @apply bg-primary font-semibold text-primary-foreground shadow-md;
+    @apply bg-surface font-semibold text-foreground;
   }
   .c-admin-nav a[aria-current='page'] svg {
-    @apply opacity-100;
+    @apply bg-primary text-primary-foreground;
+    box-shadow: 0 8px 16px -6px color-mix(in oklab, var(--primary) 70%, transparent);
   }
   .c-admin-nav-count {
-    @apply rounded-full bg-background px-2 text-xs font-semibold text-foreground;
+    @apply ms-auto rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground tabular-nums;
+  }
+  .c-admin-site-card {
+    @apply flex flex-col gap-0.5 rounded-3xl bg-surface p-3 text-sm transition duration-200;
+  }
+  .c-admin-site-card:hover {
+    @apply shadow-md;
+  }
+  .c-admin-site-card img {
+    @apply mb-2 aspect-video w-full rounded-2xl object-cover;
+  }
+  .c-admin-site-card strong {
+    @apply px-1 font-semibold;
+  }
+  .c-admin-site-card > span {
+    @apply px-1 text-xs text-muted-foreground;
+  }
+  .c-admin-site-card > .c-admin-site-card-cta {
+    @apply mt-2.5 flex items-center justify-center gap-1 rounded-xl bg-primary px-3 py-2 font-semibold text-primary-foreground;
+  }
+  .c-admin-site-card-cta svg {
+    @apply size-3.5;
   }
   .c-admin-user {
-    @apply flex flex-col gap-2 border-t pt-4 text-sm;
-    border-color: color-mix(in oklab, var(--background) 16%, transparent);
+    @apply flex items-center gap-1 border-t border-border pt-4;
   }
   .c-admin-user a {
-    @apply flex flex-col rounded-lg px-2 py-1 transition-colors;
+    @apply flex min-w-0 flex-1 items-center gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-surface;
   }
-  .c-admin-user a:hover {
-    background: color-mix(in oklab, var(--background) 10%, transparent);
+  .c-admin-user a > span:last-child {
+    @apply flex min-w-0 flex-col;
   }
-  .c-admin-user a span,
+  .c-admin-user strong {
+    @apply truncate text-sm font-semibold;
+  }
+  .c-admin-user small {
+    @apply text-xs text-muted-foreground;
+  }
   .c-admin-user button {
-    color: color-mix(in oklab, var(--background) 62%, transparent);
+    @apply grid size-10 shrink-0 cursor-pointer place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-surface hover:text-danger;
   }
-  .c-admin-user button {
-    @apply w-full cursor-pointer rounded-lg px-2 py-1.5 text-left transition-colors;
-  }
-  .c-admin-user button:hover {
-    @apply text-background;
-    background: color-mix(in oklab, var(--background) 10%, transparent);
+  .c-admin-user button svg {
+    @apply size-[1.1rem];
   }
   .c-admin-main {
-    @apply mx-auto flex w-full max-w-6xl min-w-0 flex-col gap-6 p-5 sm:p-8;
+    @apply mx-auto flex w-full max-w-7xl min-w-0 flex-col gap-6 p-5 sm:p-8;
+  }
+  .c-admin-avatar {
+    @apply grid size-9 shrink-0 place-items-center rounded-full text-xs font-semibold text-primary;
+    background: color-mix(in oklab, var(--primary) 12%, var(--background));
+  }
+  .c-admin-avatar[data-size='lg'] {
+    @apply size-20 text-2xl;
+    box-shadow:
+      0 0 0 4px var(--background),
+      0 0 0 6px color-mix(in oklab, var(--primary) 30%, transparent);
   }
 
   /* Phones: the sidebar becomes a top bar with a scrolling row of links. */
@@ -84,7 +139,7 @@
       grid-template-rows: auto 1fr;
     }
     .c-admin-side {
-      @apply static h-auto flex-row flex-wrap items-center gap-x-4 gap-y-3 p-3;
+      @apply static h-auto flex-row flex-wrap items-center gap-x-4 gap-y-3 border-r-0 border-b p-3;
     }
     .c-admin-nav {
       @apply order-3 w-full flex-none flex-row gap-1 overflow-x-auto;
@@ -92,50 +147,57 @@
     .c-admin-nav-group {
       @apply flex-row;
     }
-    .c-admin-nav-label {
+    .c-admin-nav-label,
+    .c-admin-site-card,
+    .c-admin-user a > span:last-child {
       @apply hidden;
     }
     .c-admin-nav a {
-      @apply gap-2 whitespace-nowrap;
+      @apply whitespace-nowrap;
     }
     .c-admin-user {
-      @apply ml-auto flex-row items-center border-t-0 pt-0;
-    }
-    .c-admin-user a span,
-    .c-admin-user a[target] {
-      @apply hidden;
+      @apply ml-auto border-t-0 pt-0;
     }
   }
 
   /* ------------------------------------------------------------ page furniture */
-  .c-admin-head {
-    @apply flex flex-wrap items-end justify-between gap-4;
+  .c-admin-head,
+  .c-admin-hello {
+    @apply flex flex-wrap items-center justify-between gap-4;
   }
-  .c-admin-head {
-    @apply border-b border-border pb-5;
-  }
-  .c-admin-head h1 {
-    @apply text-2xl font-extrabold text-balance sm:text-3xl;
+  .c-admin-head h1,
+  .c-admin-hello h1 {
+    @apply text-2xl font-bold tracking-tight text-balance sm:text-3xl;
   }
   /* The public site uses large pill buttons; the panel is denser. */
-  .c-admin .c-button {
+  .c-admin .c-button,
+  .c-admin-login .c-button {
     @apply min-h-10 rounded-xl px-4 text-sm;
   }
-  .c-admin .c-button:hover {
+  .c-admin .c-button:hover,
+  .c-admin-login .c-button:hover {
     @apply translate-y-0;
   }
   .c-admin-notice {
-    @apply rounded-xl border px-4 py-3 text-sm;
-    border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
-    background: color-mix(in oklab, var(--primary) 7%, var(--background));
+    @apply rounded-2xl border px-4 py-3 text-sm;
+    border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+    background: color-mix(in oklab, var(--primary) 6%, var(--background));
   }
   .c-admin-head p,
+  .c-admin-hello p,
   .c-admin-muted,
   .c-admin-empty {
     @apply text-sm text-muted-foreground;
   }
   .c-admin-head-actions {
     @apply flex flex-wrap items-center gap-2;
+  }
+  .c-admin-hello .c-admin-chip,
+  .c-admin-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-border bg-background px-3.5 py-2 text-xs font-medium text-foreground;
+  }
+  .c-admin-chip svg {
+    @apply size-4 text-muted-foreground;
   }
   .c-admin-back,
   .c-admin-more {
@@ -144,11 +206,18 @@
   .c-admin-back::before {
     content: '← ';
   }
-  .c-admin-panel {
-    @apply flex min-w-0 flex-col gap-4 rounded-2xl border border-border bg-background p-5 shadow-sm;
+  .c-admin-panel,
+  .c-admin-profile {
+    @apply flex min-w-0 flex-col gap-4 rounded-3xl border border-border bg-background p-5 shadow-sm sm:p-6;
+  }
+  .c-admin-panel-head {
+    @apply flex flex-wrap items-center justify-between gap-3;
+  }
+  .c-admin-panel-head .c-admin-more {
+    @apply self-center;
   }
   .c-admin-panel h2 {
-    @apply text-lg font-bold;
+    @apply text-base font-semibold;
   }
   .c-admin-narrow {
     @apply max-w-xl;
@@ -163,57 +232,95 @@
     @apply md:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)];
   }
   .c-admin-empty {
-    @apply rounded-xl border border-dashed border-border px-4 py-6 text-center;
+    @apply rounded-2xl border border-dashed border-border px-4 py-6 text-center;
   }
 
   /* ------------------------------------------------------------ dashboard */
+  .c-admin-dash {
+    @apply grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_20rem];
+  }
+  /* Between tablet and wide screens the side cards sit two across under the main column. */
+  .c-admin-rail {
+    @apply grid min-w-0 items-start gap-6 md:grid-cols-2 xl:grid-cols-1;
+  }
+  .c-admin-profile {
+    @apply items-center gap-1 text-center;
+  }
+  .c-admin-profile h2 {
+    @apply mt-3 text-lg font-semibold;
+  }
+  .c-admin-profile p {
+    @apply text-xs break-all text-muted-foreground;
+  }
+  .c-admin-profile-actions {
+    @apply mt-4 flex gap-2;
+  }
+  .c-admin-profile-actions a {
+    @apply grid size-10 place-items-center rounded-full border border-border transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground;
+  }
+  .c-admin-profile-actions svg {
+    @apply size-[1.1rem];
+  }
   .c-admin-tiles {
     @apply grid grid-cols-2 gap-4 lg:grid-cols-3;
   }
   .c-admin-tile {
-    --tile-color: var(--border);
-    @apply relative flex h-full flex-col gap-2 overflow-hidden rounded-2xl border border-border bg-background p-5 ps-6 shadow-sm transition duration-200;
-  }
-  .c-admin-tile::before {
-    @apply absolute inset-y-0 start-0 w-1.5 content-[''];
-    background: var(--tile-color);
+    @apply grid h-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-4 rounded-3xl border border-border bg-background p-4 shadow-sm transition duration-200 sm:p-5;
   }
   .c-admin-tile:hover {
     @apply -translate-y-0.5 shadow-md;
-    border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+    border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
   }
-  .c-admin-tile[data-tone='primary'] {
-    --tile-color: var(--primary);
+  .c-admin-tile-icon {
+    @apply grid size-10 place-items-center rounded-xl;
+    color: var(--status-color, var(--muted-foreground));
+    background: color-mix(in oklab, var(--status-color, var(--muted-foreground)) 12%, var(--background));
   }
-  .c-admin-tile[data-tone='warning'] {
-    --tile-color: var(--warning);
+  .c-admin-tile-icon svg {
+    @apply size-5;
   }
-  .c-admin-tile[data-tone='success'] {
-    --tile-color: var(--success);
-  }
-  .c-admin-tile strong {
-    @apply font-heading text-3xl leading-none font-extrabold tabular-nums;
-  }
-  .c-admin-tile span {
+  .c-admin-tile > span:not(.c-admin-tile-icon) {
     @apply text-sm text-muted-foreground;
   }
-  .c-admin-list {
-    @apply flex flex-col;
+  .c-admin-tile strong {
+    @apply col-span-2 text-3xl leading-none font-bold tabular-nums;
+  }
+  .c-admin-list,
+  .c-admin-feed {
+    @apply flex flex-col gap-2;
   }
   .c-admin-list li {
-    @apply flex items-center justify-between gap-3 border-t border-border py-2.5 first:border-t-0;
+    @apply flex items-center gap-3 rounded-2xl border border-border px-3 py-2.5 transition-colors;
   }
-  .c-admin-list a {
-    @apply flex min-w-0 flex-col;
+  .c-admin-list li:hover {
+    border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+  }
+  .c-admin-list a,
+  .c-admin-feed div {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+  .c-admin-list strong,
+  .c-admin-feed strong {
+    @apply truncate text-sm font-semibold;
   }
   .c-admin-list a:hover strong {
     @apply text-primary;
   }
-  .c-admin-list a span {
+  .c-admin-list a span,
+  .c-admin-feed div span {
     @apply text-xs text-muted-foreground;
   }
+  .c-admin-list a span {
+    @apply truncate;
+  }
+  .c-admin-feed li {
+    @apply flex items-start gap-3 py-1.5;
+  }
+  .c-admin-feed div span {
+    overflow-wrap: anywhere;
+  }
   .c-admin-bars {
-    @apply flex flex-col gap-2.5;
+    @apply flex flex-col gap-3;
   }
   .c-admin-bars li {
     @apply grid items-center gap-3 text-sm;
@@ -231,6 +338,60 @@
   .c-admin-bar > span {
     @apply block h-full rounded-full;
     background: var(--status-color, var(--primary));
+  }
+
+  /* Trend chart: the SVG stretches to the box, so strokes are kept at a fixed width. */
+  .c-admin-chart {
+    @apply flex flex-col gap-2;
+  }
+  .c-admin-chart-plot {
+    @apply relative h-48;
+  }
+  .c-admin-chart-plot svg {
+    @apply absolute inset-0 size-full overflow-visible;
+  }
+  .c-admin-chart-plot line {
+    @apply stroke-border;
+    stroke-dasharray: 4 5;
+    vector-effect: non-scaling-stroke;
+  }
+  .c-admin-chart-plot path[data-line] {
+    @apply fill-none stroke-primary;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .c-admin-chart-marker {
+    @apply absolute right-0 size-0;
+  }
+  .c-admin-chart-marker::before {
+    @apply absolute -right-1.5 -bottom-1.5 size-3 rounded-full bg-primary content-[''];
+    box-shadow: 0 0 0 4px var(--background);
+  }
+  .c-admin-chart-marker span {
+    @apply absolute right-3 bottom-2 rounded-xl bg-foreground px-2.5 py-1 text-xs whitespace-nowrap text-background shadow-md;
+  }
+  .c-admin-chart-marker strong {
+    @apply ms-1 font-semibold;
+  }
+  .c-admin-chart-axis {
+    @apply relative h-5 text-[0.7rem] text-muted-foreground;
+  }
+  .c-admin-chart-axis li {
+    @apply absolute -translate-x-1/2 whitespace-nowrap;
+  }
+  /* Phones have room for every other date only. */
+  @media (max-width: 40rem) {
+    .c-admin-chart-axis li:nth-child(even) {
+      @apply hidden;
+    }
+  }
+  .c-admin-chart-axis li:first-child {
+    @apply translate-x-0;
+  }
+  .c-admin-chart-axis li:last-child {
+    @apply -translate-x-full;
   }
 
   /* ------------------------------------------------------------ status colours */
@@ -265,26 +426,29 @@
     --status-color: var(--primary);
   }
   .c-admin-status {
-    @apply inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap;
+    @apply inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap;
     color: var(--status-color);
-    background: color-mix(in oklab, var(--status-color) 13%, var(--background));
+    background: color-mix(in oklab, var(--status-color) 11%, var(--background));
+  }
+  .c-admin-status::before {
+    @apply size-1.5 rounded-full bg-current content-[''];
   }
 
   /* ------------------------------------------------------------ tables */
   .c-admin-table {
-    @apply overflow-x-auto rounded-2xl border border-border bg-background shadow-sm;
+    @apply overflow-x-auto rounded-3xl border border-border bg-background shadow-sm;
   }
   .c-admin-table table {
     @apply w-full min-w-[40rem] border-collapse text-sm;
   }
   .c-admin-table th {
-    @apply bg-surface px-4 py-3 text-left text-[0.7rem] font-semibold tracking-widest text-muted-foreground uppercase;
+    @apply px-5 pt-5 pb-3 text-left text-xs font-medium text-muted-foreground;
   }
   .c-admin-table td {
-    @apply border-t border-border px-4 py-3 align-top;
+    @apply border-t border-border px-5 py-3.5 align-top;
   }
   .c-admin-table td a {
-    @apply font-semibold text-primary underline-offset-4 hover:underline;
+    @apply font-semibold text-foreground underline-offset-4 hover:text-primary hover:underline;
   }
   .c-admin-table td small {
     @apply block text-xs text-muted-foreground;
@@ -293,19 +457,24 @@
     @apply transition-colors;
   }
   .c-admin-table tbody tr:hover {
-    background: color-mix(in oklab, var(--primary) 4%, var(--background));
+    @apply bg-surface;
   }
+  /* Tabs are a segmented control: a soft track with a white pill on the current one. */
   .c-admin-tabs {
-    @apply flex gap-1 overflow-x-auto border-b border-border;
+    @apply flex gap-1 self-start overflow-x-auto rounded-2xl bg-muted p-1;
+    max-width: 100%;
   }
   .c-admin-tabs a {
-    @apply -mb-px flex items-center gap-2 border-b-2 border-transparent px-3 py-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground;
+    @apply flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground;
   }
   .c-admin-tabs a[aria-current='page'] {
-    @apply border-primary font-semibold text-foreground;
+    @apply bg-background font-semibold text-foreground shadow-sm;
   }
   .c-admin-tabs a span {
-    @apply rounded-full bg-muted px-2 text-xs font-semibold tabular-nums;
+    @apply rounded-full bg-background px-2 text-xs font-semibold tabular-nums;
+  }
+  .c-admin-tabs a[aria-current='page'] span {
+    @apply bg-primary text-primary-foreground;
   }
   .c-admin-pager {
     @apply flex items-center justify-center gap-5 text-sm;
@@ -338,7 +507,7 @@
     @apply text-xs text-muted-foreground;
   }
   .c-admin-field .c-input {
-    @apply min-h-11 w-full bg-background;
+    @apply min-h-11 w-full bg-background text-sm;
   }
   .c-admin-check {
     @apply flex cursor-pointer items-center gap-2 text-sm font-medium;
@@ -373,7 +542,7 @@
     @apply min-h-80 font-mono text-sm leading-relaxed;
   }
   .c-admin-disclosure {
-    @apply rounded-xl border border-border;
+    @apply rounded-2xl border border-border;
   }
   .c-admin-disclosure summary {
     @apply cursor-pointer px-4 py-3 text-sm font-medium;
@@ -397,10 +566,13 @@
     @apply text-xs text-muted-foreground;
   }
   .c-admin-filters {
-    @apply flex flex-wrap items-end gap-3 rounded-2xl border border-border bg-background p-4 shadow-sm;
+    @apply flex flex-wrap items-end gap-3 rounded-3xl border border-border bg-background p-4 shadow-sm;
   }
   .c-admin-filters .c-admin-field {
     @apply flex-1 basis-40;
+  }
+  .c-admin-filters .c-admin-field .c-input {
+    @apply bg-surface;
   }
   .c-admin-filters .c-admin-more {
     @apply self-center;
@@ -411,13 +583,13 @@
     @apply flex flex-wrap gap-2;
   }
   .c-admin-message {
-    @apply rounded-xl bg-surface px-4 py-3 whitespace-pre-wrap;
+    @apply rounded-2xl bg-surface px-4 py-3 whitespace-pre-wrap;
   }
   .c-admin-details {
     @apply grid gap-x-6 gap-y-3 sm:grid-cols-2;
   }
   .c-admin-details dt {
-    @apply text-xs font-semibold tracking-wider text-muted-foreground uppercase;
+    @apply text-xs font-medium text-muted-foreground;
   }
   .c-admin-details dd {
     @apply text-sm break-words;
@@ -426,7 +598,7 @@
     @apply flex flex-col gap-3;
   }
   .c-admin-notes li {
-    @apply rounded-xl bg-surface px-4 py-3;
+    @apply rounded-2xl bg-surface px-4 py-3;
   }
   .c-admin-notes p {
     @apply text-sm whitespace-pre-wrap;
@@ -439,28 +611,105 @@
   }
 
   /* ------------------------------------------------------------ sign in */
+  /* The form on the left; on the right a tilted wall of photos with a car driving out of the frame. */
   .c-admin-login {
-    @apply grid min-h-dvh place-items-center p-5;
-    background:
-      radial-gradient(60rem 30rem at 85% -10%, color-mix(in oklab, var(--primary) 16%, transparent), transparent),
-      var(--surface);
+    @apply grid min-h-dvh bg-background lg:grid-cols-[minmax(28rem,0.8fr)_minmax(0,1.2fr)];
+  }
+  .c-admin-login-panel {
+    @apply flex flex-col justify-between gap-12 p-6 sm:p-10 xl:p-12;
+  }
+  .c-admin-logo {
+    @apply h-11 w-auto self-start;
   }
   .c-admin-login-card {
-    @apply flex w-full max-w-sm flex-col gap-5 rounded-3xl border border-border bg-background p-8 shadow-lg;
+    @apply mx-auto flex w-full max-w-md flex-col gap-6;
   }
-  .c-admin-login-card .c-admin-brand span {
-    @apply hidden;
-  }
-  .c-admin-login-card .c-admin-brand {
-    @apply px-0 text-xl;
+  .c-admin-eyebrow {
+    @apply text-xs font-semibold tracking-[0.18em] text-primary uppercase;
   }
   .c-admin-login-card h1 {
-    @apply text-xl font-bold;
+    @apply -mt-3 text-3xl leading-tight font-bold tracking-tight text-balance sm:text-4xl;
+  }
+  .c-admin-login-card h1 + .c-admin-muted {
+    @apply -mt-3 text-base;
+  }
+  .c-admin-login-card .c-admin-form {
+    @apply mt-2 gap-5;
+  }
+  .c-admin-login-card .c-input {
+    @apply min-h-14 border-transparent bg-surface px-5 text-base;
   }
   .c-admin-login-card .c-button {
-    @apply w-full;
+    @apply mt-2 min-h-14 w-full text-base;
   }
   .c-admin-login-help {
-    @apply text-xs text-muted-foreground;
+    @apply text-sm text-muted-foreground;
+  }
+  /* Right side: a tilted wall of photos behind, then the headline and the car stacked at the bottom so they never overlap. */
+  .c-admin-login-art {
+    @apply relative order-first m-3 flex h-44 flex-col justify-end gap-8 lg:order-none lg:h-auto lg:p-12 xl:gap-10 xl:p-16;
+    color: white;
+  }
+  .c-admin-login-wall {
+    @apply absolute inset-0 overflow-hidden rounded-[2rem];
+    background: linear-gradient(155deg, color-mix(in oklab, var(--primary) 70%, var(--foreground)), var(--foreground));
+  }
+  /* Wider than its frame and tilted, so photos run off every edge. */
+  .c-admin-login-mosaic {
+    @apply absolute -top-[12%] -left-[14%] grid w-[128%] grid-flow-row-dense grid-cols-3 gap-3 lg:gap-5;
+    grid-auto-rows: clamp(3rem, 6.5vh, 5rem);
+    transform: rotate(-9deg);
+    animation: c-admin-wall-drift 22s ease-in-out infinite alternate;
+  }
+  @keyframes c-admin-wall-drift {
+    to {
+      transform: rotate(-9deg) translateY(-2.5rem);
+    }
+  }
+  .c-admin-login-mosaic > div {
+    @apply relative row-span-4 overflow-hidden rounded-3xl shadow-lg;
+  }
+  .c-admin-login-mosaic > [data-shape='tall'] {
+    @apply row-span-5;
+  }
+  .c-admin-login-mosaic > [data-shape='short'] {
+    @apply row-span-3;
+  }
+  .c-admin-login-mosaic img {
+    @apply object-cover;
+  }
+  .c-admin-login-mosaic > [data-shape='long'] {
+    @apply row-span-7;
+  }
+  /* Darkens the lower half so the headline and the car read clearly over the photos. */
+  .c-admin-login-wall::after {
+    @apply absolute inset-0 hidden content-[''] lg:block;
+    background: linear-gradient(
+      to bottom,
+      transparent 12%,
+      color-mix(in oklab, var(--foreground) 97%, transparent) 52%
+    );
+  }
+  .c-admin-login-caption {
+    @apply relative hidden flex-col gap-6 lg:flex;
+  }
+  .c-admin-login-caption p {
+    @apply max-w-lg text-4xl leading-[1.1] font-semibold tracking-tight text-balance xl:text-5xl;
+  }
+  .c-admin-login-caption ul {
+    @apply flex flex-wrap gap-2.5;
+  }
+  .c-admin-login-caption li {
+    @apply inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium backdrop-blur;
+    border-color: color-mix(in oklab, white 22%, transparent);
+    background: color-mix(in oklab, white 10%, transparent);
+  }
+  .c-admin-login-caption svg {
+    @apply size-4;
+  }
+  /* On wide screens the car is wider than its panel on purpose: the tail crosses onto the form side. */
+  .c-admin-login-car {
+    @apply pointer-events-none relative hidden h-auto w-full max-w-none lg:block xl:-ml-28 xl:w-[calc(100%+6rem)];
+    filter: drop-shadow(0 1.75rem 1.5rem color-mix(in oklab, black 50%, transparent));
   }
 }

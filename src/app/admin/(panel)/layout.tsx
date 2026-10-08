@@ -1,7 +1,10 @@
+import { ArrowUpRight, LogOut } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { logout } from '@/app/actions/admin';
 import { AdminNav, type AdminNavGroup } from '@/components/admin/admin-nav';
+import { Avatar } from '@/components/admin/ui';
 import { ADMIN_ROUTES, ROLE_LABELS } from '@/lib/admin/constants';
 import { requireSession } from '@/lib/auth/session';
 import { siteConfig } from '@/lib/config';
@@ -14,6 +17,7 @@ import { leadRepository } from '@/lib/db/repositories/lead.repository';
 export default async function AdminPanelLayout({ children }: { children: ReactNode }) {
   const session = await requireSession();
   const { byStatus } = await leadRepository.stats();
+  const { name, logo } = siteConfig.business;
 
   const groups: AdminNavGroup[] = [
     { links: [{ href: ADMIN_ROUTES.dashboard, label: 'Dashboard', icon: 'dashboard' }] },
@@ -41,21 +45,31 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
   return (
     <div className="c-admin">
       <aside className="c-admin-side">
-        <Link href={ADMIN_ROUTES.dashboard} className="c-admin-brand">
-          {siteConfig.business.shortName}
-          <span>Admin</span>
+        <Link href={ADMIN_ROUTES.dashboard} className="c-admin-brand" aria-label={`${name} admin, dashboard`}>
+          <Image src={logo.src} alt={name} width={logo.width} height={logo.height} priority />
         </Link>
         <AdminNav groups={groups} rootHref={ADMIN_ROUTES.dashboard} />
+        <a className="c-admin-site-card" href={`/${siteConfig.locale.defaultLocale}`} target="_blank" rel="noopener">
+          <Image src="/images/showcase/2.jpg" alt="" width={416} height={234} sizes="13rem" />
+          <strong>Your website</strong>
+          <span>See what customers see.</span>
+          <span className="c-admin-site-card-cta">
+            View website
+            <ArrowUpRight aria-hidden="true" focusable="false" />
+          </span>
+        </a>
         <div className="c-admin-user">
           <Link href={ADMIN_ROUTES.account}>
-            <strong>{session.name}</strong>
-            <span>{ROLE_LABELS[session.role]}</span>
+            <Avatar name={session.name} />
+            <span>
+              <strong>{session.name}</strong>
+              <small>{ROLE_LABELS[session.role]}</small>
+            </span>
           </Link>
-          <a href={`/${siteConfig.locale.defaultLocale}`} target="_blank" rel="noopener">
-            <span>View website</span>
-          </a>
           <form action={logout}>
-            <button type="submit">Sign out</button>
+            <button type="submit" aria-label="Sign out" title="Sign out">
+              <LogOut aria-hidden="true" focusable="false" />
+            </button>
           </form>
         </div>
       </aside>

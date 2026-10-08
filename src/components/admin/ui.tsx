@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { LEAD_STATUS_LABELS, type LeadStatus } from '@/lib/admin/constants';
+import { initials } from '@/lib/admin/format';
 
 /** Title row at the top of every admin page. */
 export function PageHead({ title, intro, children }: { title: string; intro?: string; children?: ReactNode }) {
@@ -14,12 +15,34 @@ export function PageHead({ title, intro, children }: { title: string; intro?: st
   );
 }
 
-export function Panel({ title, children, className }: { title?: string; children: ReactNode; className?: string }) {
+type PanelProps = {
+  title?: string;
+  /** Shown at the end of the title row, for a "see all" link or a small figure. */
+  action?: ReactNode;
+  children: ReactNode;
+  className?: string;
+};
+
+export function Panel({ title, action, children, className }: PanelProps) {
   return (
     <section className={className ? `c-admin-panel ${className}` : 'c-admin-panel'}>
-      {title && <h2>{title}</h2>}
+      {(title || action) && (
+        <header className="c-admin-panel-head">
+          {title && <h2>{title}</h2>}
+          {action}
+        </header>
+      )}
       {children}
     </section>
+  );
+}
+
+/** Initials in a soft circle, standing in for a photo. */
+export function Avatar({ name, size }: { name: string; size?: 'lg' }) {
+  return (
+    <span className="c-admin-avatar" data-size={size} aria-hidden="true">
+      {initials(name)}
+    </span>
   );
 }
 

@@ -30,6 +30,8 @@ interface LeadRepository {
   addNote(id: string, note: { text: string; authorName: string }): Promise<boolean>;
   stats(): Promise<LeadStats>;
   followUpsDue(limit: number): Promise<Lead[]>;
+  /** Enquiries per calendar day ("2026-10-08" in the given timezone) over the last `days` days. Days with none are absent. */
+  daily(days: number, timeZone: string): Promise<Record<string, number>>;
 }
 
 function toLead({ _id, notes, ...doc }: WithId<LeadDocument>): Lead {
@@ -123,5 +125,22 @@ export const leadRepository: LeadRepository = {
   async followUpsDue(limit) {
     const docs = await (await leadsCollection()).find(dueFilter()).sort({ followUpAt: 1 }).limit(limit).toArray();
     return docs.map(toLead);
+  },
+
+  async daily(days, timeZone) {
+    const groups = await (
+      await leadsCollection()
+    )
+      .aggregate<{ _id: string; count: number }>([
+        { $match: { createdAt: { $gte: new Date(Date.now() - days * 86_400_000) } } },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: timeZone } },
+            count: { $sum: 1 },
+          },
+        },
+      ])
+      .toArray();
+    return Object.fromEntries(groups.map((group) => [group._id, group.count]));
   },
 };
