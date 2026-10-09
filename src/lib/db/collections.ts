@@ -43,11 +43,15 @@ export type UserDocument = {
   updatedAt: Date;
 };
 
+/** Which sign-in a session belongs to. Admin sessions predate the field and are stored without it. */
+export type SessionScope = 'admin' | 'vendor';
+
 /** sessionToken holds the SHA-256 of the cookie value, so a database leak cannot be replayed. */
 type SessionDocument = {
   _id?: ObjectId;
   sessionToken: string;
   userId: ObjectId;
+  scope?: Exclude<SessionScope, 'admin'>;
   expires: Date;
   createdAt: Date;
 };
@@ -108,8 +112,56 @@ export type CustomerDocument = {
   updatedAt: Date;
 };
 
+/** A film the business sells. The warranty length here sets the coverage period on a warranty card. */
+export type ProductDocument = {
+  _id?: ObjectId;
+  name: string;
+  /** Lowercase name, unique, so "Apex" and "apex" cannot both exist. */
+  nameKey: string;
+  finish: string;
+  warrantyYears: number;
+  description?: string;
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+/** An installation shop. Its people sign in to the vendor portal with portal users. */
+export type VendorDocument = {
+  _id?: ObjectId;
+  shopName: string;
+  contactName: string;
+  email: string;
+  phone: string; // E.164
+  address: string;
+  /** People who fit film at this shop; one is named on each warranty card. */
+  installers: string[];
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+/** A sign-in for the vendor portal. Kept apart from admin users so a vendor can never hold an admin role. */
+export type PortalUserDocument = {
+  _id?: ObjectId;
+  kind: 'vendor';
+  vendorId: ObjectId;
+  email: string;
+  name: string;
+  passwordHash: string;
+  active: boolean;
+  /** True until the person replaces the temporary password they were given. */
+  mustChangePassword: boolean;
+  lastLoginAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const COLLECTIONS = {
   leads: 'leads',
+  products: 'products',
+  vendors: 'vendors',
+  portalUsers: 'portalUsers',
   posts: 'posts',
   customers: 'customers',
   users: 'users',
@@ -142,6 +194,18 @@ export async function postsCollection() {
 
 export async function customersCollection() {
   return (await getDb()).collection<CustomerDocument>(COLLECTIONS.customers);
+}
+
+export async function productsCollection() {
+  return (await getDb()).collection<ProductDocument>(COLLECTIONS.products);
+}
+
+export async function vendorsCollection() {
+  return (await getDb()).collection<VendorDocument>(COLLECTIONS.vendors);
+}
+
+export async function portalUsersCollection() {
+  return (await getDb()).collection<PortalUserDocument>(COLLECTIONS.portalUsers);
 }
 
 /** Database-level guard in addition to Zod: required fields, types and length caps. */
@@ -182,6 +246,9 @@ const INDEXES: Record<string, IndexDescription[]> = {
   [COLLECTIONS.posts]: [{ key: { slug: 1 }, unique: true }, { key: { status: 1, publishedAt: -1 } }],
   [COLLECTIONS.customers]: [{ key: { phone: 1 }, unique: true }, { key: { createdAt: -1 } }],
   [COLLECTIONS.users]: [{ key: { email: 1 }, unique: true, sparse: true }],
+  [COLLECTIONS.products]: [{ key: { nameKey: 1 }, unique: true }],
+  [COLLECTIONS.vendors]: [{ key: { createdAt: -1 } }],
+  [COLLECTIONS.portalUsers]: [{ key: { email: 1 }, unique: true }, { key: { vendorId: 1 } }],
   [COLLECTIONS.accounts]: [{ key: { provider: 1, providerAccountId: 1 }, unique: true }, { key: { userId: 1 } }],
   [COLLECTIONS.sessions]: [
     { key: { sessionToken: 1 }, unique: true },

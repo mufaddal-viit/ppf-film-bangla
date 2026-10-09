@@ -4,7 +4,7 @@ import { SITE_URL } from '@/lib/seo/metadata';
 
 /** Crawl rules. AI crawler access is a config setting (config/seo.ts), allowed by default. */
 export default function robots(): MetadataRoute.Robots {
-  const disallow = ['/api/', '/admin', ...siteConfig.locale.locales.map((l) => `/${l}/account`)];
+  const disallow = ['/api/', '/admin', '/vendor', ...siteConfig.locale.locales.map((l) => `/${l}/account`)];
   const { policy, userAgents } = seoConfig.aiCrawlers;
   return {
     rules: [

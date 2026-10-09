@@ -1,6 +1,17 @@
 'use client';
 
-import { ContactRound, History, Inbox, LayoutDashboard, Newspaper, UserCog, type LucideIcon } from 'lucide-react';
+import {
+  ContactRound,
+  History,
+  Inbox,
+  KeyRound,
+  LayoutDashboard,
+  Newspaper,
+  Package,
+  Store,
+  UserCog,
+  type LucideIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -9,6 +20,9 @@ const ICONS = {
   leads: Inbox,
   customers: ContactRound,
   blog: Newspaper,
+  products: Package,
+  vendors: Store,
+  account: KeyRound,
   users: UserCog,
   activity: History,
 } satisfies Record<string, LucideIcon>;
@@ -18,13 +32,15 @@ export type AdminNavGroup = {
   links: Array<{ href: string; label: string; icon: keyof typeof ICONS; count?: number }>;
 };
 
+type AdminNavProps = { groups: AdminNavGroup[]; rootHref: string; label?: string };
+
 /** Sidebar links. The dashboard matches only its own path; every other link also matches its sub-pages. */
-export function AdminNav({ groups, rootHref }: { groups: AdminNavGroup[]; rootHref: string }) {
+export function AdminNav({ groups, rootHref, label = 'Admin' }: AdminNavProps) {
   const pathname = usePathname();
   const isCurrent = (href: string) => (href === rootHref ? pathname === href : pathname.startsWith(href));
 
   return (
-    <nav className="c-admin-nav" aria-label="Admin">
+    <nav className="c-admin-nav" aria-label={label}>
       {groups.map((group, index) => (
         <div key={group.label ?? index} className="c-admin-nav-group">
           {group.label && <p className="c-admin-nav-label">{group.label}</p>}

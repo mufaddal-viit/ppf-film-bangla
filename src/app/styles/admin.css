@@ -606,6 +606,37 @@
   .c-admin-notes small {
     @apply text-xs text-muted-foreground;
   }
+  /* Vendor sign-ins: who, their state, and the two things the owner can do to each. */
+  .c-admin-logins {
+    @apply flex flex-col gap-3;
+  }
+  .c-admin-logins li {
+    @apply flex flex-col gap-3 rounded-2xl border border-border p-4;
+  }
+  .c-admin-logins header {
+    @apply flex flex-wrap items-start justify-between gap-3;
+  }
+  .c-admin-logins header div {
+    @apply flex min-w-0 flex-col;
+  }
+  .c-admin-logins header strong {
+    @apply text-sm font-semibold;
+  }
+  .c-admin-logins header span:not(.c-admin-status) {
+    @apply text-xs text-muted-foreground;
+    overflow-wrap: anywhere;
+  }
+  .c-admin-logins-actions {
+    @apply flex flex-wrap gap-3;
+  }
+  .c-admin-logins-actions .c-admin-form {
+    @apply min-w-0 flex-1 basis-40;
+  }
+  /* A one-time password must be easy to read and copy exactly. */
+  .c-admin-logins .c-admin-form-message[data-ok='true'],
+  .c-admin-panel .c-admin-form-message[data-ok='true'] {
+    overflow-wrap: anywhere;
+  }
   .c-admin-user-card > header {
     @apply flex flex-wrap items-start justify-between gap-3;
   }

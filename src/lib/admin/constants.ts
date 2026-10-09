@@ -12,6 +12,9 @@ export const ADMIN_ROUTES = {
   customersExport: '/admin/customers/export',
   blog: '/admin/blog',
   blogNew: '/admin/blog/new',
+  products: '/admin/products',
+  vendors: '/admin/vendors',
+  vendorsNew: '/admin/vendors/new',
   users: '/admin/users',
   activity: '/admin/activity',
   account: '/admin/account',
@@ -56,6 +59,9 @@ export const RETARGET_AFTER_DAYS = 90;
 
 export const PASSWORD_MIN_LENGTH = 10;
 
+/** Upper limit for a product's warranty length. */
+export const MAX_WARRANTY_YEARS = 25;
+
 /** Plain-English names for audit log actions. Unknown actions are shown as recorded. */
 export const AUDIT_ACTION_LABELS: Record<string, string> = {
   'auth.signed_in': 'Signed in',
@@ -79,4 +85,14 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   'post.created': 'Created a post',
   'post.updated': 'Updated a post',
   'post.deleted': 'Deleted a post',
+  'product.created': 'Added a product',
+  'product.updated': 'Updated a product',
+  'vendor.created': 'Added a vendor',
+  'vendor.updated': 'Updated a vendor',
+  'vendor.login_created': 'Created a vendor sign-in',
+  'vendor.login_reset': 'Reset a vendor password',
+  'vendor.login_updated': 'Switched a vendor sign-in on or off',
+  'vendor.signed_in': 'Vendor signed in',
+  'vendor.signed_out': 'Vendor signed out',
+  'vendor.password_changed': 'Vendor changed own password',
 };

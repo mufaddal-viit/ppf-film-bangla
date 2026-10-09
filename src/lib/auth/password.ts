@@ -1,4 +1,4 @@
-import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
+import { randomBytes, randomInt, scrypt, timingSafeEqual } from 'node:crypto';
 
 /**
  * Password hashing with scrypt from node:crypto (no native dependency).
@@ -15,6 +15,15 @@ function derive(password: string, salt: Buffer, logN: number, r: number, p: numb
       error ? reject(error) : resolve(key),
     );
   });
+}
+
+/** Letters and digits that are hard to misread when a password is passed on by phone or on paper. */
+const TEMP_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+
+/** A random one-time password for a new sign-in: about 80 bits, in groups of four for reading aloud. */
+export function generateTempPassword(): string {
+  const chars = Array.from({ length: 14 }, () => TEMP_ALPHABET[randomInt(TEMP_ALPHABET.length)]);
+  return [chars.slice(0, 4), chars.slice(4, 9), chars.slice(9)].map((group) => group.join('')).join('-');
 }
 
 export async function hashPassword(password: string): Promise<string> {

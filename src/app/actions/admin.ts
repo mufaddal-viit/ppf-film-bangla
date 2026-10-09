@@ -5,7 +5,9 @@ import * as customers from '@/lib/admin/customers';
 import type { FormState } from '@/lib/admin/form-state';
 import * as leads from '@/lib/admin/leads';
 import * as posts from '@/lib/admin/posts';
+import * as products from '@/lib/admin/products';
 import * as users from '@/lib/admin/users';
+import * as vendors from '@/lib/admin/vendors';
 
 /**
  * Admin server actions. Each one is a public endpoint: the session, origin and role checks
@@ -82,4 +84,32 @@ export async function savePost(previous: FormState, formData: FormData): Promise
 
 export async function deletePost(previous: FormState, formData: FormData): Promise<FormState> {
   return posts.deletePost(previous, formData);
+}
+
+export async function createProduct(previous: FormState, formData: FormData): Promise<FormState> {
+  return products.createProduct(previous, formData);
+}
+
+export async function updateProduct(previous: FormState, formData: FormData): Promise<FormState> {
+  return products.updateProduct(previous, formData);
+}
+
+export async function createVendor(previous: FormState, formData: FormData): Promise<FormState> {
+  return vendors.createVendor(previous, formData);
+}
+
+export async function updateVendor(previous: FormState, formData: FormData): Promise<FormState> {
+  return vendors.updateVendor(previous, formData);
+}
+
+export async function createVendorLogin(previous: FormState, formData: FormData): Promise<FormState> {
+  return vendors.createVendorLogin(previous, formData);
+}
+
+export async function resetVendorLoginPassword(previous: FormState, formData: FormData): Promise<FormState> {
+  return vendors.resetVendorLoginPassword(previous, formData);
+}
+
+export async function setVendorLoginActive(previous: FormState, formData: FormData): Promise<FormState> {
+  return vendors.setVendorLoginActive(previous, formData);
 }

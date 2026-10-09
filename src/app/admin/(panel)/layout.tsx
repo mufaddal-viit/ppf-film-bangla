@@ -32,6 +32,17 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
     ...(session.role === 'owner'
       ? [
           {
+            label: 'Warranty',
+            links: [
+              { href: ADMIN_ROUTES.products, label: 'Products', icon: 'products' as const },
+              { href: ADMIN_ROUTES.vendors, label: 'Vendors', icon: 'vendors' as const },
+            ],
+          },
+        ]
+      : []),
+    ...(session.role === 'owner'
+      ? [
+          {
             label: 'Owner',
             links: [
               { href: ADMIN_ROUTES.users, label: 'Users', icon: 'users' as const },
