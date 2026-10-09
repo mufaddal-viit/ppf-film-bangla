@@ -6,6 +6,29 @@ import { z } from 'zod';
 
 const TURNSTILE_TEST_KEY = /^[123]x0000000000000000000/;
 
+/**
+ * TEMPORARY, for the first deployments: while this is false the production-only rules are skipped
+ * and envFallbacks() fills unset variables, so the site deploys with only MONGODB_URI set.
+ * Before launch: set the real values in Vercel (see .env.example), set this to true, and
+ * un-skip the production test in tests/unit/config.test.ts.
+ */
+const ENFORCE_PRODUCTION_ENV = false;
+
+/**
+ * Placeholders for unset variables: the Vercel deployment URL, a dummy notification address
+ * and Cloudflare's always-pass Turnstile test keys (no bot protection).
+ */
+export function envFallbacks(source: Record<string, string | undefined>): Record<string, string> {
+  if (ENFORCE_PRODUCTION_ENV) return {};
+  const vercelHost = source.VERCEL_PROJECT_PRODUCTION_URL || source.VERCEL_URL;
+  return {
+    NEXT_PUBLIC_SITE_URL: vercelHost ? `https://${vercelHost}` : 'http://localhost:3000',
+    LEAD_NOTIFICATION_TO: 'leads@example.com',
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
+    TURNSTILE_SECRET_KEY: '1x0000000000000000000000000000000AA',
+  };
+}
+
 const envSchema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -45,7 +68,7 @@ const envSchema = z
       require('UPSTASH_REDIS_REST_URL', 'RATE_LIMIT_STORE=upstash');
       require('UPSTASH_REDIS_REST_TOKEN', 'RATE_LIMIT_STORE=upstash');
     }
-    if (env.VERCEL_ENV === 'production') {
+    if (ENFORCE_PRODUCTION_ENV && env.VERCEL_ENV === 'production') {
       const prodRule = (ok: boolean, path: string, message: string) => {
         if (!ok) ctx.addIssue({ code: 'custom', path: [path], message: `Production: ${message}` });
       };
@@ -72,7 +95,8 @@ type Env = z.infer<typeof envSchema>;
 
 export function parseEnv(source: Record<string, string | undefined>): Env {
   // An empty value in an env file means "not set", so optional variables can be left blank.
-  const result = envSchema.safeParse(Object.fromEntries(Object.entries(source).filter(([, v]) => v !== '')));
+  const set = Object.fromEntries(Object.entries(source).filter(([, v]) => v !== ''));
+  const result = envSchema.safeParse({ ...envFallbacks(source), ...set });
   if (!result.success) {
     throw new Error(`Invalid environment variables (see .env.example):\n${z.prettifyError(result.error)}`);
   }
