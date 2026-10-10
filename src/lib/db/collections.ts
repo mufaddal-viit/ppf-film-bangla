@@ -1,5 +1,6 @@
 import 'server-only';
-import type { Db, Document, IndexDescription, ObjectId } from 'mongodb';
+import { isDeepStrictEqual } from 'node:util';
+import { MongoServerError, type Db, type Document, type IndexDescription, type ObjectId } from 'mongodb';
 import { LEAD_STATUSES, type LeadStatus, type PostStatus, type UserRole } from '@/lib/admin/constants';
 import type { LeadType } from '@/lib/config/schema';
 import { getDb } from './client';
@@ -284,9 +285,20 @@ const INDEXES: Record<string, IndexDescription[]> = {
 
 /** Idempotent: creates collections, validators and indexes. Run by scripts/db-setup.ts on deploy. */
 export async function ensureSchema(db: Db): Promise<void> {
-  const existing = new Set((await db.listCollections({}, { nameOnly: true }).toArray()).map((c) => c.name));
-  if (!existing.has(COLLECTIONS.leads)) await db.createCollection(COLLECTIONS.leads, { validator: leadValidator });
-  else await db.command({ collMod: COLLECTIONS.leads, validator: leadValidator });
+  const [leads] = await db.listCollections({ name: COLLECTIONS.leads }, { nameOnly: false }).toArray();
+  if (!leads) await db.createCollection(COLLECTIONS.leads, { validator: leadValidator });
+  else if (!isDeepStrictEqual(leads.options?.validator, leadValidator)) {
+    // collMod needs dbAdmin, which a plain readWrite Atlas user lacks. Don't fail the deploy over it.
+    try {
+      await db.command({ collMod: COLLECTIONS.leads, validator: leadValidator });
+    } catch (error) {
+      if (!(error instanceof MongoServerError) || !/not allowed|not authorized/i.test(error.message)) throw error;
+      console.warn(
+        `WARNING: the ${COLLECTIONS.leads} validator is out of date and this database user cannot update it ` +
+          '(collMod needs the dbAdmin role). Grant it and re-run `pnpm db:setup`.',
+      );
+    }
+  }
 
   for (const [name, indexes] of Object.entries(INDEXES)) {
     await db.collection(name).createIndexes(indexes);
