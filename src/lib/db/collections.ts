@@ -157,10 +157,27 @@ export type PortalUserDocument = {
   updatedAt: Date;
 };
 
+/** One roll of film allocated to a vendor. Installations use it up; a warranty names its LOT number. */
+export type RollDocument = {
+  _id?: ObjectId;
+  vendorId: ObjectId;
+  productId: ObjectId;
+  lotNumber: string;
+  /** Uppercase LOT number, unique, so the same roll cannot be allocated twice. */
+  lotKey: string;
+  widthCm: number;
+  lengthM: number;
+  /** Metres already fitted. Never more than lengthM. */
+  usedM: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const COLLECTIONS = {
   leads: 'leads',
   products: 'products',
   vendors: 'vendors',
+  rolls: 'rolls',
   portalUsers: 'portalUsers',
   posts: 'posts',
   customers: 'customers',
@@ -202,6 +219,10 @@ export async function productsCollection() {
 
 export async function vendorsCollection() {
   return (await getDb()).collection<VendorDocument>(COLLECTIONS.vendors);
+}
+
+export async function rollsCollection() {
+  return (await getDb()).collection<RollDocument>(COLLECTIONS.rolls);
 }
 
 export async function portalUsersCollection() {
@@ -248,6 +269,7 @@ const INDEXES: Record<string, IndexDescription[]> = {
   [COLLECTIONS.users]: [{ key: { email: 1 }, unique: true, sparse: true }],
   [COLLECTIONS.products]: [{ key: { nameKey: 1 }, unique: true }],
   [COLLECTIONS.vendors]: [{ key: { createdAt: -1 } }],
+  [COLLECTIONS.rolls]: [{ key: { lotKey: 1 }, unique: true }, { key: { vendorId: 1, createdAt: -1 } }],
   [COLLECTIONS.portalUsers]: [{ key: { email: 1 }, unique: true }, { key: { vendorId: 1 } }],
   [COLLECTIONS.accounts]: [{ key: { provider: 1, providerAccountId: 1 }, unique: true }, { key: { userId: 1 } }],
   [COLLECTIONS.sessions]: [

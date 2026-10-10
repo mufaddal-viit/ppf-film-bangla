@@ -6,6 +6,7 @@ import type { FormState } from '@/lib/admin/form-state';
 import * as leads from '@/lib/admin/leads';
 import * as posts from '@/lib/admin/posts';
 import * as products from '@/lib/admin/products';
+import * as stock from '@/lib/admin/stock';
 import * as users from '@/lib/admin/users';
 import * as vendors from '@/lib/admin/vendors';
 
@@ -92,6 +93,14 @@ export async function createProduct(previous: FormState, formData: FormData): Pr
 
 export async function updateProduct(previous: FormState, formData: FormData): Promise<FormState> {
   return products.updateProduct(previous, formData);
+}
+
+export async function allocateRoll(previous: FormState, formData: FormData): Promise<FormState> {
+  return stock.allocateRoll(previous, formData);
+}
+
+export async function removeRoll(previous: FormState, formData: FormData): Promise<FormState> {
+  return stock.removeRoll(previous, formData);
 }
 
 export async function createVendor(previous: FormState, formData: FormData): Promise<FormState> {

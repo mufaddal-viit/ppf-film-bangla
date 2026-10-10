@@ -36,6 +36,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
             links: [
               { href: ADMIN_ROUTES.products, label: 'Products', icon: 'products' as const },
               { href: ADMIN_ROUTES.vendors, label: 'Vendors', icon: 'vendors' as const },
+              { href: ADMIN_ROUTES.stock, label: 'Stock', icon: 'stock' as const },
             ],
           },
         ]

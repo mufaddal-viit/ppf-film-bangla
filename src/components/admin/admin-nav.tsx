@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Boxes,
   ContactRound,
   History,
   Inbox,
@@ -22,6 +23,7 @@ const ICONS = {
   blog: Newspaper,
   products: Package,
   vendors: Store,
+  stock: Boxes,
   account: KeyRound,
   users: UserCog,
   activity: History,

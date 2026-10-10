@@ -19,7 +19,12 @@ export default async function VendorPanelLayout({ children }: { children: ReactN
   const { name, logo } = siteConfig.business;
 
   const groups: AdminNavGroup[] = [
-    { links: [{ href: VENDOR_ROUTES.dashboard, label: 'Dashboard', icon: 'dashboard' }] },
+    {
+      links: [
+        { href: VENDOR_ROUTES.dashboard, label: 'Dashboard', icon: 'dashboard' },
+        { href: VENDOR_ROUTES.stock, label: 'Stock', icon: 'stock' },
+      ],
+    },
     { label: 'You', links: [{ href: VENDOR_ROUTES.account, label: 'Account', icon: 'account' }] },
   ];
 

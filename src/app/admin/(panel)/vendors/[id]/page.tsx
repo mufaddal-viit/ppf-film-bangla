@@ -1,15 +1,25 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { createVendorLogin, resetVendorLoginPassword, setVendorLoginActive, updateVendor } from '@/app/actions/admin';
+import {
+  createVendorLogin,
+  removeRoll,
+  resetVendorLoginPassword,
+  setVendorLoginActive,
+  updateVendor,
+} from '@/app/actions/admin';
 import { AdminForm } from '@/components/admin/admin-form';
+import { RollTable } from '@/components/admin/roll-table';
 import { EmptyState, Field, PageHead, Panel, Pill } from '@/components/admin/ui';
 import { VendorFields } from '@/components/admin/vendor-fields';
 import { ADMIN_ROUTES } from '@/lib/admin/constants';
-import { adminDates } from '@/lib/admin/format';
+import { adminDates, metres } from '@/lib/admin/format';
+import { stockTotals, toRollRows } from '@/lib/admin/roll-rows';
 import { requireSession } from '@/lib/auth/session';
 import { siteConfig } from '@/lib/config';
 import { portalUserRepository } from '@/lib/db/repositories/portal-user.repository';
+import { productRepository } from '@/lib/db/repositories/product.repository';
+import { rollRepository } from '@/lib/db/repositories/roll.repository';
 import { vendorRepository } from '@/lib/db/repositories/vendor.repository';
 import { VENDOR_ROUTES } from '@/lib/vendor/constants';
 
@@ -18,13 +28,16 @@ export const metadata: Metadata = { title: 'Vendor' };
 export default async function AdminVendorPage({ params, searchParams }: PageProps<'/admin/vendors/[id]'>) {
   await requireSession('owner');
   const { id } = await params;
-  const [vendor, logins, query] = await Promise.all([
+  const [vendor, logins, rolls, products, query] = await Promise.all([
     vendorRepository.findById(id),
     portalUserRepository.listForVendor(id),
+    rollRepository.listForVendor(id),
+    productRepository.list(),
     searchParams,
   ]);
   if (!vendor) notFound();
   const format = adminDates(siteConfig.locale.timezone);
+  const totals = stockTotals(rolls);
 
   return (
     <>
@@ -114,6 +127,29 @@ export default async function AdminVendorPage({ params, searchParams }: PageProp
           </Panel>
         </div>
       </div>
+
+      <Panel
+        title="Stock at this shop"
+        action={
+          vendor.active && (
+            <Link href={`${ADMIN_ROUTES.stock}?vendor=${vendor.id}`} className="c-admin-more">
+              Allocate a roll
+            </Link>
+          )
+        }
+      >
+        {rolls.length === 0 ? (
+          <EmptyState>No film allocated to this shop yet, so it cannot record installations.</EmptyState>
+        ) : (
+          <>
+            <p className="c-admin-muted">
+              {totals.rolls} {totals.rolls === 1 ? 'roll' : 'rolls'}, {metres(totals.leftM)} of{' '}
+              {metres(totals.allocatedM)} left.
+            </p>
+            <RollTable rolls={toRollRows(rolls, { products, date: format.date })} removeAction={removeRoll} />
+          </>
+        )}
+      </Panel>
     </>
   );
 }

@@ -15,6 +15,7 @@ export const ADMIN_ROUTES = {
   products: '/admin/products',
   vendors: '/admin/vendors',
   vendorsNew: '/admin/vendors/new',
+  stock: '/admin/stock',
   users: '/admin/users',
   activity: '/admin/activity',
   account: '/admin/account',
@@ -62,6 +63,9 @@ export const PASSWORD_MIN_LENGTH = 10;
 /** Upper limit for a product's warranty length. */
 export const MAX_WARRANTY_YEARS = 25;
 
+/** Smallest and largest roll of film that can be allocated: width in centimetres, length in metres. */
+export const ROLL_LIMITS = { widthCm: { min: 10, max: 200 }, lengthM: { min: 0.5, max: 100 } } as const;
+
 /** Plain-English names for audit log actions. Unknown actions are shown as recorded. */
 export const AUDIT_ACTION_LABELS: Record<string, string> = {
   'auth.signed_in': 'Signed in',
@@ -92,6 +96,8 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   'vendor.login_created': 'Created a vendor sign-in',
   'vendor.login_reset': 'Reset a vendor password',
   'vendor.login_updated': 'Switched a vendor sign-in on or off',
+  'stock.allocated': 'Allocated a roll to a vendor',
+  'stock.removed': 'Took back an unused roll',
   'vendor.signed_in': 'Vendor signed in',
   'vendor.signed_out': 'Vendor signed out',
   'vendor.password_changed': 'Vendor changed own password',

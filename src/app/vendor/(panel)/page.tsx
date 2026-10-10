@@ -1,15 +1,27 @@
 import { CalendarDays } from 'lucide-react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Avatar, EmptyState, Panel } from '@/components/admin/ui';
-import { adminDates } from '@/lib/admin/format';
+import { adminDates, metres } from '@/lib/admin/format';
+import { stockTotals } from '@/lib/admin/roll-rows';
 import { siteConfig } from '@/lib/config';
+import { productRepository } from '@/lib/db/repositories/product.repository';
+import { rollRepository } from '@/lib/db/repositories/roll.repository';
+import { VENDOR_ROUTES } from '@/lib/vendor/constants';
 import { requireVendorSession } from '@/lib/vendor/session';
 
 export const metadata: Metadata = { title: 'Dashboard' };
 
 export default async function VendorDashboardPage() {
-  const { name, vendor } = await requireVendorSession();
+  const { name, vendor, vendorId } = await requireVendorSession();
+  const [rolls, products] = await Promise.all([rollRepository.listForVendor(vendorId), productRepository.list()]);
   const format = adminDates(siteConfig.locale.timezone);
+  const stockByProduct = products
+    .map((product) => ({
+      product: product.name,
+      totals: stockTotals(rolls.filter((roll) => roll.productId === product.id)),
+    }))
+    .filter(({ totals }) => totals.rolls > 0);
 
   return (
     <div className="c-admin-stack">
@@ -72,11 +84,33 @@ export default async function VendorDashboardPage() {
         </Panel>
       </div>
 
-      <Panel title="Your products">
-        <EmptyState>
-          No products have been allocated to your shop yet. Film that {siteConfig.business.name} allocates to you will
-          appear here.
-        </EmptyState>
+      <Panel
+        title="Your stock"
+        action={
+          rolls.length > 0 && (
+            <Link href={VENDOR_ROUTES.stock} className="c-admin-more">
+              See every roll
+            </Link>
+          )
+        }
+      >
+        {rolls.length === 0 ? (
+          <EmptyState>
+            No film has been allocated to your shop yet. Film that {siteConfig.business.name} allocates to you will
+            appear here.
+          </EmptyState>
+        ) : (
+          <dl className="c-admin-details">
+            {stockByProduct.map(({ product, totals }) => (
+              <div key={product}>
+                <dt>{product}</dt>
+                <dd>
+                  {metres(totals.leftM)} left on {totals.rolls} {totals.rolls === 1 ? 'roll' : 'rolls'}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
       </Panel>
     </div>
   );

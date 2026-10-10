@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+# browser-test logs; left unignored, Tailwind scans them and the dev server reloads in a loop
+/.playwright-mcp
 
 # next.js
 /.next/

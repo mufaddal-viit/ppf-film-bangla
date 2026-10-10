@@ -17,6 +17,23 @@ export function initials(name: string): string {
   return ((words[0]?.[0] ?? '') + (words.length > 1 ? (words.at(-1)?.[0] ?? '') : '')).toUpperCase() || '?';
 }
 
+const measure = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 2 });
+
+/** 12.5 -> "12.5 m", for film lengths. */
+export function metres(value: number): string {
+  return `${measure.format(value)} m`;
+}
+
+/** "152 cm × 15 m", as printed on a roll and on the warranty card. */
+export function rollSize(roll: { widthCm: number; lengthM: number }): string {
+  return `${measure.format(roll.widthCm)} cm × ${metres(roll.lengthM)}`;
+}
+
+/** Metres still on a roll. Rounded, because repeated cuts would otherwise leave floating-point dust. */
+export function rollRemaining(roll: { lengthM: number; usedM: number }): number {
+  return Math.max(0, Math.round((roll.lengthM - roll.usedM) * 100) / 100);
+}
+
 /** "apex-clear-ppf" -> "Apex clear ppf", for slugs that have no display name to hand. */
 export function humanize(slug: string): string {
   const text = slug.replaceAll('-', ' ');
