@@ -1,4 +1,4 @@
-# PPF Phantom website
+# PPF Phantom website.
 
 Marketing site for a UAE car care studio (paint protection film, ceramic coating, window tint, wraps, detailing). Built to generate leads through WhatsApp, calls and quote forms.
 
