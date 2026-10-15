@@ -105,17 +105,41 @@ export default async function AdminCustomerPage({ params }: PageProps<'/admin/cu
               className="c-admin-form-grid"
             >
               <input type="hidden" name="id" value={customer.id} />
-              <Field label="Make">
-                <input className="c-input" name="make" placeholder="Toyota" maxLength={40} required />
+              <Field label="Make" half>
+                <input
+                  className="c-input"
+                  name="make"
+                  autoComplete="off"
+                  autoCapitalize="words"
+                  placeholder="Toyota"
+                  maxLength={40}
+                  required
+                />
               </Field>
-              <Field label="Model">
-                <input className="c-input" name="model" placeholder="Land Cruiser" maxLength={40} required />
+              <Field label="Model" half>
+                <input
+                  className="c-input"
+                  name="model"
+                  autoComplete="off"
+                  autoCapitalize="words"
+                  placeholder="Land Cruiser"
+                  maxLength={40}
+                  required
+                />
               </Field>
-              <Field label="Year (optional)">
-                <input className="c-input" name="year" inputMode="numeric" maxLength={4} />
+              <Field label="Year (optional)" half>
+                <input className="c-input" name="year" inputMode="numeric" autoComplete="off" maxLength={4} />
               </Field>
-              <Field label="Plate (optional)">
-                <input className="c-input" name="plate" maxLength={20} />
+              <Field label="Plate (optional)" half>
+                <input
+                  className="c-input"
+                  name="plate"
+                  dir="ltr"
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                  spellCheck={false}
+                  maxLength={20}
+                />
               </Field>
             </AdminForm>
           </Panel>

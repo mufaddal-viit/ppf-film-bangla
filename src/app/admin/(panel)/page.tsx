@@ -35,7 +35,15 @@ export const metadata: Metadata = { title: 'Dashboard' };
 
 const TREND_DAYS = 14;
 
-type Tile = { label: string; value: number; href: string; icon: LucideIcon; tone?: 'primary' | 'warning' | 'success' };
+type Tile = {
+  label: string;
+  /** One-line label for phones. */
+  short: string;
+  value: number;
+  href: string;
+  icon: LucideIcon;
+  tone?: 'primary' | 'warning' | 'success';
+};
 
 export default async function AdminDashboardPage() {
   const session = await requireSession();
@@ -58,28 +66,50 @@ export default async function AdminDashboardPage() {
   const tiles: Tile[] = [
     {
       label: 'New enquiries waiting',
+      short: 'New enquiries',
       value: stats.byStatus.new,
       href: `${ADMIN_ROUTES.leads}?status=new`,
       icon: Inbox,
       tone: 'primary',
     },
-    { label: 'Enquiries in the last 7 days', value: stats.last7Days, href: ADMIN_ROUTES.leads, icon: TrendingUp },
+    {
+      label: 'Enquiries in the last 7 days',
+      short: 'Last 7 days',
+      value: stats.last7Days,
+      href: ADMIN_ROUTES.leads,
+      icon: TrendingUp,
+    },
     {
       label: 'Follow-ups due',
+      short: 'Follow-ups due',
       value: stats.followUpsDue,
       href: ADMIN_ROUTES.leads,
       icon: BellRing,
       tone: 'warning',
     },
-    { label: 'Customers', value: customers.total, href: ADMIN_ROUTES.customers, icon: ContactRound },
+    {
+      label: 'Customers',
+      short: 'Customers',
+      value: customers.total,
+      href: ADMIN_ROUTES.customers,
+      icon: ContactRound,
+    },
     {
       label: 'Customers due a message',
+      short: 'Due a message',
       value: customers.due,
       href: `${ADMIN_ROUTES.customers}?segment=due`,
       icon: MessageCircleHeart,
       tone: 'warning',
     },
-    { label: 'Published posts', value: posts.published, href: ADMIN_ROUTES.blog, icon: Newspaper, tone: 'success' },
+    {
+      label: 'Published posts',
+      short: 'Posts live',
+      value: posts.published,
+      href: ADMIN_ROUTES.blog,
+      icon: Newspaper,
+      tone: 'success',
+    },
   ];
 
   return (
@@ -103,7 +133,10 @@ export default async function AdminDashboardPage() {
                 <span className="c-admin-tile-icon">
                   <Icon aria-hidden="true" focusable="false" />
                 </span>
-                <span>{tile.label}</span>
+                <span className="c-admin-tile-label">
+                  <span className="c-admin-tile-full">{tile.label}</span>
+                  <span className="c-admin-tile-short">{tile.short}</span>
+                </span>
                 <strong>{tile.value}</strong>
               </Link>
             </li>
@@ -154,7 +187,7 @@ export default async function AdminDashboardPage() {
             {LEAD_STATUSES.map((status) => (
               <li key={status}>
                 <Link href={`${ADMIN_ROUTES.leads}?status=${status}`}>{LEAD_STATUS_LABELS[status]}</Link>
-                <span className="c-admin-bar" data-status={status}>
+                <span className="c-admin-meter" data-status={status}>
                   <span style={{ width: `${total ? (stats.byStatus[status] / total) * 100 : 0}%` }} />
                 </span>
                 <strong>{stats.byStatus[status]}</strong>

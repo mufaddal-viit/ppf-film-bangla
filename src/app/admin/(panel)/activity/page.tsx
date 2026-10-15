@@ -34,10 +34,10 @@ export default async function AdminActivityPage() {
             <tbody>
               {entries.map((entry) => (
                 <tr key={entry.id}>
-                  <td>{format.dateTime(entry.at)}</td>
-                  <td>{entry.actorEmail}</td>
-                  <td>{AUDIT_ACTION_LABELS[entry.action] ?? entry.action}</td>
-                  <td>{[entry.target, entry.detail].filter(Boolean).join(' · ') || '–'}</td>
+                  <td data-label="When">{format.dateTime(entry.at)}</td>
+                  <td data-label="Who">{entry.actorEmail}</td>
+                  <td data-cell="title">{AUDIT_ACTION_LABELS[entry.action] ?? entry.action}</td>
+                  <td data-label="Detail">{[entry.target, entry.detail].filter(Boolean).join(' · ') || '–'}</td>
                 </tr>
               ))}
             </tbody>

@@ -45,18 +45,20 @@ export function RollTable({ rolls, removeAction }: RollTableProps) {
             const left = rollRemaining(roll);
             return (
               <tr key={roll.id}>
-                <td>
+                <td data-cell="title">
                   <strong dir="ltr">{roll.lotNumber}</strong>
                   <small>Allocated {roll.allocatedOn}</small>
                 </td>
-                <td>{roll.product}</td>
-                {showVendor && <td>{roll.vendor && <Link href={roll.vendor.href}>{roll.vendor.name}</Link>}</td>}
-                <td>{rollSize(roll)}</td>
-                <td>
+                <td data-label="Product">{roll.product}</td>
+                {showVendor && (
+                  <td data-label="Vendor">{roll.vendor && <Link href={roll.vendor.href}>{roll.vendor.name}</Link>}</td>
+                )}
+                <td data-label="Roll size">{rollSize(roll)}</td>
+                <td data-label="Left">
                   {metres(left)}
                   <small>of {metres(roll.lengthM)}</small>
                 </td>
-                <td>
+                <td data-cell="status">
                   {roll.usedM === 0 ? (
                     <Pill tone="primary">Unused</Pill>
                   ) : left === 0 ? (
@@ -66,7 +68,7 @@ export function RollTable({ rolls, removeAction }: RollTableProps) {
                   )}
                 </td>
                 {removeAction && (
-                  <td>
+                  <td data-cell="action">
                     {roll.usedM === 0 && (
                       <AdminForm action={removeAction} submitLabel="Take back" quiet>
                         <input type="hidden" name="id" value={roll.id} />

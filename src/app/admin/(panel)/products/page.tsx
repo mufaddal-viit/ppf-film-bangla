@@ -39,15 +39,15 @@ export default async function AdminProductsPage() {
               <tbody>
                 {products.map((product) => (
                   <tr key={product.id}>
-                    <td>
+                    <td data-cell="title">
                       <Link href={`${ADMIN_ROUTES.products}/${product.id}`}>{product.name}</Link>
                       {product.description && <small>{product.description}</small>}
                     </td>
-                    <td>{product.finish}</td>
-                    <td>
+                    <td data-label="Finish">{product.finish}</td>
+                    <td data-label="Warranty">
                       {product.warrantyYears} {product.warrantyYears === 1 ? 'year' : 'years'}
                     </td>
-                    <td>
+                    <td data-cell="status">
                       <Pill tone={product.active ? 'success' : 'muted'}>{product.active ? 'On sale' : 'Retired'}</Pill>
                     </td>
                   </tr>

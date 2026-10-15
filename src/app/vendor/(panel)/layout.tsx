@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { vendorLogout } from '@/app/actions/vendor';
 import { AdminNav, type AdminNavGroup } from '@/components/admin/admin-nav';
+import { AdminShell } from '@/components/admin/admin-shell';
 import { Avatar } from '@/components/admin/ui';
 import { siteConfig } from '@/lib/config';
 import { VENDOR_ROUTES } from '@/lib/vendor/constants';
@@ -30,7 +31,27 @@ export default async function VendorPanelLayout({ children }: { children: ReactN
 
   return (
     <div className="c-admin">
-      <aside className="c-admin-side">
+      <AdminShell
+        label="Vendor portal menu"
+        brand={
+          <Link
+            href={VENDOR_ROUTES.dashboard}
+            className="c-admin-brand"
+            aria-label={`${name} vendor portal, dashboard`}
+          >
+            <Image src={logo.src} alt={name} width={logo.width} height={logo.height} priority />
+          </Link>
+        }
+        barEnd={
+          <Link
+            href={VENDOR_ROUTES.account}
+            className="c-admin-bar-account"
+            aria-label={`Your account, ${session.name}`}
+          >
+            <Avatar name={session.name} />
+          </Link>
+        }
+      >
         <Link href={VENDOR_ROUTES.dashboard} className="c-admin-brand" aria-label={`${name} vendor portal, dashboard`}>
           <Image src={logo.src} alt={name} width={logo.width} height={logo.height} priority />
         </Link>
@@ -49,7 +70,7 @@ export default async function VendorPanelLayout({ children }: { children: ReactN
             </button>
           </form>
         </div>
-      </aside>
+      </AdminShell>
       <main className="c-admin-main">{children}</main>
     </div>
   );

@@ -39,9 +39,18 @@ export function RollFields({ vendors, products, vendorId, limits }: RollFieldsPr
         </select>
       </Field>
       <Field label="LOT number" hint="As printed on the roll. It appears on every warranty cut from it.">
-        <input className="c-input" name="lotNumber" dir="ltr" autoComplete="off" maxLength={40} required />
+        <input
+          className="c-input"
+          name="lotNumber"
+          dir="ltr"
+          autoComplete="off"
+          autoCapitalize="characters"
+          spellCheck={false}
+          maxLength={40}
+          required
+        />
       </Field>
-      <Field label="Width (cm)">
+      <Field label="Width (cm)" half>
         <input
           className="c-input"
           type="number"
@@ -54,7 +63,7 @@ export function RollFields({ vendors, products, vendorId, limits }: RollFieldsPr
           required
         />
       </Field>
-      <Field label="Length (m)">
+      <Field label="Length (m)" half>
         <input
           className="c-input"
           type="number"

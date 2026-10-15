@@ -102,14 +102,16 @@ export default async function AdminLeadsPage({ searchParams }: PageProps<'/admin
             <tbody>
               {items.map((lead) => (
                 <tr key={lead.id}>
-                  <td>{format.dateTime(lead.createdAt)}</td>
-                  <td>
+                  <td data-label="Received">{format.dateTime(lead.createdAt)}</td>
+                  <td data-cell="title">
                     <Link href={`${ADMIN_ROUTES.leads}/${lead.id}`}>{lead.name}</Link>
                   </td>
-                  <td dir="ltr">{lead.phone}</td>
-                  <td>{LEAD_TYPE_LABELS[lead.type]}</td>
-                  <td>{lead.service ? humanize(lead.service) : '–'}</td>
-                  <td>
+                  <td data-label="Phone" dir="ltr">
+                    {lead.phone}
+                  </td>
+                  <td data-label="Type">{LEAD_TYPE_LABELS[lead.type]}</td>
+                  <td data-label="Product">{lead.service ? humanize(lead.service) : '–'}</td>
+                  <td data-cell="status">
                     <StatusBadge status={lead.status} />
                   </td>
                 </tr>

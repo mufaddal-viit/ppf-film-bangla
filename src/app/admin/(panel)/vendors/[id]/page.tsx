@@ -118,7 +118,14 @@ export default async function AdminVendorPage({ params, searchParams }: PageProp
             <AdminForm action={createVendorLogin} submitLabel="Create sign-in" resetOnSuccess>
               <input type="hidden" name="vendorId" value={vendor.id} />
               <Field label="Name">
-                <input className="c-input" name="name" maxLength={100} required />
+                <input
+                  className="c-input"
+                  name="name"
+                  autoComplete="off"
+                  autoCapitalize="words"
+                  maxLength={100}
+                  required
+                />
               </Field>
               <Field label="Email" hint="They sign in with this address.">
                 <input className="c-input" type="email" name="email" autoComplete="off" maxLength={254} required />

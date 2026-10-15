@@ -123,19 +123,25 @@ export default async function AdminCustomersPage({ searchParams }: PageProps<'/a
             <tbody>
               {items.map((customer) => (
                 <tr key={customer.id}>
-                  <td>
+                  <td data-cell="title">
                     <Link href={`${ADMIN_ROUTES.customers}/${customer.id}`}>{customer.name}</Link>
                     {customer.email && <small>{customer.email}</small>}
                   </td>
-                  <td dir="ltr">{customer.phone}</td>
-                  <td>{customer.vehicles.map((v) => `${v.make} ${v.model}`).join(', ') || '–'}</td>
-                  <td>{customer.tags.join(', ') || '–'}</td>
-                  <td>
+                  <td data-label="Phone" dir="ltr">
+                    {customer.phone}
+                  </td>
+                  <td data-label="Vehicles">
+                    {customer.vehicles.map((v) => `${v.make} ${v.model}`).join(', ') || '–'}
+                  </td>
+                  <td data-label="Tags">{customer.tags.join(', ') || '–'}</td>
+                  <td data-label="Offers">
                     <Pill tone={customer.marketingOptIn ? 'success' : 'muted'}>
                       {customer.marketingOptIn ? 'Agreed' : 'Not agreed'}
                     </Pill>
                   </td>
-                  <td>{customer.lastContactedAt ? format.date(customer.lastContactedAt) : 'Never'}</td>
+                  <td data-label="Last contacted">
+                    {customer.lastContactedAt ? format.date(customer.lastContactedAt) : 'Never'}
+                  </td>
                 </tr>
               ))}
             </tbody>

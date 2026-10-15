@@ -132,31 +132,110 @@
       0 0 0 6px color-mix(in oklab, var(--primary) 30%, transparent);
   }
 
-  /* Phones: the sidebar becomes a top bar with a scrolling row of links. */
+  /* The phone top bar, its backdrop and the drawer close button only exist below the breakpoint. */
+  .c-admin-bar,
+  .c-admin-scrim,
+  .c-admin-side-close {
+    @apply hidden;
+  }
+
+  /*
+   * Phones: a sticky top bar with the brand, the account and a menu button. The menu opens the same
+   * sidebar as a drawer sliding in from the left, over a dimmed backdrop.
+   */
   @media (max-width: 52rem) {
     .c-admin {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: auto 1fr;
     }
+    .c-admin-bar {
+      @apply sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-border py-2;
+      padding-top: max(0.5rem, env(safe-area-inset-top));
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+      background: color-mix(in oklab, var(--background) 88%, transparent);
+      backdrop-filter: blur(14px) saturate(1.4);
+    }
+    .c-admin-bar .c-admin-brand img {
+      @apply h-8;
+    }
+    .c-admin-bar-end {
+      @apply flex items-center gap-1.5;
+    }
+    /* Both bar controls are at least 44px square, the comfortable size for a thumb. */
+    .c-admin-bar-account,
+    .c-admin-menu-button {
+      @apply grid size-11 shrink-0 place-items-center rounded-2xl transition-colors;
+    }
+    .c-admin-bar-account:hover {
+      @apply bg-surface;
+    }
+    .c-admin-menu-button {
+      @apply cursor-pointer border border-border bg-background text-foreground shadow-sm hover:bg-surface;
+    }
+    .c-admin-menu-button[aria-expanded='true'] {
+      @apply border-primary bg-primary text-primary-foreground;
+    }
+    .c-admin-menu-button svg {
+      @apply size-5;
+    }
+    .c-admin-scrim {
+      @apply pointer-events-none fixed inset-0 z-40 block opacity-0 transition-opacity duration-300;
+      background: color-mix(in oklab, var(--foreground) 45%, transparent);
+      backdrop-filter: blur(2px);
+    }
+    .c-admin-scrim[data-open='true'] {
+      @apply pointer-events-auto opacity-100;
+    }
+    /*
+     * The sidebar slides off-canvas. Visibility flips only after the slide ends, so the closed drawer
+     * drops out of the tab order and the accessibility tree.
+     */
     .c-admin-side {
-      @apply static h-auto flex-row flex-wrap items-center gap-x-4 gap-y-3 border-r-0 border-b p-3;
+      @apply fixed inset-y-0 left-0 z-50 h-dvh border-r border-border shadow-lg;
+      width: min(20rem, calc(100vw - 3.5rem));
+      padding-top: max(1.25rem, env(safe-area-inset-top));
+      padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+      padding-left: max(1.25rem, env(safe-area-inset-left));
+      overscroll-behavior: contain;
+      translate: -100% 0;
+      visibility: hidden;
+      transition:
+        translate 300ms cubic-bezier(0.32, 0.72, 0, 1),
+        visibility 0s linear 300ms;
+    }
+    .c-admin-side[data-open='true'] {
+      translate: 0 0;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+    /* Room on the right of the drawer logo for the close button. */
+    .c-admin-side > .c-admin-brand {
+      @apply min-h-11 items-center pe-12;
+    }
+    .c-admin-side-close {
+      @apply absolute right-3 grid size-11 cursor-pointer place-items-center rounded-2xl text-muted-foreground transition-colors hover:bg-surface hover:text-foreground;
+      top: max(1.25rem, env(safe-area-inset-top));
+    }
+    .c-admin-side-close svg {
+      @apply size-5;
+    }
+    /* Bigger rows in the drawer, for fingers rather than a mouse. */
+    .c-admin-nav a {
+      @apply py-1.5 text-[0.95rem];
     }
     .c-admin-nav {
-      @apply order-3 w-full flex-none flex-row gap-1 overflow-x-auto;
+      @apply flex-none;
     }
-    .c-admin-nav-group {
-      @apply flex-row;
+    /* A shorter website card, so the drawer still fits most of its contents on one screen. */
+    .c-admin-site-card img {
+      @apply aspect-[5/2];
     }
-    .c-admin-nav-label,
-    .c-admin-site-card,
-    .c-admin-user a > span:last-child {
-      @apply hidden;
-    }
-    .c-admin-nav a {
-      @apply whitespace-nowrap;
-    }
+    /* The signed-in user stays pinned to the drawer foot while the links scroll. */
     .c-admin-user {
-      @apply ml-auto border-t-0 pt-0;
+      @apply sticky -bottom-5 mt-auto -mb-5 bg-background pb-5;
+      margin-bottom: calc(-1 * max(1.25rem, env(safe-area-inset-bottom)));
+      padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
     }
   }
 
@@ -234,6 +313,37 @@
   .c-admin-empty {
     @apply rounded-2xl border border-dashed border-border px-4 py-6 text-center;
   }
+  /* Phones: tighter cards and gaps, and every button and back link a full 44px tap target. */
+  @media (max-width: 40rem) {
+    .c-admin-head,
+    .c-admin-hello {
+      @apply gap-3;
+    }
+    /* On a detail page the status pill stays a pill, next to any buttons rather than stretched like them. */
+    .c-admin-head-actions:has(> .c-admin-status) {
+      @apply flex w-auto;
+    }
+    .c-admin .c-button {
+      @apply min-h-11;
+    }
+    .c-admin-back {
+      @apply -my-2.5 inline-flex min-h-11 items-center;
+    }
+    .c-admin-back::before {
+      @apply me-1;
+    }
+    .c-admin-panel,
+    .c-admin-profile {
+      @apply gap-3.5 rounded-2xl p-4;
+    }
+    .c-admin-stack,
+    .c-admin-columns {
+      @apply gap-4;
+    }
+    .c-admin-empty {
+      @apply py-5;
+    }
+  }
 
   /* ------------------------------------------------------------ dashboard */
   .c-admin-dash {
@@ -285,6 +395,10 @@
   .c-admin-tile strong {
     @apply col-span-2 text-3xl leading-none font-bold tabular-nums;
   }
+  /* The short label is for phones, where a tile has room for one line. */
+  .c-admin-tile-short {
+    @apply hidden;
+  }
   .c-admin-list,
   .c-admin-feed {
     @apply flex flex-col gap-2;
@@ -332,10 +446,10 @@
   .c-admin-bars strong {
     @apply text-right tabular-nums;
   }
-  .c-admin-bar {
+  .c-admin-meter {
     @apply block h-2.5 overflow-hidden rounded-full bg-muted;
   }
-  .c-admin-bar > span {
+  .c-admin-meter > span {
     @apply block h-full rounded-full;
     background: var(--status-color, var(--primary));
   }
@@ -381,8 +495,66 @@
   .c-admin-chart-axis li {
     @apply absolute -translate-x-1/2 whitespace-nowrap;
   }
-  /* Phones have room for every other date only. */
+  /*
+   * Phones: compact tiles (icon and number on one row, a one-line label under them), a lower chart
+   * with every other date, and the profile card shrunk to a row of quick links.
+   */
   @media (max-width: 40rem) {
+    .c-admin-dash,
+    .c-admin-rail {
+      @apply gap-4;
+    }
+    .c-admin-tiles {
+      @apply gap-3;
+    }
+    .c-admin-tile {
+      @apply gap-y-2.5 rounded-2xl p-3.5;
+    }
+    .c-admin-tile-icon {
+      @apply size-9 rounded-lg;
+    }
+    .c-admin-tile-icon svg {
+      @apply size-[1.1rem];
+    }
+    .c-admin-tile strong {
+      @apply col-span-1 col-start-2 row-start-1 justify-self-end text-[1.75rem];
+    }
+    .c-admin-tile > .c-admin-tile-label {
+      @apply col-span-2 truncate text-[0.8rem] leading-tight;
+    }
+    .c-admin-tile-full {
+      @apply hidden;
+    }
+    .c-admin-tile-short {
+      @apply inline;
+    }
+    .c-admin-profile {
+      @apply grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3.5 gap-y-0.5 text-left;
+    }
+    .c-admin-profile .c-admin-avatar[data-size='lg'] {
+      @apply row-span-2 size-12 text-base;
+    }
+    .c-admin-profile h2 {
+      @apply mt-0 self-end text-base leading-snug;
+    }
+    .c-admin-profile p {
+      @apply self-start;
+    }
+    .c-admin-profile-actions {
+      @apply col-span-2 mt-3.5 grid grid-cols-4;
+    }
+    .c-admin-profile-actions a {
+      @apply h-11 w-full rounded-xl bg-surface;
+    }
+    .c-admin-bars {
+      @apply gap-2.5;
+    }
+    .c-admin-bars li {
+      grid-template-columns: 5.5rem minmax(0, 1fr) 2rem;
+    }
+    .c-admin-chart-plot {
+      @apply mr-1.5 h-40;
+    }
     .c-admin-chart-axis li:nth-child(even) {
       @apply hidden;
     }
@@ -486,6 +658,115 @@
     @apply text-muted-foreground;
   }
 
+  /* ------------------------------------------------------------ list pages on phones */
+  /* Below 40rem every table row becomes a card, from the same markup. Cells say where they go:
+     data-cell="title" is the card heading, "status" its pill top right, "action" a button at the
+     bottom, and every other cell is a label/value line labelled by its data-label. */
+  @media (width < 40rem) {
+    .c-admin-table {
+      @apply overflow-visible rounded-none border-0 bg-transparent shadow-none;
+    }
+    .c-admin-table table {
+      @apply block min-w-0;
+    }
+    /* Labels come from data-label now, but screen readers still get the real headers. */
+    .c-admin-table thead {
+      @apply sr-only;
+    }
+    .c-admin-table tbody {
+      @apply flex flex-col gap-3;
+    }
+    .c-admin-table tbody tr {
+      @apply relative grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1.5 rounded-2xl border border-border bg-background p-4 shadow-sm;
+    }
+    .c-admin-table tbody tr:hover {
+      @apply bg-background;
+    }
+    .c-admin-table tbody tr:has(td[data-cell='title'] a):active {
+      @apply bg-surface;
+    }
+    /* A fixed label column keeps the values lined up from card to card. */
+    .c-admin-table td {
+      @apply col-span-full grid grid-cols-[6.5rem_minmax(0,1fr)] items-baseline gap-x-3 border-0 p-0 wrap-anywhere;
+    }
+    .c-admin-table td::before {
+      @apply text-xs text-muted-foreground;
+      content: attr(data-label);
+    }
+    .c-admin-table td > * {
+      @apply justify-self-start;
+      grid-column: 2;
+    }
+    .c-admin-table td:empty {
+      @apply hidden;
+    }
+    .c-admin-table td[data-cell] {
+      @apply block;
+    }
+    .c-admin-table td[data-cell]::before {
+      @apply content-none;
+    }
+    .c-admin-table td[data-cell='title'] {
+      @apply col-span-1 col-start-1 row-start-1 mb-1 text-base font-semibold;
+    }
+    .c-admin-table td[data-cell='title'] small {
+      @apply mt-0.5 line-clamp-2 font-normal;
+    }
+    .c-admin-table td[data-cell='status'] {
+      @apply col-start-2 row-start-1 self-start;
+    }
+    .c-admin-table td[data-cell='action'] {
+      @apply mt-2;
+    }
+    .c-admin-table td[data-cell='action'] .c-button {
+      @apply w-full;
+    }
+    /* The title link stretches over the whole card so any tap on it opens the row. */
+    .c-admin-table td[data-cell='title'] a::after {
+      @apply absolute inset-0 rounded-2xl content-[''];
+    }
+    .c-admin-table td[data-cell='title'] a:focus-visible {
+      @apply outline-none;
+    }
+    .c-admin-table td[data-cell='title'] a:focus-visible::after {
+      @apply ring-2 ring-primary;
+    }
+    /* Other links and buttons on the card sit above the stretched link. */
+    .c-admin-table td:not([data-cell='title']) :is(a, button) {
+      @apply relative z-10;
+    }
+
+    /* Tabs wrap into a two-column grid; an odd last tab takes the full row. */
+    .c-admin-tabs {
+      @apply grid w-full grid-cols-2;
+    }
+    .c-admin-tabs a {
+      @apply min-h-11 justify-between whitespace-normal;
+    }
+    .c-admin-tabs a:last-child:nth-child(odd) {
+      @apply col-span-2;
+    }
+
+    /* Previous and Next become buttons at the thumb's reach; the unavailable one fades. */
+    .c-admin-pager {
+      @apply justify-between gap-2;
+    }
+    .c-admin-pager > :is(:first-child, :last-child) {
+      @apply flex min-h-11 items-center rounded-xl border border-border bg-background px-4 font-semibold shadow-sm;
+    }
+    .c-admin-pager > span:is(:first-child, :last-child) {
+      @apply opacity-50 shadow-none;
+    }
+
+    /* Page actions (Export CSV, Add …) share a full-width row of equal buttons. */
+    .c-admin-head-actions {
+      @apply grid w-full auto-cols-fr grid-flow-col;
+    }
+    .c-admin-head-actions .c-button {
+      @apply min-h-11;
+    }
+  }
+
   /* ------------------------------------------------------------ forms */
   .c-admin-form {
     @apply flex flex-col gap-4;
@@ -565,6 +846,58 @@
   .c-admin-vehicles li span {
     @apply text-xs text-muted-foreground;
   }
+  /*
+   * Phones: 16px text in every control, or iOS zooms the page in on focus; bigger tick boxes; the
+   * main button of a form spans the card so the thumb finds it.
+   */
+  @media (max-width: 40rem) {
+    .c-admin-form {
+      @apply gap-3.5;
+    }
+    .c-admin-form-grid {
+      @apply grid grid-cols-2 gap-x-3;
+    }
+    .c-admin-form-grid > :not([data-size='half']) {
+      @apply col-span-2;
+    }
+    .c-admin-field .c-input {
+      @apply min-h-12 text-base;
+    }
+    .c-admin-field .c-admin-editor-body {
+      @apply min-h-64 text-base;
+    }
+    .c-admin-check {
+      @apply min-h-11 items-start gap-3 py-1 leading-snug;
+    }
+    .c-admin-check input {
+      @apply mt-px size-5 shrink-0;
+    }
+    .c-admin-form-foot > .c-button[data-variant='primary'] {
+      @apply min-h-12 w-full text-[0.95rem];
+    }
+    .c-admin-form-foot > .c-admin-form-message {
+      @apply w-full;
+    }
+    .c-admin-editor > .c-admin-form-foot {
+      @apply bottom-2 gap-2 p-2;
+      margin-bottom: env(safe-area-inset-bottom);
+    }
+    .c-admin-disclosure summary {
+      @apply flex min-h-12 items-center;
+    }
+    .c-admin-disclosure summary::before {
+      @apply me-2 text-muted-foreground transition-transform content-['▸'];
+    }
+    .c-admin-disclosure[open] summary::before {
+      @apply rotate-90;
+    }
+    .c-admin-disclosure > .c-admin-field {
+      @apply px-3;
+    }
+    .c-admin-vehicles li {
+      @apply py-2.5;
+    }
+  }
   .c-admin-filters {
     @apply flex flex-wrap items-end gap-3 rounded-3xl border border-border bg-background p-4 shadow-sm;
   }
@@ -576,6 +909,21 @@
   }
   .c-admin-filters .c-admin-more {
     @apply self-center;
+  }
+  /* Phones: search across the top, the selects side by side, and Apply full width when it would sit alone. */
+  @media (width < 40rem) {
+    .c-admin-filters {
+      @apply grid grid-cols-2;
+    }
+    .c-admin-filters .c-admin-field:has([type='search']) {
+      @apply col-span-2;
+    }
+    .c-admin-filters:has(> label:nth-of-type(odd):last-of-type) > [type='submit'] {
+      @apply col-span-2;
+    }
+    .c-admin-filters .c-admin-more {
+      @apply col-span-2 flex min-h-11 items-center justify-center;
+    }
   }
 
   /* ------------------------------------------------------------ lead detail */
@@ -639,6 +987,49 @@
   }
   .c-admin-user-card > header {
     @apply flex flex-wrap items-start justify-between gap-3;
+  }
+  /*
+   * Phones: the contact buttons share the row (a long email gets a row of its own), details read as
+   * label-and-value lines, and both sign-in actions are full width.
+   */
+  @media (max-width: 40rem) {
+    .c-admin-contact > .c-button {
+      @apply min-h-12 min-w-0 flex-auto;
+    }
+    .c-admin-contact > .c-button[href^='mailto:'] {
+      @apply basis-full;
+      overflow-wrap: anywhere;
+    }
+    .c-admin-message {
+      @apply px-3.5 text-[0.95rem];
+    }
+    .c-admin-details {
+      @apply gap-0;
+    }
+    .c-admin-details > div {
+      @apply grid grid-cols-[6.5rem_minmax(0,1fr)] items-baseline gap-3 border-t border-border py-2.5 first:border-t-0 first:pt-0 last:pb-0;
+    }
+    .c-admin-details dd {
+      overflow-wrap: anywhere;
+    }
+    .c-admin-notes {
+      @apply gap-2.5;
+    }
+    .c-admin-notes li {
+      @apply px-3.5;
+    }
+    .c-admin-logins li {
+      @apply p-3.5;
+    }
+    .c-admin-logins-actions {
+      @apply flex-col gap-2;
+    }
+    .c-admin-logins-actions .c-admin-form {
+      @apply basis-auto;
+    }
+    .c-admin-logins-actions .c-button {
+      @apply w-full;
+    }
   }
 
   /* ------------------------------------------------------------ sign in */
@@ -742,5 +1133,45 @@
   .c-admin-login-car {
     @apply pointer-events-none relative hidden h-auto w-full max-w-none lg:block xl:-ml-28 xl:w-[calc(100%+6rem)];
     filter: drop-shadow(0 1.75rem 1.5rem color-mix(in oklab, black 50%, transparent));
+  }
+  /* Phones: a slim photo strip, so the form starts within the first screen and the button sits under the thumb. */
+  @media (max-width: 40rem) {
+    .c-admin-login {
+      grid-template-rows: auto 1fr;
+    }
+    .c-admin-login-art {
+      @apply m-2 h-28;
+      margin-top: max(0.5rem, env(safe-area-inset-top));
+    }
+    .c-admin-login-wall {
+      @apply rounded-3xl;
+    }
+    .c-admin-login-panel {
+      @apply justify-start gap-7 px-5 pt-5 pb-6;
+    }
+    .c-admin-login-panel > .c-admin-back {
+      @apply mt-auto;
+    }
+    .c-admin-logo {
+      @apply h-9;
+    }
+    .c-admin-login-card {
+      @apply gap-5;
+    }
+    .c-admin-login-card h1 {
+      @apply -mt-2 text-[1.75rem];
+    }
+    .c-admin-login-card h1 + .c-admin-muted {
+      @apply -mt-2 text-[0.95rem];
+    }
+    .c-admin-login-card .c-admin-form {
+      @apply mt-0 gap-4;
+    }
+    .c-admin-login-card .c-input {
+      @apply min-h-13 px-4;
+    }
+    .c-admin-login-card .c-button {
+      @apply mt-1 min-h-13;
+    }
   }
 }

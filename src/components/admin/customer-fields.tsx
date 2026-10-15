@@ -9,16 +9,46 @@ export function CustomerFields({ customer }: CustomerFieldsProps) {
   return (
     <>
       <Field label="Name">
-        <input className="c-input" name="name" defaultValue={customer?.name} maxLength={100} required />
+        <input
+          className="c-input"
+          name="name"
+          autoComplete="off"
+          autoCapitalize="words"
+          defaultValue={customer?.name}
+          maxLength={100}
+          required
+        />
       </Field>
       <Field label="Phone" hint="Used for calls and WhatsApp. Each phone number can belong to one customer.">
-        <input className="c-input" type="tel" name="phone" dir="ltr" defaultValue={customer?.phone} required />
+        <input
+          className="c-input"
+          type="tel"
+          name="phone"
+          dir="ltr"
+          autoComplete="off"
+          defaultValue={customer?.phone}
+          required
+        />
       </Field>
       <Field label="Email (optional)">
-        <input className="c-input" type="email" name="email" defaultValue={customer?.email} maxLength={254} />
+        <input
+          className="c-input"
+          type="email"
+          name="email"
+          autoComplete="off"
+          defaultValue={customer?.email}
+          maxLength={254}
+        />
       </Field>
       <Field label="Tags" hint="Separate with commas, for example: ppf, fleet, vip. Used to group customers.">
-        <input className="c-input" name="tags" defaultValue={customer?.tags.join(', ')} maxLength={200} />
+        <input
+          className="c-input"
+          name="tags"
+          autoCapitalize="none"
+          spellCheck={false}
+          defaultValue={customer?.tags.join(', ')}
+          maxLength={200}
+        />
       </Field>
       <label className="c-admin-check">
         <input type="checkbox" name="marketingOptIn" defaultChecked={customer?.marketingOptIn ?? false} />

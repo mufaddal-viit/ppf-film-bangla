@@ -41,18 +41,20 @@ export default async function AdminVendorsPage() {
             <tbody>
               {vendors.map((vendor) => (
                 <tr key={vendor.id}>
-                  <td>
+                  <td data-cell="title">
                     <Link href={`${ADMIN_ROUTES.vendors}/${vendor.id}`}>{vendor.shopName}</Link>
                     <small>{vendor.address}</small>
                   </td>
-                  <td>
+                  <td data-label="Contact">
                     {vendor.contactName}
                     <small>{vendor.email}</small>
                   </td>
-                  <td dir="ltr">{vendor.phone}</td>
-                  <td>{vendor.installers.length}</td>
-                  <td>{logins[vendor.id] ?? 0}</td>
-                  <td>
+                  <td data-label="Phone" dir="ltr">
+                    {vendor.phone}
+                  </td>
+                  <td data-label="Installers">{vendor.installers.length}</td>
+                  <td data-label="Sign-ins">{logins[vendor.id] ?? 0}</td>
+                  <td data-cell="status">
                     <Pill tone={vendor.active ? 'success' : 'muted'}>{vendor.active ? 'Active' : 'Deactivated'}</Pill>
                   </td>
                 </tr>

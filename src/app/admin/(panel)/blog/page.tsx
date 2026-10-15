@@ -49,18 +49,18 @@ export default async function AdminBlogPage() {
                 const scheduled = post.status === 'published' && post.publishedAt && post.publishedAt > now;
                 return (
                   <tr key={post.id}>
-                    <td>
+                    <td data-cell="title">
                       <Link href={`${ADMIN_ROUTES.blog}/${post.id}`}>{post.translations.en.title}</Link>
                       <small>/blog/{post.slug}</small>
                     </td>
-                    <td>
+                    <td data-cell="status">
                       <Pill tone={scheduled ? 'warning' : post.status === 'published' ? 'success' : 'muted'}>
                         {scheduled ? 'Scheduled' : POST_STATUS_LABELS[post.status]}
                       </Pill>
                     </td>
-                    <td>{post.translations.ar ? 'English, Arabic' : 'English'}</td>
-                    <td>{post.publishedAt ? format.day(post.publishedAt) : '–'}</td>
-                    <td>{format.dateTime(post.updatedAt)}</td>
+                    <td data-label="Languages">{post.translations.ar ? 'English, Arabic' : 'English'}</td>
+                    <td data-label="Publish date">{post.publishedAt ? format.day(post.publishedAt) : '–'}</td>
+                    <td data-label="Last edited">{format.dateTime(post.updatedAt)}</td>
                   </tr>
                 );
               })}

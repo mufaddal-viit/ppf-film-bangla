@@ -10,10 +10,26 @@ export function ProductFields({ product, maxWarrantyYears }: ProductFieldsProps)
   return (
     <>
       <Field label="Product name" hint="As it should read on the warranty card.">
-        <input className="c-input" name="name" defaultValue={product?.name} maxLength={80} required />
+        <input
+          className="c-input"
+          name="name"
+          autoComplete="off"
+          autoCapitalize="words"
+          defaultValue={product?.name}
+          maxLength={80}
+          required
+        />
       </Field>
       <Field label="Finish" hint="For example Gloss, Matte or Satin.">
-        <input className="c-input" name="finish" defaultValue={product?.finish} maxLength={40} required />
+        <input
+          className="c-input"
+          name="finish"
+          autoComplete="off"
+          autoCapitalize="words"
+          defaultValue={product?.finish}
+          maxLength={40}
+          required
+        />
       </Field>
       <Field label="Warranty (years)" hint="Sets the coverage period on every warranty for this product.">
         <input

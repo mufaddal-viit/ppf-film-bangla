@@ -46,10 +46,18 @@ export function Avatar({ name, size }: { name: string; size?: 'lg' }) {
   );
 }
 
+type FieldProps = {
+  label: string;
+  hint?: string;
+  /** A short value: in a two-column form it pairs up with its neighbour even on phones. */
+  half?: boolean;
+  children: ReactNode;
+};
+
 /** A label wrapped around its control, so no id wiring is needed. */
-export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+export function Field({ label, hint, half, children }: FieldProps) {
   return (
-    <label className="c-admin-field">
+    <label className="c-admin-field" data-size={half ? 'half' : undefined}>
       <span>{label}</span>
       {children}
       {hint && <small>{hint}</small>}

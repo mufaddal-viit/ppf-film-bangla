@@ -141,6 +141,7 @@ export function PostForm({ action, covers, limits, defaultAuthor, post }: PostFo
             <input
               className="c-input"
               name="author"
+              autoCapitalize="words"
               defaultValue={post?.author ?? defaultAuthor}
               maxLength={80}
               required
@@ -160,13 +161,29 @@ export function PostForm({ action, covers, limits, defaultAuthor, post }: PostFo
             </select>
           </Field>
           <Field label="Topics" hint="Separate with commas, for example: ppf, maintenance.">
-            <input className="c-input" name="tags" defaultValue={post?.tags.join(', ')} maxLength={200} />
+            <input
+              className="c-input"
+              name="tags"
+              autoCapitalize="none"
+              spellCheck={false}
+              defaultValue={post?.tags.join(', ')}
+              maxLength={200}
+            />
           </Field>
           <Field
             label="Web address"
             hint="English letters, numbers and dashes. Leave empty to build it from the English title."
           >
-            <input className="c-input" name="slug" defaultValue={post?.slug} maxLength={80} />
+            <input
+              className="c-input"
+              name="slug"
+              dir="ltr"
+              autoCapitalize="none"
+              autoComplete="off"
+              spellCheck={false}
+              defaultValue={post?.slug}
+              maxLength={80}
+            />
           </Field>
         </Panel>
       </div>

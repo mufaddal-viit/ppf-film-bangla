@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { logout } from '@/app/actions/admin';
 import { AdminNav, type AdminNavGroup } from '@/components/admin/admin-nav';
+import { AdminShell } from '@/components/admin/admin-shell';
 import { Avatar } from '@/components/admin/ui';
 import { ADMIN_ROUTES, ROLE_LABELS } from '@/lib/admin/constants';
 import { requireSession } from '@/lib/auth/session';
@@ -56,7 +57,23 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
 
   return (
     <div className="c-admin">
-      <aside className="c-admin-side">
+      <AdminShell
+        label="Admin menu"
+        brand={
+          <Link href={ADMIN_ROUTES.dashboard} className="c-admin-brand" aria-label={`${name} admin, dashboard`}>
+            <Image src={logo.src} alt={name} width={logo.width} height={logo.height} priority />
+          </Link>
+        }
+        barEnd={
+          <Link
+            href={ADMIN_ROUTES.account}
+            className="c-admin-bar-account"
+            aria-label={`Your account, ${session.name}`}
+          >
+            <Avatar name={session.name} />
+          </Link>
+        }
+      >
         <Link href={ADMIN_ROUTES.dashboard} className="c-admin-brand" aria-label={`${name} admin, dashboard`}>
           <Image src={logo.src} alt={name} width={logo.width} height={logo.height} priority />
         </Link>
@@ -84,7 +101,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
             </button>
           </form>
         </div>
-      </aside>
+      </AdminShell>
       <main className="c-admin-main">{children}</main>
     </div>
   );
