@@ -1,499 +1,487 @@
 'use client';
 
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Award,
-  CheckCircle2,
-  ChevronDown,
-  Menu,
-  Phone,
-  Shield,
-  Sparkles,
-  Sun,
-  X,
-} from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ChevronDown, Menu, Phone, Sparkles, X } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useId, useRef, useState } from 'react';
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+  type KeyboardEvent,
+} from 'react';
+import { createPortal } from 'react-dom';
 import { WhatsAppIcon } from '@/components/icons/brand';
 import { Icon } from '@/components/ui/icon';
+import { TrackedLink } from '@/components/ui/tracked-link';
 import { Link, usePathname } from '@/i18n/navigation';
-import type { NavItem, SiteView } from '@/lib/content';
+import type { NavItem, NavLink, SiteView } from '@/lib/content';
 import type { IconName } from '@/lib/icons';
 
-interface HeaderNavProps {
+type Group = 'ppf' | 'window-film';
+
+export type HeaderLabels = {
+  nav: string;
+  open: string;
+  close: string;
+  quote: string;
+  home: string;
+  call: string;
+  whatsapp: string;
+  /** Headings for the two film families in the products menu. */
+  groups: Record<Group, string>;
+};
+
+type HeaderNavProps = {
   items: NavItem[];
-  labels: { nav: string; open: string; close: string; quote?: string; home?: string };
-  site?: SiteView;
+  labels: HeaderLabels;
+  site: Pick<SiteView, 'name' | 'logo' | 'phone'>;
   whatsappUrl?: string;
+  showQuoteButton: boolean;
+};
+
+const GROUPS: Group[] = ['ppf', 'window-film'];
+
+/** Splits a products item into the two film families and the "all products" link. */
+function productGroups(item: NavItem) {
+  const children = item.children ?? [];
+  return {
+    groups: GROUPS.map((key) => ({ key, links: children.filter((c) => c.category === key) })).filter(
+      (g) => g.links.length > 0,
+    ),
+    all: children.find((c) => c.category === 'general'),
+  };
 }
 
-export function HeaderNav({ items, labels, site, whatsappUrl }: HeaderNavProps) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [productsOpen, setProductsOpen] = useState(false);
-  const [mobileAccordionOpen, setMobileAccordionOpen] = useState(true);
-  const pathname = usePathname();
-  const menuId = useId();
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+/** The portal target only exists in the browser; this is false during the server render. */
+const useIsClient = () =>
+  useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
-  // Close menus on route change
+/** Desktop links with the products menu, plus the phone menu button and the full-screen phone menu. */
+export function HeaderNav({ items, labels, site, whatsappUrl, showQuoteButton }: HeaderNavProps) {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
+
+  // Close both menus after navigating.
   const [lastPath, setLastPath] = useState(pathname);
   if (pathname !== lastPath) {
     setLastPath(pathname);
-    setDrawerOpen(false);
+    setMenuOpen(false);
     setProductsOpen(false);
   }
 
-  // Handle Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setDrawerOpen(false);
-        setProductsOpen(false);
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // Lock body scroll when mobile drawer is open
-  useEffect(() => {
-    if (drawerOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [drawerOpen]);
-
-  // Desktop hover delay handlers so cursor travel doesn't glitch
-  const handleMouseEnterProducts = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setProductsOpen(true);
-  };
-
-  const handleMouseLeaveProducts = () => {
-    timeoutRef.current = setTimeout(() => {
-      setProductsOpen(false);
-    }, 180);
-  };
-
   return (
     <>
-      {/* ========================================================
-          DESKTOP NAVIGATION (Screen >= lg)
-          Floating Aero-Crystal Capsule with Specular Reflections
-      ======================================================== */}
-      <nav aria-label={labels.nav} className="c-desktop-nav relative hidden items-center lg:flex">
-        <ul className="c-desktop-nav-list">
-          {items.map((item) => {
-            const current = pathname === item.href;
-            const hasChildren = Boolean(item.children && item.children.length > 0);
-            const inSection = current || (hasChildren && item.children!.some((child) => pathname === child.href));
-
-            // 1. PRODUCTS SUB-NAV (Mega-Menu)
-            if (hasChildren) {
-              const ppfItems = item.children!.filter((c) => c.category === 'ppf');
-              const windowItems = item.children!.filter((c) => c.category === 'window-film');
-              const allServicesItem =
-                item.children!.find((c) => c.category === 'general' || c.href.endsWith('/services')) ??
-                item.children![0];
-
-              return (
-                <li
-                  key={item.href}
-                  className="static"
-                  onMouseEnter={handleMouseEnterProducts}
-                  onMouseLeave={handleMouseLeaveProducts}
-                >
-                  <button
-                    type="button"
-                    className={`c-nav-pill ${inSection || productsOpen ? 'is-active' : ''}`}
-                    aria-expanded={productsOpen}
-                    aria-haspopup="true"
-                    onClick={() => setProductsOpen((v) => !v)}
-                  >
-                    <span>{item.label}</span>
-                    <ChevronDown
-                      className={`size-3.5 transition-transform duration-200 ${
-                        productsOpen ? 'rotate-180 text-primary' : 'text-muted-foreground'
-                      }`}
-                      aria-hidden="true"
-                    />
-                  </button>
-
-                  {/* Mega-Menu Panel */}
-                  <div
-                    className={`c-desktop-dropdown ${productsOpen ? 'is-visible' : ''}`}
-                    role="region"
-                    aria-label={item.label}
-                  >
-                    {/* Top Specular Rim */}
-                    <div className="c-glass-rim" />
-
-                    <div className="c-dropdown-grid grid grid-cols-2 gap-6 p-6">
-                      {/* Left Column: Paint Protection Film */}
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center justify-between border-b border-border/50 pb-2">
-                          <span className="flex items-center gap-2 text-xs font-bold tracking-wider text-foreground uppercase">
-                            <span className="flex size-6 items-center justify-center rounded-md border border-primary/20 bg-primary/10 text-primary">
-                              <Shield className="size-3.5" />
-                            </span>
-                            Paint Protection Film
-                          </span>
-                          <span className="rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[0.68rem] font-bold text-primary">
-                            {ppfItems.length} Series
-                          </span>
-                        </div>
-
-                        <div className="flex flex-col gap-1.5">
-                          {ppfItems.map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              className="c-menu-item-card group flex items-start gap-3"
-                              aria-current={pathname === child.href ? 'page' : undefined}
-                              onClick={() => setProductsOpen(false)}
-                            >
-                              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border/70 bg-surface/90 text-muted-foreground shadow-xs transition-all group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
-                                {child.icon ? (
-                                  <Icon name={child.icon as IconName} className="size-4" />
-                                ) : (
-                                  <Sparkles className="size-4" />
-                                )}
-                              </div>
-                              <div className="min-w-0 grow">
-                                <div className="flex items-center justify-between gap-1">
-                                  <span className="text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
-                                    {child.label}
-                                  </span>
-                                  {child.badge && <span className="c-badge-pill">{child.badge}</span>}
-                                </div>
-                                {child.description && (
-                                  <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
-                                    {child.description}
-                                  </p>
-                                )}
-                              </div>
-                              <ArrowRight className="size-3 shrink-0 -translate-x-1 self-center text-muted-foreground opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100 rtl:rotate-180" />
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Right Column: Ceramic Window Film & Studio Standards */}
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center justify-between border-b border-border/50 pb-2">
-                          <span className="flex items-center gap-2 text-xs font-bold tracking-wider text-foreground uppercase">
-                            <span className="flex size-6 items-center justify-center rounded-md border border-primary/20 bg-primary/10 text-primary">
-                              <Sun className="size-3.5" />
-                            </span>
-                            Ceramic Window Film
-                          </span>
-                          <span className="rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[0.68rem] font-bold text-primary">
-                            {windowItems.length} Series
-                          </span>
-                        </div>
-
-                        <div className="flex flex-col gap-1.5">
-                          {windowItems.map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              className="c-menu-item-card group flex items-start gap-3"
-                              aria-current={pathname === child.href ? 'page' : undefined}
-                              onClick={() => setProductsOpen(false)}
-                            >
-                              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border/70 bg-surface/90 text-muted-foreground shadow-xs transition-all group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
-                                {child.icon ? (
-                                  <Icon name={child.icon as IconName} className="size-4" />
-                                ) : (
-                                  <Sun className="size-4" />
-                                )}
-                              </div>
-                              <div className="min-w-0 grow">
-                                <div className="flex items-center justify-between gap-1">
-                                  <span className="text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
-                                    {child.label}
-                                  </span>
-                                  {child.badge && <span className="c-badge-pill">{child.badge}</span>}
-                                </div>
-                                {child.description && (
-                                  <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
-                                    {child.description}
-                                  </p>
-                                )}
-                              </div>
-                              <ArrowRight className="size-3 shrink-0 -translate-x-1 self-center text-muted-foreground opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100 rtl:rotate-180" />
-                            </Link>
-                          ))}
-                        </div>
-
-                        {/* Studio Cleanroom Standards Micro-Card */}
-                        <div className="mt-auto space-y-2 rounded-xl border border-primary/20 bg-primary/5 p-3.5 text-xs">
-                          <div className="flex items-center gap-1.5 font-bold text-foreground">
-                            <Award className="size-3.5 text-primary" />
-                            <span>Studio Quality Standards</span>
-                          </div>
-                          <div className="space-y-1.5 text-muted-foreground">
-                            <p className="flex items-center gap-2">
-                              <CheckCircle2 className="size-3 shrink-0 text-primary" />
-                              <span>100% digital CAD patterns (zero blade contact)</span>
-                            </p>
-                            <p className="flex items-center gap-2">
-                              <CheckCircle2 className="size-3 shrink-0 text-primary" />
-                              <span>Certified dust-free cleanroom installation</span>
-                            </p>
-                            <p className="flex items-center gap-2">
-                              <CheckCircle2 className="size-3 shrink-0 text-primary" />
-                              <span>Up to 10-year official manufacturer warranty</span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bottom Strip */}
-                    <div className="flex items-center justify-between border-t border-border/50 bg-foreground/[0.02] px-6 py-3">
-                      {allServicesItem && (
-                        <Link
-                          href={allServicesItem.href}
-                          className="flex items-center gap-1.5 text-xs font-semibold text-foreground transition-colors hover:text-primary"
-                          onClick={() => setProductsOpen(false)}
-                        >
-                          <span>{allServicesItem.label}</span>
-                          <ArrowRight className="size-3.5 rtl:rotate-180" />
-                        </Link>
-                      )}
-
-                      {whatsappUrl && (
-                        <a
-                          href={whatsappUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-xs font-semibold text-success hover:underline"
-                        >
-                          <span className="relative flex size-2">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
-                            <span className="relative inline-flex size-2 rounded-full bg-success" />
-                          </span>
-                          <WhatsAppIcon className="size-3.5" />
-                          <span>WhatsApp Studio Concierge</span>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              );
-            }
-
-            // 2. DIRECT NAV PILL (About, Contact, etc.)
-            return (
+      <nav aria-label={labels.nav} className="c-header-nav">
+        <ul>
+          {items.map((item) =>
+            item.children?.length ? (
+              <ProductsMenu
+                key={item.href}
+                item={item}
+                labels={labels}
+                pathname={pathname}
+                open={productsOpen}
+                setOpen={setProductsOpen}
+              />
+            ) : (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`c-nav-pill ${current ? 'is-active' : ''}`}
-                  aria-current={current ? 'page' : undefined}
+                  className="c-header-link"
+                  aria-current={pathname === item.href ? 'page' : undefined}
                 >
-                  <span>{item.label}</span>
+                  {item.label}
                 </Link>
+              </li>
+            ),
+          )}
+        </ul>
+      </nav>
+
+      <MobileMenu
+        items={items}
+        labels={labels}
+        site={site}
+        whatsappUrl={whatsappUrl}
+        showQuoteButton={showQuoteButton}
+        pathname={pathname}
+        open={menuOpen}
+        setOpen={setMenuOpen}
+      />
+    </>
+  );
+}
+
+// ---------------------------------------------------------------- desktop products menu
+
+function ProductsMenu({
+  item,
+  labels,
+  pathname,
+  open,
+  setOpen,
+}: {
+  item: NavItem;
+  labels: HeaderLabels;
+  pathname: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
+  const { groups, all } = productGroups(item);
+  const first = groups[0]?.links[0];
+  const [preview, setPreview] = useState<NavLink | undefined>(first);
+  const panelId = useId();
+  const rootRef = useRef<HTMLLIElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inSection = item.children!.some((child) => pathname === child.href);
+
+  // A short delay before closing, so moving the pointer from the button down to the panel never drops it.
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  };
+  const closeSoon = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpen(false), 160);
+  };
+  useEffect(() => cancelClose, []);
+
+  // Clicking anywhere else closes it.
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [open, setOpen]);
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && open) {
+      setOpen(false);
+      buttonRef.current?.focus();
+    }
+  };
+
+  return (
+    <li
+      ref={rootRef}
+      className="c-header-products"
+      onPointerEnter={(e) => {
+        if (e.pointerType !== 'mouse') return;
+        cancelClose();
+        setOpen(true);
+      }}
+      onPointerLeave={(e) => e.pointerType === 'mouse' && closeSoon()}
+      onKeyDown={onKeyDown}
+      onBlur={(e) => {
+        if (!rootRef.current?.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
+    >
+      <button
+        ref={buttonRef}
+        type="button"
+        className="c-header-link"
+        data-current={inSection || undefined}
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen(!open)}
+      >
+        {item.label}
+        <ChevronDown aria-hidden="true" className="c-header-chevron" />
+      </button>
+
+      <div id={panelId} className="c-mega" data-open={open || undefined}>
+        <div className="c-mega-groups">
+          {groups.map((group) => (
+            <section key={group.key} aria-labelledby={`${panelId}-${group.key}`}>
+              <h2 id={`${panelId}-${group.key}`}>{labels.groups[group.key]}</h2>
+              <ul>
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="c-mega-item"
+                      aria-current={pathname === link.href ? 'page' : undefined}
+                      data-previewed={preview?.href === link.href || undefined}
+                      onPointerEnter={() => setPreview(link)}
+                      onFocus={() => setPreview(link)}
+                      onClick={() => setOpen(false)}
+                    >
+                      <span className="c-mega-icon">
+                        {link.icon ? <Icon name={link.icon as IconName} /> : <Sparkles aria-hidden="true" />}
+                      </span>
+                      <span className="c-mega-text">
+                        <span className="c-mega-name">
+                          {link.label}
+                          {link.badge && <span className="c-badge-pill">{link.badge}</span>}
+                        </span>
+                        {link.description && <span className="c-mega-desc">{link.description}</span>}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+
+        {preview && (
+          <aside className="c-mega-preview" aria-hidden="true">
+            {preview.image && (
+              <Image key={preview.href} src={preview.image} alt="" width={480} height={320} sizes="18rem" />
+            )}
+            <div>
+              <strong>{preview.label}</strong>
+              {preview.warrantyLabel && <span>{preview.warrantyLabel}</span>}
+            </div>
+            {preview.description && <p>{preview.description}</p>}
+          </aside>
+        )}
+
+        {all && (
+          <Link href={all.href} className="c-mega-all" onClick={() => setOpen(false)}>
+            <span>
+              <strong>{all.label}</strong>
+              {all.description && <span>{all.description}</span>}
+            </span>
+            <ArrowRight aria-hidden="true" className="rtl:rotate-180" />
+          </Link>
+        )}
+      </div>
+    </li>
+  );
+}
+
+// ---------------------------------------------------------------- phone and tablet menu
+
+function MobileMenu({
+  items,
+  labels,
+  site,
+  whatsappUrl,
+  showQuoteButton,
+  pathname,
+  open,
+  setOpen,
+}: Omit<HeaderNavProps, 'site'> & {
+  site: HeaderNavProps['site'];
+  pathname: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
+  const isClient = useIsClient();
+  const menuId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [productsOpen, setProductsOpen] = useState(false);
+  const wasOpen = useRef(false);
+
+  // While open: no page scroll behind, Escape closes, and focus moves in; on close it returns to the button.
+  useEffect(() => {
+    if (open) {
+      wasOpen.current = true;
+      const { overflow } = document.body.style;
+      document.body.style.overflow = 'hidden';
+      closeRef.current?.focus();
+      const onKey = (e: globalThis.KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+      document.addEventListener('keydown', onKey);
+      // The menu only exists below lg; widening the window closes it.
+      const wide = window.matchMedia('(min-width: 64rem)');
+      const onWide = () => wide.matches && setOpen(false);
+      wide.addEventListener('change', onWide);
+      return () => {
+        document.body.style.overflow = overflow;
+        document.removeEventListener('keydown', onKey);
+        wide.removeEventListener('change', onWide);
+      };
+    }
+    if (wasOpen.current) {
+      wasOpen.current = false;
+      triggerRef.current?.focus();
+    }
+  }, [open, setOpen]);
+
+  // Keeps Tab inside the open menu.
+  const trapFocus = (event: KeyboardEvent) => {
+    if (event.key !== 'Tab' || !panelRef.current) return;
+    const focusable = panelRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  };
+
+  const close = () => setOpen(false);
+  let index = 0;
+
+  const panel = (
+    <div
+      ref={panelRef}
+      id={menuId}
+      className="c-menu"
+      data-open={open || undefined}
+      role="dialog"
+      aria-modal="true"
+      aria-label={labels.nav}
+      inert={!open}
+      onKeyDown={trapFocus}
+    >
+      <div className="c-menu-head">
+        <Link href="/" className="c-header-logo" aria-label={`${site.name}, ${labels.home}`} onClick={close}>
+          <Image src={site.logo.src} alt={site.name} width={site.logo.width} height={site.logo.height} />
+        </Link>
+        <button ref={closeRef} type="button" className="c-header-icon-btn" aria-label={labels.close} onClick={close}>
+          <X aria-hidden="true" />
+        </button>
+      </div>
+
+      <nav className="c-menu-body" aria-label={labels.nav}>
+        <ul className="c-menu-list">
+          {items.map((item) => {
+            const style = { '--i': index++ } as CSSProperties;
+            if (!item.children?.length) {
+              return (
+                <li key={item.href} style={style}>
+                  <Link
+                    href={item.href}
+                    className="c-menu-link"
+                    aria-current={pathname === item.href ? 'page' : undefined}
+                    onClick={close}
+                  >
+                    {item.label}
+                    <ArrowUpRight aria-hidden="true" className="rtl:-scale-x-100" />
+                  </Link>
+                </li>
+              );
+            }
+            const { groups, all } = productGroups(item);
+            return (
+              <li key={item.href} style={style}>
+                <button
+                  type="button"
+                  className="c-menu-link"
+                  aria-expanded={productsOpen}
+                  aria-controls={`${menuId}-products`}
+                  onClick={() => setProductsOpen((v) => !v)}
+                >
+                  {item.label}
+                  <ChevronDown aria-hidden="true" className="c-header-chevron" />
+                </button>
+                <div id={`${menuId}-products`} className="c-menu-products" data-open={productsOpen || undefined}>
+                  <div>
+                    {groups.map((group) => (
+                      <section key={group.key}>
+                        <h2>{labels.groups[group.key]}</h2>
+                        <ul>
+                          {group.links.map((link) => (
+                            <li key={link.href}>
+                              <Link
+                                href={link.href}
+                                className="c-menu-series"
+                                aria-current={pathname === link.href ? 'page' : undefined}
+                                onClick={close}
+                              >
+                                {link.image ? (
+                                  <Image src={link.image} alt="" width={144} height={96} sizes="4.5rem" />
+                                ) : (
+                                  <span className="c-mega-icon">
+                                    <Sparkles aria-hidden="true" />
+                                  </span>
+                                )}
+                                <span>
+                                  <strong>{link.label}</strong>
+                                  {link.warrantyLabel && <small>{link.warrantyLabel}</small>}
+                                </span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    ))}
+                    {all && (
+                      <Link href={all.href} className="c-menu-all" onClick={close}>
+                        {all.label}
+                        <ArrowRight aria-hidden="true" className="rtl:rotate-180" />
+                      </Link>
+                    )}
+                  </div>
+                </div>
               </li>
             );
           })}
         </ul>
       </nav>
 
-      {/* ========================================================
-          MOBILE HAMBURGER TRIGGER BUTTON (Screen < lg)
-      ======================================================== */}
-      <button
-        type="button"
-        className="c-mobile-hamburger-btn flex size-10 items-center justify-center rounded-full border border-border/80 bg-surface/80 text-foreground shadow-xs transition-colors hover:bg-muted lg:hidden"
-        aria-label={labels.open}
-        aria-expanded={drawerOpen}
-        aria-controls={menuId}
-        onClick={() => setDrawerOpen(true)}
-      >
-        <Menu className="size-5" aria-hidden="true" />
-      </button>
-
-      {/* ========================================================
-          MOBILE DRAWER SHEET (Screen < lg)
-      ======================================================== */}
-      {/* Backdrop Overlay */}
-      <div
-        className={`c-mobile-backdrop fixed inset-0 z-50 transition-opacity duration-300 lg:hidden ${
-          drawerOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-        }`}
-        onClick={() => setDrawerOpen(false)}
-        aria-hidden="true"
-      />
-
-      {/* Slide-in Sheet */}
-      <div
-        id={menuId}
-        className={`c-mobile-sheet fixed inset-y-0 end-0 z-50 flex w-full flex-col border-s border-border transition-transform duration-300 ease-out sm:max-w-md lg:hidden ${
-          drawerOpen ? 'translate-x-0' : 'translate-x-full rtl:-translate-x-full'
-        }`}
-        role="dialog"
-        aria-modal="true"
-        aria-label={labels.nav}
-      >
-        {/* Drawer Header with Logo and Circular Close Button */}
-        <div className="flex shrink-0 items-center justify-between border-b border-border/80 bg-background px-6 py-4">
-          {site && (
-            <Link
-              href="/"
-              className="flex items-center gap-2"
-              onClick={() => setDrawerOpen(false)}
-              aria-label={site.name}
-            >
-              <Image
-                src={site.logo.src}
-                alt={site.name}
-                width={site.logo.width}
-                height={site.logo.height}
-                className="h-8 w-auto"
-              />
-            </Link>
-          )}
-
-          {/* Prominent Circular Close Button */}
-          <button
-            type="button"
-            className="flex size-10 items-center justify-center rounded-full border border-border bg-muted/80 text-foreground shadow-xs transition-all hover:border-foreground/40 hover:bg-muted focus:ring-2 focus:ring-primary focus:outline-none"
-            aria-label={labels.close}
-            onClick={() => setDrawerOpen(false)}
+      <div className="c-menu-foot">
+        <TrackedLink
+          href={`tel:${site.phone.e164}`}
+          className="c-menu-action"
+          event={{ name: 'call_click', location: 'mobile-menu' }}
+        >
+          <Phone aria-hidden="true" />
+          <span dir="ltr">{site.phone.display}</span>
+        </TrackedLink>
+        {whatsappUrl && (
+          <TrackedLink
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="c-menu-action"
+            data-tone="whatsapp"
+            event={{ name: 'whatsapp_click', location: 'mobile-menu' }}
           >
-            <X className="size-5" aria-hidden="true" />
-          </button>
-        </div>
-
-        {/* Drawer Body - Scrollable Navigation Links */}
-        <div className="flex-1 space-y-4 overflow-y-auto px-6 py-4 pb-12">
-          <ul className="flex flex-col divide-y divide-border/50">
-            {items.map((item) => {
-              const current = pathname === item.href;
-              const hasChildren = Boolean(item.children && item.children.length > 0);
-
-              if (!hasChildren) {
-                return (
-                  <li key={item.href} className="py-2.5">
-                    <Link
-                      href={item.href}
-                      className={`flex items-center justify-between py-1.5 text-base font-semibold transition-colors ${
-                        current ? 'text-primary' : 'text-foreground hover:text-primary'
-                      }`}
-                      aria-current={current ? 'page' : undefined}
-                      onClick={() => setDrawerOpen(false)}
-                    >
-                      <div>
-                        <span>{item.label}</span>
-                        {item.href === '/about' && (
-                          <p className="text-xs font-normal text-muted-foreground">
-                            Studio Story & Cleanroom Standards
-                          </p>
-                        )}
-                        {item.href === '/contact' && (
-                          <p className="text-xs font-normal text-muted-foreground">Concierge, Hours & Directions</p>
-                        )}
-                      </div>
-                      <ArrowUpRight className="size-4 text-muted-foreground rtl:-scale-x-100" />
-                    </Link>
-                  </li>
-                );
-              }
-
-              return (
-                <li key={item.href} className="py-2.5">
-                  <div className="flex items-center justify-between py-1.5">
-                    <Link
-                      href={item.href}
-                      className={`text-base font-semibold transition-colors ${
-                        current ? 'text-primary' : 'text-foreground hover:text-primary'
-                      }`}
-                      onClick={() => setDrawerOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                    <button
-                      type="button"
-                      className="flex size-9 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground transition-colors hover:text-foreground"
-                      aria-expanded={mobileAccordionOpen}
-                      aria-label={`${item.label} submenu`}
-                      onClick={() => setMobileAccordionOpen((v) => !v)}
-                    >
-                      <ChevronDown
-                        className={`size-4 transition-transform duration-200 ${
-                          mobileAccordionOpen ? 'rotate-180 text-primary' : ''
-                        }`}
-                      />
-                    </button>
-                  </div>
-
-                  {/* Mobile Collapsible Submenu */}
-                  {mobileAccordionOpen && (
-                    <div className="mt-2 space-y-1.5 border-s-2 border-border/80 ps-2">
-                      {item.children!.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className="flex items-center justify-between rounded-lg bg-surface/50 p-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                          onClick={() => setDrawerOpen(false)}
-                        >
-                          <div className="flex min-w-0 items-center gap-2">
-                            <span className="truncate">{child.label}</span>
-                            {child.badge && (
-                              <span className="c-badge-pill py-0.2 px-1.5 text-[0.62rem]">{child.badge}</span>
-                            )}
-                          </div>
-                          <ArrowRight className="size-3.5 shrink-0 text-muted-foreground rtl:rotate-180" />
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        {/* Drawer Footer - Contact Quick Actions */}
-        <div className="shrink-0 space-y-3 border-t border-border/80 bg-surface p-6">
-          {site?.phone && (
-            <a
-              href={`tel:${site.phone.e164}`}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-surface py-2.5 text-sm font-semibold text-foreground shadow-xs transition-colors hover:bg-muted"
-            >
-              <Phone className="size-4 text-primary" />
-              <span dir="ltr">{site.phone.display}</span>
-            </a>
-          )}
-
-          {whatsappUrl && (
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-success/30 bg-success/10 py-2.5 text-sm font-semibold text-success shadow-xs transition-colors hover:bg-success/20"
-            >
-              <WhatsAppIcon className="size-4" />
-              <span>WhatsApp Studio</span>
-            </a>
-          )}
-
-          <Link
-            href="/contact"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-md transition-colors hover:bg-primary/90"
-            onClick={() => setDrawerOpen(false)}
-          >
-            <span>{labels.quote ?? 'Contact Us'}</span>
-            <ArrowUpRight className="size-4 rtl:-scale-x-100" />
+            <WhatsAppIcon className="size-5" />
+            <span>{labels.whatsapp}</span>
+          </TrackedLink>
+        )}
+        {showQuoteButton && (
+          <Link href="/contact" className="c-menu-action" data-tone="primary" onClick={close}>
+            <span>{labels.quote}</span>
+            <ArrowUpRight aria-hidden="true" className="rtl:-scale-x-100" />
           </Link>
-        </div>
+        )}
       </div>
-    </>
+    </div>
+  );
+
+  return (
+    <div className="c-header-mobile">
+      <TrackedLink
+        href={`tel:${site.phone.e164}`}
+        className="c-header-icon-btn"
+        aria-label={`${labels.call} ${site.phone.display}`}
+        event={{ name: 'call_click', location: 'header' }}
+      >
+        <Phone aria-hidden="true" />
+      </TrackedLink>
+      <button
+        ref={triggerRef}
+        type="button"
+        className="c-header-icon-btn"
+        data-tone="solid"
+        aria-label={labels.open}
+        aria-expanded={open}
+        aria-controls={menuId}
+        onClick={() => setOpen(true)}
+      >
+        <Menu aria-hidden="true" />
+      </button>
+      {/* Rendered into <body>: the header's backdrop blur would otherwise trap a fixed panel inside the bar. */}
+      {isClient && createPortal(panel, document.body)}
+    </div>
   );
 }

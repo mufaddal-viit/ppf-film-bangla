@@ -332,6 +332,8 @@ export type NavLink = {
   icon?: string;
   description?: string;
   warrantyLabel?: string | null;
+  /** Product photo, shown beside the series in the header menu. */
+  image?: string;
   badge?: string;
   category?: 'ppf' | 'window-film' | 'general';
 };
@@ -364,6 +366,7 @@ export const getNavigation = cache(async (locale: string) => {
           icon: s.icon,
           description: s.shortDescription,
           warrantyLabel: s.warrantyLabel,
+          image: s.image.src,
           badge:
             s.slug === 'apex'
               ? 'Flagship'
@@ -379,7 +382,7 @@ export const getNavigation = cache(async (locale: string) => {
         {
           label: label('allServices'),
           href: ROUTES.services,
-          description: 'Compare all film series, specs & warranties',
+          description: label('allServicesHint'),
           category: 'general' as const,
         },
       ],

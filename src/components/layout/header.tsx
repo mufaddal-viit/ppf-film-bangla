@@ -1,10 +1,15 @@
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Phone } from 'lucide-react';
 import Image from 'next/image';
+import { TrackedLink } from '@/components/ui/tracked-link';
 import { Link } from '@/i18n/navigation';
 import type { NavItem, SiteView } from '@/lib/content';
-import { HeaderNav } from './header-nav';
+import { HeaderNav, type HeaderLabels } from './header-nav';
 import { HeaderShell } from './header-shell';
 
+/**
+ * Site header: logo, the main links in the middle and the call and contact actions on the end.
+ * Below lg the links move into a full-screen menu (HeaderNav) and the bar keeps a call button.
+ */
 export function Header({
   site,
   items,
@@ -15,40 +20,52 @@ export function Header({
   site: SiteView;
   items: NavItem[];
   showQuoteButton: boolean;
+  /** Only passed when WhatsApp is enabled. */
   whatsappUrl?: string;
-  labels: { nav: string; open: string; close: string; quote: string; home: string };
+  labels: HeaderLabels;
 }) {
+  const logo = (
+    <Image
+      src={site.logo.src}
+      alt={site.name}
+      width={site.logo.width}
+      height={site.logo.height}
+      className="h-8 w-auto sm:h-9"
+      loading="eager"
+      priority
+    />
+  );
+
   return (
     <HeaderShell>
-      <div className="c-container flex h-full items-center justify-between gap-4">
-        {/* Brand Logo */}
-        <Link href="/" className="c-logo flex shrink-0 items-center" aria-label={`${site.name}, ${labels.home}`}>
-          <Image
-            src={site.logo.src}
-            alt={site.name}
-            width={site.logo.width}
-            height={site.logo.height}
-            className="h-8 w-auto transition-transform hover:scale-[1.02] sm:h-9"
-            loading="eager"
-            priority
-          />
+      <div className="c-header-bar">
+        <Link href="/" className="c-header-logo" aria-label={`${site.name}, ${labels.home}`}>
+          {logo}
         </Link>
 
-        {/* Center / Navigation and Mobile Controls */}
-        <HeaderNav items={items} labels={labels} site={site} whatsappUrl={whatsappUrl} />
+        <HeaderNav
+          items={items}
+          labels={labels}
+          site={{ name: site.name, logo: site.logo, phone: site.phone }}
+          whatsappUrl={whatsappUrl}
+          showQuoteButton={showQuoteButton}
+        />
 
-        {/* Desktop CTA Action Button */}
-        <div className="hidden shrink-0 items-center gap-3 lg:flex">
+        <div className="c-header-actions">
+          <TrackedLink
+            href={`tel:${site.phone.e164}`}
+            className="c-header-phone"
+            event={{ name: 'call_click', location: 'header' }}
+          >
+            <span className="c-header-phone-icon">
+              <Phone aria-hidden="true" />
+            </span>
+            <span dir="ltr">{site.phone.display}</span>
+          </TrackedLink>
           {showQuoteButton && (
-            <Link
-              href="/contact"
-              className="c-header-cta inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background shadow-sm transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
-              aria-label={labels.quote}
-            >
+            <Link href="/contact" className="c-header-cta">
               <span>{labels.quote}</span>
-              <span className="grid size-6 place-items-center rounded-full bg-primary text-xs text-primary-foreground">
-                <ArrowUpRight className="size-3.5 rtl:-scale-x-100" aria-hidden="true" />
-              </span>
+              <ArrowUpRight aria-hidden="true" className="rtl:-scale-x-100" />
             </Link>
           )}
         </div>

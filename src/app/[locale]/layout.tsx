@@ -90,13 +90,16 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
                 site={site}
                 items={navigation.header}
                 showQuoteButton={layoutConfig.header.showQuoteButton}
-                whatsappUrl={whatsappUrl}
+                whatsappUrl={site.whatsapp.enabled ? whatsappUrl : undefined}
                 labels={{
                   nav: t('a11y.mainNav'),
                   open: t('a11y.openMenu'),
                   close: t('a11y.closeMenu'),
                   quote: t('contact.getQuote'),
                   home: t('nav.home'),
+                  call: t('contact.call'),
+                  whatsapp: t('contact.whatsapp'),
+                  groups: { ppf: t('nav.clearPpf'), 'window-film': t('nav.windowFilm') },
                 }}
               />
             )}
