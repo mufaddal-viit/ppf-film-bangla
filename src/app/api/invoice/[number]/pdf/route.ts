@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { siteConfig } from '@/lib/config';
 import { customerRepository } from '@/lib/db/repositories/customer.repository';
 import { invoiceRepository } from '@/lib/db/repositories/invoice.repository';
@@ -5,26 +6,26 @@ import { vendorRepository } from '@/lib/db/repositories/vendor.repository';
 import { logger } from '@/lib/logger';
 import { generateInvoicePdf } from '@/lib/pdf/invoice';
 import { getLogoBytes } from '@/lib/pdf/logo';
-import { getSession } from '@/lib/auth/session';
-import { getVendorSession } from '@/lib/vendor/session';
+import { rateLimit } from '@/lib/security/rate-limit';
 
-/** Download an invoice PDF. Requires an admin session or a vendor session for the invoice's vendor. */
+const RATE_RULE = { requests: 20, windowSeconds: 60 };
+
+/**
+ * Download an invoice PDF. The invoice number acts as the access token (same as warranty PDFs).
+ * Rate-limited to prevent enumeration.
+ */
 export async function GET(_request: Request, { params }: { params: Promise<{ number: string }> }) {
   const { number } = await params;
 
-  // Auth: admin or vendor.
-  const [adminSession, vendorSession] = await Promise.all([getSession(), getVendorSession()]);
-  if (!adminSession && !vendorSession) {
-    return new Response('Sign in to download invoices.', { status: 401 });
+  const h = await headers();
+  const ip = h.get('x-real-ip') ?? h.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  const { success } = await rateLimit('invoice-pdf', ip, RATE_RULE);
+  if (!success) {
+    return new Response('Too many requests. Try again in a minute.', { status: 429 });
   }
 
   const invoice = await invoiceRepository.findByNumber(number);
   if (!invoice) {
-    return new Response('Invoice not found.', { status: 404 });
-  }
-
-  // Vendor can only download their own invoices.
-  if (!adminSession && vendorSession && vendorSession.vendorId !== invoice.vendorId) {
     return new Response('Invoice not found.', { status: 404 });
   }
 
@@ -61,7 +62,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ num
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `inline; filename="${invoice.invoiceNumber}.pdf"`,
-      'Cache-Control': 'private, no-store',
+      'Cache-Control': 'private, max-age=60',
     },
   });
 }
