@@ -58,14 +58,18 @@ export default async function VendorNewInstallationPage() {
       <Link href={VENDOR_ROUTES.installations} className="c-admin-back">
         All installations
       </Link>
-      <PageHead title="Record installation" intro="Record a completed installation to issue a warranty card." />
+      <PageHead title="Record installation" intro="Record a completed installation to issue a warranty card.">
+        <Link href={VENDOR_ROUTES.customersNew} className="c-button">
+          Add customer
+        </Link>
+      </PageHead>
 
       {!canRecord ? (
         <EmptyState>
           {availableRolls.length === 0
             ? `No rolls with film remaining. Ask ${siteConfig.business.name} to allocate more stock.`
             : customers.length === 0
-              ? 'No customers yet. Add a customer first from the Customers page.'
+              ? 'No customers yet — add one first.'
               : `No installers listed at your shop. Ask ${siteConfig.business.name} to add them.`}
         </EmptyState>
       ) : (
