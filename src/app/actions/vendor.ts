@@ -2,6 +2,7 @@
 
 import type { FormState } from '@/lib/admin/form-state';
 import * as auth from '@/lib/vendor/auth';
+import * as installations from '@/lib/vendor/installations';
 
 /**
  * Vendor portal server actions. Each one is a public endpoint: the session and origin checks
@@ -18,4 +19,8 @@ export async function vendorLogout(): Promise<void> {
 
 export async function vendorChangePassword(previous: FormState, formData: FormData): Promise<FormState> {
   return auth.vendorChangePassword(previous, formData);
+}
+
+export async function recordInstallation(previous: FormState, formData: FormData): Promise<FormState> {
+  return installations.recordInstallation(previous, formData);
 }

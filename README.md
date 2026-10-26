@@ -145,35 +145,36 @@ Staff sign in at `/admin` (English only, outside the locale routes, never indexe
 
 - **First owner:** `pnpm admin:create --email owner@example.com --name "Owner Name"`. The password is typed at the prompt or read from `ADMIN_PASSWORD`. Run it against production by setting `MONGODB_URI` and `MONGODB_DB` for that one command. Running it again for an existing email resets the password.
 - **Roles:** `owner` manages users and sees the activity log; `staff` works with leads. Owners add users and set passwords on the Users page; there is no emailed reset link yet.
-- **Leads:** search and filter the inbox, change status, add notes, set a follow-up date, export the filtered list to CSV. The dashboard shows counts and follow-ups due.
+- **Dashboard:** lead counts, follow-ups due today.
+- **Leads:** search and filter the inbox, change status, add notes, set a follow-up date, export the filtered list to CSV.
+- **Customers:** contact details, vehicles, tags, notes and marketing consent. "Convert to customer" on a lead creates the customer (or opens the existing one with the same phone number) and marks the lead as Won. The "not contacted in 90 days" retargeting group lists customers who agreed to offers and are due a message. Any group can be exported as CSV.
+- **Products:** CRUD for the PPF films the business sells — name, finish type, warranty years, active/retired status. Products are referenced by rolls and (eventually) warranty cards.
+- **Vendors:** CRUD for installer shops — shop name, contact person, email, phone, address, installer names, active/deactivated status. Each vendor can have multiple sign-in accounts (portal users) with temporary passwords and must-change-password flow.
+- **Stock:** allocate rolls of film to vendors (product, vendor, length in metres, cost), track metres remaining per roll. Vendors can only install and warrant film from allocated rolls. Rolls can be removed by owners.
+- **Blog:** write and publish bilingual posts (English required, Arabic optional) stored in the `posts` collection. Markdown subset parsed into React elements (no HTML injection). Drafts, scheduled publishing, one-hour public cache with on-save revalidation, `BlogPosting` structured data. Cover images chosen from existing site photos until uploads are built.
+- **Activity log:** the last 200 admin mutations (who, when, what, detail), owner-only.
+- **Account:** change own password.
 - **Sessions:** a random token in an `HttpOnly`, `SameSite=Lax` cookie scoped to `/admin`; MongoDB stores only its SHA-256 hash. Sessions end after 7 days idle or 30 days in total. Passwords are hashed with scrypt (`src/lib/auth/password.ts`).
 - **Adding a mutation:** define it with `adminAction` (`src/lib/admin/action.ts`), which runs the session, origin and role checks and Zod validation, then export it from `src/app/actions/admin.ts`. Render it with `<AdminForm>`. Record it with `auditRepository.record`.
 - **Sign-in rate limit:** `rateLimits.adminLogin` in `config/security.ts`, counted per IP and per email.
 
 `src/proxy.ts` redirects visitors without a session cookie to the sign-in page. That is only a shortcut: the real check is `requireSession()` in every page and action.
 
-### Blog
+## Vendor portal
 
-Posts are written at `/admin/blog` and stored in the `posts` collection, not in files.
+Installer shops sign in at `/vendor` (English only, outside the locale routes, never indexed). Owners create vendors and their sign-in accounts in the admin panel.
 
-- **Languages:** English is required, Arabic is optional. A post appears on a language's site only when it has that translation, and `hreflang` links list only the languages that exist.
-- **Writing:** the article field takes a small Markdown subset (`##` headings, lists, quotes, bold, italic, links). It is parsed into a tree and rendered as React elements (`src/lib/blog/markdown.ts`), so post text can never inject HTML.
-- **Publishing:** drafts are visible only in the admin panel. A publish date in the future schedules the post.
-- **Caching:** the public blog pages and the sitemap are cached for an hour and refreshed at once when a post is saved or deleted.
-- **Cover images:** chosen from the site's existing photos (`src/lib/blog/covers.ts`) until uploads are built.
-- **Search:** each post has optional search title and description, and outputs `BlogPosting` structured data.
-
-### Customers
-
-`/admin/customers` holds the people who have bought: contact details, vehicles, tags, notes and whether they agreed to receive offers.
-
-- **From a lead:** "Convert to customer" on a lead creates the customer (or opens the existing one with the same phone number) and marks the lead as Won.
-- **Retargeting:** the "not contacted in 90 days" group lists customers who agreed to offers and are due a message. "Mark as contacted today" removes them from it. Any group can be exported as CSV.
-- **Consent:** a customer made from an enquiry starts as not agreed. Staff tick the box after asking.
+- **Dashboard:** shop details, listed installers, stock summary grouped by product.
+- **Stock:** view every roll allocated to the shop — product, length, metres remaining, allocation date. One vendor can never see another's stock (`rollRepository.listForVendor` filters by session).
+- **Account:** change password. First sign-in with a temporary password forces a password change before the rest of the portal is accessible.
+- **Sessions:** separate cookie and session store scoped to `/vendor`, same security model as the admin panel (SHA-256 hashed tokens, scrypt passwords, idle and absolute expiry).
 
 ## Not built yet
 
-- Guarantee cards and invoices.
-- Content editing for non-developers: content is loaded through the `ContentSource` interface (`src/lib/content/source.ts`), so the admin panel can replace the files without changing components.
-- AI drafting and automatic posting for the blog, and image uploads.
-- Customer accounts: the `(account)` route group is reserved for them.
+- **Warranty cards and invoices:** the product and roll infrastructure is in place but the card generation, PDF output and customer-facing lookup are not built.
+- **Vendor installations:** vendors cannot yet record an installation (deduct metres from a roll, link to a customer and vehicle, issue a warranty card).
+- **Content editing for non-developers:** content is loaded through the `ContentSource` interface (`src/lib/content/source.ts`), so the admin panel can replace the files without changing components.
+- **AI drafting and automatic posting** for the blog, and image uploads.
+- **Customer accounts:** the `(account)` route group is reserved for them (currently shows a "coming soon" page).
+- **Emailed password reset** for admin and vendor users (passwords are currently set by owners only).
+- **Image uploads** for blog cover images and portfolio (currently using existing site photos and generated placeholders).

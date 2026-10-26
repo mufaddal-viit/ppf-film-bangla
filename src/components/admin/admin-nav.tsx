@@ -2,6 +2,7 @@
 
 import {
   Boxes,
+  ClipboardCheck,
   ContactRound,
   History,
   Inbox,
@@ -24,6 +25,7 @@ const ICONS = {
   products: Package,
   vendors: Store,
   stock: Boxes,
+  installations: ClipboardCheck,
   account: KeyRound,
   users: UserCog,
   activity: History,

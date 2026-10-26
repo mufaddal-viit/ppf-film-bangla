@@ -174,6 +174,39 @@ export type RollDocument = {
   updatedAt: Date;
 };
 
+/** A completed installation: film fitted to a vehicle, consuming metres from a roll. */
+export type InstallationDocument = {
+  _id?: ObjectId;
+  /** Human-readable warranty number, e.g. "PPF-2026-00001". Unique. */
+  warrantyNumber: string;
+  customerId: ObjectId;
+  /** The vehicle id from the customer's vehicles array. */
+  vehicleId: string;
+  vendorId: ObjectId;
+  rollId: ObjectId;
+  productId: ObjectId;
+  /** Name of the installer (one of vendor.installers[]). */
+  installer: string;
+  /** Free-text description of the area covered, e.g. "Full front + hood". */
+  area: string;
+  /** Metres of film used. Deducted from the roll's usedM. */
+  metresUsed: number;
+  /** Warranty coverage start. */
+  installedAt: Date;
+  /** Warranty expiry, computed as installedAt + product.warrantyYears. */
+  warrantyExpiresAt: Date;
+  /** Set when an owner voids this installation. */
+  voidedAt?: Date;
+  voidReason?: string;
+  createdAt: Date;
+};
+
+/** Atomic counter for sequential numbers (warranty numbers, invoice numbers). */
+export type CounterDocument = {
+  _id: string;
+  seq: number;
+};
+
 const COLLECTIONS = {
   leads: 'leads',
   products: 'products',
@@ -185,6 +218,8 @@ const COLLECTIONS = {
   users: 'users',
   sessions: 'sessions',
   auditLog: 'auditLog',
+  installations: 'installations',
+  counters: 'counters',
   // Reserved: OAuth accounts and emailed tokens (password reset links).
   accounts: 'accounts',
   verificationTokens: 'verificationTokens',
@@ -230,6 +265,14 @@ export async function portalUsersCollection() {
   return (await getDb()).collection<PortalUserDocument>(COLLECTIONS.portalUsers);
 }
 
+export async function installationsCollection() {
+  return (await getDb()).collection<InstallationDocument>(COLLECTIONS.installations);
+}
+
+export async function countersCollection() {
+  return (await getDb()).collection<CounterDocument>(COLLECTIONS.counters);
+}
+
 /** Database-level guard in addition to Zod: required fields, types and length caps. */
 const leadValidator: Document = {
   $jsonSchema: {
@@ -272,6 +315,13 @@ const INDEXES: Record<string, IndexDescription[]> = {
   [COLLECTIONS.vendors]: [{ key: { createdAt: -1 } }],
   [COLLECTIONS.rolls]: [{ key: { lotKey: 1 }, unique: true }, { key: { vendorId: 1, createdAt: -1 } }],
   [COLLECTIONS.portalUsers]: [{ key: { email: 1 }, unique: true }, { key: { vendorId: 1 } }],
+  [COLLECTIONS.installations]: [
+    { key: { warrantyNumber: 1 }, unique: true },
+    { key: { vendorId: 1, createdAt: -1 } },
+    { key: { customerId: 1, createdAt: -1 } },
+    { key: { rollId: 1 } },
+    { key: { createdAt: -1 } },
+  ],
   [COLLECTIONS.accounts]: [{ key: { provider: 1, providerAccountId: 1 }, unique: true }, { key: { userId: 1 } }],
   [COLLECTIONS.sessions]: [
     { key: { sessionToken: 1 }, unique: true },

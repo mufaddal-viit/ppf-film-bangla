@@ -23,6 +23,7 @@ export default async function VendorPanelLayout({ children }: { children: ReactN
     {
       links: [
         { href: VENDOR_ROUTES.dashboard, label: 'Dashboard', icon: 'dashboard' },
+        { href: VENDOR_ROUTES.installations, label: 'Installations', icon: 'installations' },
         { href: VENDOR_ROUTES.stock, label: 'Stock', icon: 'stock' },
       ],
     },

@@ -3,6 +3,7 @@
 import * as auth from '@/lib/admin/auth';
 import * as customers from '@/lib/admin/customers';
 import type { FormState } from '@/lib/admin/form-state';
+import * as installationActions from '@/lib/admin/installations';
 import * as leads from '@/lib/admin/leads';
 import * as posts from '@/lib/admin/posts';
 import * as products from '@/lib/admin/products';
@@ -121,4 +122,8 @@ export async function resetVendorLoginPassword(previous: FormState, formData: Fo
 
 export async function setVendorLoginActive(previous: FormState, formData: FormData): Promise<FormState> {
   return vendors.setVendorLoginActive(previous, formData);
+}
+
+export async function voidInstallation(previous: FormState, formData: FormData): Promise<FormState> {
+  return installationActions.voidInstallation(previous, formData);
 }

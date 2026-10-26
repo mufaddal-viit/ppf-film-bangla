@@ -12,10 +12,13 @@ import { AdminForm } from '@/components/admin/admin-form';
 import { CustomerFields } from '@/components/admin/customer-fields';
 import { EmptyState, Field, PageHead, Panel, Pill } from '@/components/admin/ui';
 import { ADMIN_ROUTES } from '@/lib/admin/constants';
-import { adminDates } from '@/lib/admin/format';
+import { adminDates, metres } from '@/lib/admin/format';
 import { requireSession } from '@/lib/auth/session';
 import { siteConfig } from '@/lib/config';
 import { customerRepository } from '@/lib/db/repositories/customer.repository';
+import { installationRepository } from '@/lib/db/repositories/installation.repository';
+import { productRepository } from '@/lib/db/repositories/product.repository';
+import { vendorRepository } from '@/lib/db/repositories/vendor.repository';
 
 export const metadata: Metadata = { title: 'Customer' };
 
@@ -25,6 +28,13 @@ export default async function AdminCustomerPage({ params }: PageProps<'/admin/cu
   const customer = await customerRepository.findById(id);
   if (!customer) notFound();
   const format = adminDates(siteConfig.locale.timezone);
+  const [installations, products, vendors] = await Promise.all([
+    installationRepository.listForCustomer(id),
+    productRepository.list(),
+    vendorRepository.list(),
+  ]);
+  const productMap = new Map(products.map((p) => [p.id, p.name]));
+  const vendorMap = new Map(vendors.map((v) => [v.id, v.shopName]));
 
   return (
     <>
@@ -142,6 +152,51 @@ export default async function AdminCustomerPage({ params }: PageProps<'/admin/cu
                 />
               </Field>
             </AdminForm>
+          </Panel>
+
+          <Panel title="Installations">
+            {installations.length === 0 ? (
+              <EmptyState>No installations recorded for this customer.</EmptyState>
+            ) : (
+              <div className="c-admin-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Warranty #</th>
+                      <th>Product</th>
+                      <th>Area</th>
+                      <th>Vendor</th>
+                      <th>Installed</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {installations.map((inst) => {
+                      const now = new Date();
+                      const isVoided = !!inst.voidedAt;
+                      const isExpired = !isVoided && inst.warrantyExpiresAt < now;
+                      const tone = isVoided ? 'muted' : isExpired ? 'warning' : 'success';
+                      const label = isVoided ? 'Voided' : isExpired ? 'Expired' : 'Active';
+                      return (
+                        <tr key={inst.id}>
+                          <td data-cell="title">
+                            <Link href={`${ADMIN_ROUTES.installations}/${inst.id}`}>{inst.warrantyNumber}</Link>
+                            <small>{metres(inst.metresUsed)} used</small>
+                          </td>
+                          <td data-label="Product">{productMap.get(inst.productId) ?? '—'}</td>
+                          <td data-label="Area">{inst.area}</td>
+                          <td data-label="Vendor">{vendorMap.get(inst.vendorId) ?? '—'}</td>
+                          <td data-label="Installed">{format.date(inst.installedAt)}</td>
+                          <td data-cell="status">
+                            <Pill tone={tone}>{label}</Pill>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </Panel>
 
           <Panel title="Notes">

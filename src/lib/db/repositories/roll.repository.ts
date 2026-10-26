@@ -75,4 +75,35 @@ export const rollRepository = {
     const doc = await (await rollsCollection()).findOneAndDelete({ _id: new ObjectId(id), usedM: 0 });
     return doc ? toRoll(doc) : null;
   },
+
+  /**
+   * Atomically deduct metres from a roll. The update only succeeds when usedM + metres <= lengthM,
+   * so two concurrent installations cannot overcommit the roll. Returns false when the roll does
+   * not exist or does not have enough film left.
+   */
+  async deductMetres(id: string, metres: number): Promise<boolean> {
+    if (!ObjectId.isValid(id)) return false;
+    const result = await (
+      await rollsCollection()
+    ).updateOne(
+      { _id: new ObjectId(id), $expr: { $lte: [{ $add: ['$usedM', metres] }, '$lengthM'] } },
+      { $inc: { usedM: metres }, $set: { updatedAt: new Date() } },
+    );
+    return result.modifiedCount === 1;
+  },
+
+  /** Restore metres after voiding an installation. No guard — the caller has already validated. */
+  async restoreMetres(id: string, metres: number): Promise<boolean> {
+    if (!ObjectId.isValid(id)) return false;
+    const result = await (
+      await rollsCollection()
+    ).updateOne({ _id: new ObjectId(id) }, { $inc: { usedM: -metres }, $set: { updatedAt: new Date() } });
+    return result.modifiedCount === 1;
+  },
+
+  async findById(id: string): Promise<Roll | null> {
+    if (!ObjectId.isValid(id)) return null;
+    const doc = await (await rollsCollection()).findOne({ _id: new ObjectId(id) });
+    return doc ? toRoll(doc) : null;
+  },
 };
