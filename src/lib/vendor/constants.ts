@@ -6,7 +6,10 @@ export const VENDOR_ROUTES = {
   login: '/vendor/login',
   dashboard: '/vendor',
   stock: '/vendor/stock',
+  customers: '/vendor/customers',
+  customersNew: '/vendor/customers/new',
   installations: '/vendor/installations',
   installationsNew: '/vendor/installations/new',
+  invoices: '/vendor/invoices',
   account: '/vendor/account',
 } as const;

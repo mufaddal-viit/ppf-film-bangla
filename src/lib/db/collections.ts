@@ -108,6 +108,8 @@ export type CustomerDocument = {
   notes: LeadNote[];
   /** The enquiry this customer was created from, if any. */
   leadId?: string;
+  /** When set, the customer belongs to this vendor and is only visible in their portal. */
+  vendorId?: ObjectId;
   lastContactedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -201,6 +203,40 @@ export type InstallationDocument = {
   createdAt: Date;
 };
 
+export type InvoiceLineItem = {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  amount: number;
+};
+
+export const INVOICE_STATUSES = ['draft', 'issued', 'paid', 'cancelled'] as const;
+export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
+
+/** An invoice for one or more installations. */
+export type InvoiceDocument = {
+  _id?: ObjectId;
+  /** Human-readable number, e.g. "INV-2026-00001". Unique. */
+  invoiceNumber: string;
+  customerId: ObjectId;
+  vendorId: ObjectId;
+  /** The installations covered by this invoice. */
+  installationIds: ObjectId[];
+  lineItems: InvoiceLineItem[];
+  subtotal: number;
+  vatRate: number;
+  vatAmount: number;
+  total: number;
+  currency: string;
+  status: InvoiceStatus;
+  notes?: string;
+  issuedAt?: Date;
+  paidAt?: Date;
+  cancelledAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 /** Atomic counter for sequential numbers (warranty numbers, invoice numbers). */
 export type CounterDocument = {
   _id: string;
@@ -219,6 +255,7 @@ const COLLECTIONS = {
   sessions: 'sessions',
   auditLog: 'auditLog',
   installations: 'installations',
+  invoices: 'invoices',
   counters: 'counters',
   // Reserved: OAuth accounts and emailed tokens (password reset links).
   accounts: 'accounts',
@@ -269,6 +306,10 @@ export async function installationsCollection() {
   return (await getDb()).collection<InstallationDocument>(COLLECTIONS.installations);
 }
 
+export async function invoicesCollection() {
+  return (await getDb()).collection<InvoiceDocument>(COLLECTIONS.invoices);
+}
+
 export async function countersCollection() {
   return (await getDb()).collection<CounterDocument>(COLLECTIONS.counters);
 }
@@ -309,7 +350,11 @@ const INDEXES: Record<string, IndexDescription[]> = {
   ],
   [COLLECTIONS.auditLog]: [{ key: { at: -1 } }],
   [COLLECTIONS.posts]: [{ key: { slug: 1 }, unique: true }, { key: { status: 1, publishedAt: -1 } }],
-  [COLLECTIONS.customers]: [{ key: { phone: 1 }, unique: true }, { key: { createdAt: -1 } }],
+  [COLLECTIONS.customers]: [
+    { key: { phone: 1 }, unique: true },
+    { key: { createdAt: -1 } },
+    { key: { vendorId: 1, createdAt: -1 }, sparse: true },
+  ],
   [COLLECTIONS.users]: [{ key: { email: 1 }, unique: true, sparse: true }],
   [COLLECTIONS.products]: [{ key: { nameKey: 1 }, unique: true }],
   [COLLECTIONS.vendors]: [{ key: { createdAt: -1 } }],
@@ -320,6 +365,13 @@ const INDEXES: Record<string, IndexDescription[]> = {
     { key: { vendorId: 1, createdAt: -1 } },
     { key: { customerId: 1, createdAt: -1 } },
     { key: { rollId: 1 } },
+    { key: { createdAt: -1 } },
+  ],
+  [COLLECTIONS.invoices]: [
+    { key: { invoiceNumber: 1 }, unique: true },
+    { key: { customerId: 1, createdAt: -1 } },
+    { key: { vendorId: 1, createdAt: -1 } },
+    { key: { status: 1, createdAt: -1 } },
     { key: { createdAt: -1 } },
   ],
   [COLLECTIONS.accounts]: [{ key: { provider: 1, providerAccountId: 1 }, unique: true }, { key: { userId: 1 } }],

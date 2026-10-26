@@ -1088,6 +1088,11 @@
       transform: rotate(-9deg) translateY(-2.5rem);
     }
   }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
   .c-admin-login-mosaic > div {
     @apply relative row-span-4 overflow-hidden rounded-3xl shadow-lg;
   }

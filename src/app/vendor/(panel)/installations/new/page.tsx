@@ -19,7 +19,7 @@ export default async function VendorNewInstallationPage() {
   const [rolls, products, { items: customers }] = await Promise.all([
     rollRepository.listForVendor(session.vendorId),
     productRepository.list(),
-    customerRepository.list({}, { skip: 0, limit: 500 }),
+    customerRepository.listForVendor(session.vendorId, { skip: 0, limit: 500 }),
   ]);
 
   const productMap = new Map(products.map((p) => [p.id, p]));
@@ -65,7 +65,7 @@ export default async function VendorNewInstallationPage() {
           {availableRolls.length === 0
             ? `No rolls with film remaining. Ask ${siteConfig.business.name} to allocate more stock.`
             : customers.length === 0
-              ? 'No customers yet. Ask staff to add the customer first.'
+              ? 'No customers yet. Add a customer first from the Customers page.'
               : `No installers listed at your shop. Ask ${siteConfig.business.name} to add them.`}
         </EmptyState>
       ) : (

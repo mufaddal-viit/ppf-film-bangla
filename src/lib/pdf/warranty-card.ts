@@ -7,6 +7,8 @@ type WarrantyCardData = {
   businessName: string;
   businessPhone: string;
   businessAddress: string;
+  /** PNG bytes of the business logo. */
+  logoBytes?: Uint8Array;
   customerName: string;
   customerPhone: string;
   vehicle: { make: string; model: string; year?: number; plate?: string } | null;
@@ -51,9 +53,21 @@ export async function generateWarrantyCardPdf(data: WarrantyCardData): Promise<U
     borderWidth: 1.5,
   });
 
-  // --- Header ---
+  // --- Header with logo ---
+  let headerTextX = margin;
+  if (data.logoBytes) {
+    try {
+      const logoImage = await pdf.embedPng(data.logoBytes);
+      const logoH = 32;
+      const logoW = (logoImage.width / logoImage.height) * logoH;
+      page.drawImage(logoImage, { x: margin, y: y - logoH + 8, width: logoW, height: logoH });
+      headerTextX = margin + logoW + 10;
+    } catch {
+      // Logo embed failed — fall back to text only.
+    }
+  }
   page.drawText(data.businessName.toUpperCase(), {
-    x: margin,
+    x: headerTextX,
     y,
     size: 22,
     font: bold,

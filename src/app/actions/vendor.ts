@@ -2,6 +2,7 @@
 
 import type { FormState } from '@/lib/admin/form-state';
 import * as auth from '@/lib/vendor/auth';
+import * as customerActions from '@/lib/vendor/customers';
 import * as installations from '@/lib/vendor/installations';
 
 /**
@@ -23,4 +24,12 @@ export async function vendorChangePassword(previous: FormState, formData: FormDa
 
 export async function recordInstallation(previous: FormState, formData: FormData): Promise<FormState> {
   return installations.recordInstallation(previous, formData);
+}
+
+export async function createVendorCustomer(previous: FormState, formData: FormData): Promise<FormState> {
+  return customerActions.createVendorCustomer(previous, formData);
+}
+
+export async function addVendorCustomerVehicle(previous: FormState, formData: FormData): Promise<FormState> {
+  return customerActions.addVendorCustomerVehicle(previous, formData);
 }

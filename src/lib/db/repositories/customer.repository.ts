@@ -70,13 +70,16 @@ export const customerRepository = {
   },
 
   /** Throws MongoDB's duplicate key error when the phone number is already a customer. */
-  async create(input: CustomerDetails & { vehicles?: Array<Omit<CustomerVehicle, 'id'>>; leadId?: string }) {
+  async create(
+    input: CustomerDetails & { vehicles?: Array<Omit<CustomerVehicle, 'id'>>; leadId?: string; vendorId?: string },
+  ) {
     const now = new Date();
-    const { vehicles = [], ...rest } = input;
+    const { vehicles = [], vendorId, ...rest } = input;
     const result = await (
       await customersCollection()
     ).insertOne({
       ...rest,
+      ...(vendorId && { vendorId: new ObjectId(vendorId) }),
       vehicles: vehicles.map((vehicle) => ({ id: randomUUID(), ...vehicle })),
       notes: [],
       createdAt: now,
@@ -115,5 +118,23 @@ export const customerRepository = {
   /** Every tag in use, for the list filter. */
   async tags(): Promise<string[]> {
     return ((await (await customersCollection()).distinct('tags')) as string[]).sort();
+  },
+
+  /** Customers that belong to a specific vendor. */
+  async listForVendor(vendorId: string, { skip, limit }: { skip: number; limit: number }) {
+    if (!ObjectId.isValid(vendorId)) return { items: [] as Customer[], total: 0 };
+    const collection = await customersCollection();
+    const query = { vendorId: new ObjectId(vendorId) };
+    const [docs, total] = await Promise.all([
+      collection.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray(),
+      collection.countDocuments(query),
+    ]);
+    return { items: docs.map(toCustomer), total };
+  },
+
+  async findByPhoneForVendor(phone: string, vendorId: string): Promise<Customer | null> {
+    if (!ObjectId.isValid(vendorId)) return null;
+    const doc = await (await customersCollection()).findOne({ phone, vendorId: new ObjectId(vendorId) });
+    return doc ? toCustomer(doc) : null;
   },
 };

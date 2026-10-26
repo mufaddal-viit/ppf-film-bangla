@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef, useTransition, type ReactNode } from 'react';
 import type { FormAction } from '@/lib/admin/form-state';
 import { cn } from '@/lib/cn';
+import { Spinner } from './spinner';
 
 type AdminFormProps = {
   action: FormAction;
@@ -47,8 +48,14 @@ export function AdminForm({ action, submitLabel, children, className, resetOnSuc
         </ul>
       )}
       <div className="c-admin-form-foot">
-        <button type="submit" className="c-button" data-variant={quiet ? undefined : 'primary'} disabled={pending}>
-          {pending ? 'Saving…' : submitLabel}
+        <button
+          type="submit"
+          className="c-button inline-flex items-center justify-center gap-2"
+          data-variant={quiet ? undefined : 'primary'}
+          disabled={pending}
+        >
+          {pending && <Spinner />}
+          {pending ? 'Please wait…' : submitLabel}
         </button>
         {!pending && state && (
           <p role="status" className="c-admin-form-message" data-ok={state.ok}>

@@ -6,6 +6,7 @@ import { productRepository } from '@/lib/db/repositories/product.repository';
 import { rollRepository } from '@/lib/db/repositories/roll.repository';
 import { vendorRepository } from '@/lib/db/repositories/vendor.repository';
 import { logger } from '@/lib/logger';
+import { getLogoBytes } from '@/lib/pdf/logo';
 import { generateWarrantyCardPdf } from '@/lib/pdf/warranty-card';
 import { rateLimit } from '@/lib/security/rate-limit';
 
@@ -46,11 +47,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ num
     .filter(Boolean)
     .join(', ');
 
+  const logoBytes = await getLogoBytes();
   const pdfBytes = await generateWarrantyCardPdf({
     installation,
     businessName: business.name,
     businessPhone: contact.phone,
     businessAddress: address,
+    logoBytes,
     customerName: customer.name,
     customerPhone: customer.phone,
     vehicle,

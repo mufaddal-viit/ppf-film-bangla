@@ -46,15 +46,24 @@ export default async function AdminInstallationPage({ params }: PageProps<'/admi
       <PageHead title={installation.warrantyNumber} intro={`Recorded ${format.dateTime(installation.createdAt)}`}>
         <Pill tone={tone}>{statusLabel}</Pill>
         {!isVoided && (
-          <a
-            href={`/api/warranty/${encodeURIComponent(installation.warrantyNumber)}/pdf`}
-            className="c-button inline-flex items-center gap-1"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Download className="h-4 w-4" aria-hidden="true" focusable="false" />
-            PDF
-          </a>
+          <>
+            <a
+              href={`/api/warranty/${encodeURIComponent(installation.warrantyNumber)}/pdf`}
+              className="c-button inline-flex items-center gap-1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" focusable="false" />
+              PDF
+            </a>
+            <Link
+              href={`${ADMIN_ROUTES.invoicesNew}?installation=${installation.id}`}
+              className="c-button"
+              data-variant="primary"
+            >
+              Create invoice
+            </Link>
+          </>
         )}
       </PageHead>
 

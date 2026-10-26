@@ -4,6 +4,7 @@ import * as auth from '@/lib/admin/auth';
 import * as customers from '@/lib/admin/customers';
 import type { FormState } from '@/lib/admin/form-state';
 import * as installationActions from '@/lib/admin/installations';
+import * as invoiceActions from '@/lib/admin/invoices';
 import * as leads from '@/lib/admin/leads';
 import * as posts from '@/lib/admin/posts';
 import * as products from '@/lib/admin/products';
@@ -126,4 +127,16 @@ export async function setVendorLoginActive(previous: FormState, formData: FormDa
 
 export async function voidInstallation(previous: FormState, formData: FormData): Promise<FormState> {
   return installationActions.voidInstallation(previous, formData);
+}
+
+export async function createInvoice(previous: FormState, formData: FormData): Promise<FormState> {
+  return invoiceActions.createInvoice(previous, formData);
+}
+
+export async function updateInvoice(previous: FormState, formData: FormData): Promise<FormState> {
+  return invoiceActions.updateInvoice(previous, formData);
+}
+
+export async function setInvoiceStatus(previous: FormState, formData: FormData): Promise<FormState> {
+  return invoiceActions.setInvoiceStatus(previous, formData);
 }
