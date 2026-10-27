@@ -139,6 +139,20 @@ Uptime monitoring can poll `GET /api/health` (200 when the database is reachable
 
 `.github/workflows/ci.yml` runs on every pull request: typecheck, lint, Prettier, knip, unit tests, build and dependency audit; Playwright smoke tests; and Lighthouse budgets (LCP < 2.5 s, CLS < 0.1, accessibility and SEO ≥ 95, mobile). Lighthouse has no INP lab metric, so Total Blocking Time is tracked as its proxy.
 
+## Demo seed
+
+`scripts/seed-demo.mts` creates a full test dataset: admin user, products, a vendor with sign-in, customers with vehicles, allocated rolls and sample leads. Run it while `pnpm dev` is running, or against production:
+
+```bash
+# Local
+npx tsx --conditions=react-server scripts/seed-demo.mts
+
+# Production (set your Atlas URI)
+MONGODB_URI="mongodb+srv://..." MONGODB_DB="ppf" npx tsx --conditions=react-server scripts/seed-demo.mts
+```
+
+`scripts/seed-vendor-customers.mts` adds vendor-scoped customers for the demo vendor.
+
 ## Admin panel
 
 Staff sign in at `/admin` (English only, outside the locale routes, never indexed).
@@ -147,8 +161,10 @@ Staff sign in at `/admin` (English only, outside the locale routes, never indexe
 - **Roles:** `owner` manages users and sees the activity log; `staff` works with leads. Owners add users and set passwords on the Users page; there is no emailed reset link yet.
 - **Dashboard:** lead counts, follow-ups due today.
 - **Leads:** search and filter the inbox, change status, add notes, set a follow-up date, export the filtered list to CSV.
-- **Customers:** contact details, vehicles, tags, notes and marketing consent. "Convert to customer" on a lead creates the customer (or opens the existing one with the same phone number) and marks the lead as Won. The "not contacted in 90 days" retargeting group lists customers who agreed to offers and are due a message. Any group can be exported as CSV.
-- **Products:** CRUD for the PPF films the business sells — name, finish type, warranty years, active/retired status. Products are referenced by rolls and (eventually) warranty cards.
+- **Customers:** contact details, vehicles, tags, notes and marketing consent. "Convert to customer" on a lead creates the customer (or opens the existing one with the same phone number) and marks the lead as Won. The "not contacted in 90 days" retargeting group lists customers who agreed to offers and are due a message. Any group can be exported as CSV. The customer detail page also shows all installations and warranty cards linked to that customer.
+- **Installations:** paginated list of all installations across all vendors, filterable by vendor or search. Each installation detail page shows full warranty details, linked customer and vehicle, a "Download PDF" button for the warranty card, a "Create invoice" button, and the ability to void an installation (which restores metres to the roll).
+- **Invoices:** create invoices from installations (auto-populates line items from the installation), manage status (draft → issued → paid / cancelled), download invoice PDFs. Filterable by status, vendor or invoice number.
+- **Products:** CRUD for the PPF films the business sells — name, finish type, warranty years, active/retired status. Products are referenced by rolls and warranty cards.
 - **Vendors:** CRUD for installer shops — shop name, contact person, email, phone, address, installer names, active/deactivated status. Each vendor can have multiple sign-in accounts (portal users) with temporary passwords and must-change-password flow.
 - **Stock:** allocate rolls of film to vendors (product, vendor, length in metres, cost), track metres remaining per roll. Vendors can only install and warrant film from allocated rolls. Rolls can be removed by owners.
 - **Blog:** write and publish bilingual posts (English required, Arabic optional) stored in the `posts` collection. Markdown subset parsed into React elements (no HTML injection). Drafts, scheduled publishing, one-hour public cache with on-save revalidation, `BlogPosting` structured data. Cover images chosen from existing site photos until uploads are built.
@@ -164,17 +180,44 @@ Staff sign in at `/admin` (English only, outside the locale routes, never indexe
 
 Installer shops sign in at `/vendor` (English only, outside the locale routes, never indexed). Owners create vendors and their sign-in accounts in the admin panel.
 
-- **Dashboard:** shop details, listed installers, stock summary grouped by product.
+- **Dashboard:** shop details, listed installers, stock summary grouped by product, recent installations.
+- **Customers:** each vendor manages their own customers (vendor-scoped via `vendorId` on the customer document). Add customers with name, phone, email and first vehicle. Customer detail page shows vehicles, contact actions (call, WhatsApp, email) and installation history. Vendors can add more vehicles from the detail page. A vendor can never see another vendor's customers.
+- **Installations:** record a completed installation by picking a customer, vehicle, roll, installer, area covered and metres used. The system atomically deducts metres from the roll (with a `$expr` guard to prevent overcommit) and generates a unique warranty number (`PPF-YYYY-NNNNN`). The installations list shows all past work with warranty numbers, status badges (Active / Expired / Voided) and PDF download links. An "Add customer" button on the installation form lets vendors quickly add a customer without leaving the page.
+- **Invoices:** read-only list of invoices issued for this vendor's installations, with PDF download links.
 - **Stock:** view every roll allocated to the shop — product, length, metres remaining, allocation date. One vendor can never see another's stock (`rollRepository.listForVendor` filters by session).
 - **Account:** change password. First sign-in with a temporary password forces a password change before the rest of the portal is accessible.
 - **Sessions:** separate cookie and session store scoped to `/vendor`, same security model as the admin panel (SHA-256 hashed tokens, scrypt passwords, idle and absolute expiry).
 
+## Warranty cards and PDFs
+
+Every installation generates a warranty card identified by its warranty number.
+
+- **PDF generation:** `pdf-lib` generates A4 landscape warranty certificates with the business logo, warranty number, customer details, vehicle, product, installer, vendor shop, installation and expiry dates, roll LOT number, and area covered. The business logo is embedded as a PNG in the header.
+- **Download:** `GET /api/warranty/{number}/pdf` serves the PDF. Rate-limited at 20 requests/min per IP. No authentication required — the warranty number acts as the access token.
+- **Public lookup:** `/{locale}/warranty/{number}` shows warranty details with a Valid / Expired / Voided badge, all installation details, and a "Download warranty card (PDF)" button. `/{locale}/warranty` provides a search form to enter a warranty number. Pages are not indexed by search engines.
+- **Admin and vendor views:** PDF download links appear on the installation detail page (admin), installation list (vendor), and customer detail page (admin).
+
+## Invoices
+
+Invoices are created from installations and track payment for the work done.
+
+- **Creation:** from an installation detail page in the admin panel, click "Create invoice". The first line item is auto-populated from the installation (product, area, metres as quantity). Admin enters the unit price per metre and VAT rate; the system computes subtotal, VAT amount and total.
+- **Statuses:** Draft → Issued → Paid (or Cancelled at any non-paid stage). Each transition is recorded in the audit log.
+- **PDF:** `GET /api/invoice/{number}/pdf` generates an A4 portrait invoice with the business logo, bill-to details, line items table, subtotal/VAT/total, status badge, and notes. Rate-limited, no auth needed.
+- **Invoice numbers:** sequential per year (`INV-YYYY-NNNNN`) via an atomic MongoDB counter.
+- **Vendor view:** vendors see a read-only list of their invoices with PDF download.
+
+## UX
+
+- **Loading spinners:** every form button in both portals shows an animated spinner and "Please wait…" during submission. Buttons are disabled while pending to prevent double-submits.
+- **Responsive:** the admin panel and vendor portal are designed to work on phones (responsive sidebar, stacked layouts on mobile).
+
 ## Not built yet
 
-- **Warranty cards and invoices:** the product and roll infrastructure is in place but the card generation, PDF output and customer-facing lookup are not built.
-- **Vendor installations:** vendors cannot yet record an installation (deduct metres from a roll, link to a customer and vehicle, issue a warranty card).
 - **Content editing for non-developers:** content is loaded through the `ContentSource` interface (`src/lib/content/source.ts`), so the admin panel can replace the files without changing components.
 - **AI drafting and automatic posting** for the blog, and image uploads.
 - **Customer accounts:** the `(account)` route group is reserved for them (currently shows a "coming soon" page).
 - **Emailed password reset** for admin and vendor users (passwords are currently set by owners only).
 - **Image uploads** for blog cover images and portfolio (currently using existing site photos and generated placeholders).
+- **Multi-installation invoices:** the data model supports multiple installations per invoice, but the UI currently creates one invoice per installation.
+- **Installation-to-invoice tracking:** no visual indicator on the installation list showing which installations already have invoices.
